@@ -22,6 +22,10 @@
       --accent: #ffffff;
       --max-width: 900px;
       --section-gap: 72px;
+
+      /* new highlight colors */
+      --hl-strong: rgba(227, 191, 114, 0.55);
+      --hl-soft: rgba(227, 191, 114, 0.16);
     }
 
     * {
@@ -224,15 +228,46 @@
       text-align: justify;
     }
 
-    /* WHITE PANELS (for contrast) */
-    .panel {
+    /* GOLD/ORANGE GRADIENT CARDS */
+
+    /* Base card shape for everything */
+    .panel,
+    .board,
+    .chart {
       max-width: 720px;
-      margin: 26px auto 0;
-      background: var(--paper);
-      color: #000;
+      margin: 24px auto 0;
       border-radius: 4px;
-      border: 1px solid #111;
+      border: 1px solid var(--border);
       padding: 20px 18px 22px;
+      color: var(--fg);
+    }
+
+    /* Panel: highlight from left */
+    .panel {
+      background:
+        radial-gradient(circle at 0% 50%, var(--hl-strong) 0, var(--hl-soft) 28%, transparent 70%),
+        #050505;
+    }
+
+    /* Board: highlight from top-center */
+    .board {
+      background:
+        radial-gradient(circle at 50% 0%, var(--hl-strong) 0, var(--hl-soft) 30%, transparent 70%),
+        #050505;
+      padding: 18px 16px 16px;
+      margin-top: 22px;
+    }
+
+    /* Chart: highlight from top-right */
+    .chart {
+      background:
+        radial-gradient(circle at 100% 0%, var(--hl-strong) 0, var(--hl-soft) 30%, transparent 72%),
+        #050505;
+      font-family: "Courier New", monospace;
+      font-size: 0.88rem;
+      color: var(--muted);
+      padding: 14px 14px 16px;
+      margin-top: 20px;
     }
 
     .panel-title {
@@ -249,15 +284,6 @@
     }
 
     /* Leaderboard tables */
-    .board {
-      max-width: 720px;
-      margin: 22px auto 0;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: #080808;
-      padding: 18px 16px 14px;
-    }
-
     .board-title {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
@@ -308,18 +334,6 @@
     }
 
     /* ASCII-style bar chart */
-    .chart {
-      max-width: 720px;
-      margin: 20px auto 0;
-      font-family: "Courier New", monospace;
-      font-size: 0.88rem;
-      color: var(--muted);
-      background: #080808;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      padding: 14px 14px 16px;
-    }
-
     .chart-title {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
@@ -458,7 +472,7 @@
         </p>
       </div>
 
-      <!-- White panel: Signup roles -->
+      <!-- Highlighted card: Signup roles -->
       <div class="panel" id="signup">
         <div class="panel-title">Season Sign-Up & Roles</div>
         <p>
