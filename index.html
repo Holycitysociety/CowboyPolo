@@ -13,13 +13,13 @@
       --bg: #050505;
       --fg: #f5f5f5;
       --muted: #a7a7a7;
-      --accent: #e3bf72;
-      --border: #262626;
 
-      /* NEW patriotic + rope colors */
-      --patriot-red: #b3212a;
-      --patriot-blue: #162a4d;
-      --rope: #d7c19a;
+      --accent-gold: #e3bf72;
+      --accent-gold-deep: #b78c3c;
+      --accent-red: #c6473a;
+      --accent-blue: #3a6fbf;
+
+      --border-dark: #262626;
 
       --font-lg: clamp(2.2rem, 6vw, 3.2rem);
       --font-md: clamp(1.2rem, 3.4vw, 1.45rem);
@@ -37,15 +37,16 @@
     body {
       margin: 0;
       background:
-        radial-gradient(circle at 50% -10%, rgba(255,255,255,0.08) 0, rgba(0,0,0,0.95) 50%),
-        radial-gradient(circle at 50% 70%, rgba(255,255,255,0.05) 0, rgba(0,0,0,0.98) 60%),
+        radial-gradient(circle at 0% 0%, rgba(198,71,58,0.35) 0, transparent 45%),
+        radial-gradient(circle at 100% 0%, rgba(58,111,191,0.35) 0, transparent 45%),
+        radial-gradient(circle at 50% 75%, rgba(227,191,114,0.20) 0, transparent 55%),
         var(--bg);
       color: var(--fg);
       font-family: "EB Garamond", Georgia, serif;
       line-height: 1.62;
     }
 
-    a { color: var(--accent); text-decoration: none; }
+    a { color: var(--accent-gold); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     .page {
@@ -55,22 +56,122 @@
     }
 
     /* ------------------------------------------------------------
+       COMMON ELEMENTS
+    ------------------------------------------------------------- */
+
+    .rope-frame {
+      border: 2px solid transparent;
+      border-radius: 18px;
+      border-image: repeating-linear-gradient(
+        45deg,
+        var(--accent-gold) 0 6px,
+        var(--accent-gold-deep) 6px 12px
+      ) 8;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.8),
+        0 12px 30px rgba(0,0,0,0.7);
+    }
+
+    .section {
+      margin-top: var(--gap-lg);
+      padding-top: var(--gap-sm);
+      max-width: var(--text-width);
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        rgba(198,71,58,0.0),
+        rgba(198,71,58,0.85),
+        rgba(58,111,191,0.85),
+        rgba(58,111,191,0.0)
+      );
+      opacity: 0.8;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: var(--gap-sm);
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      font-size: var(--font-sm);
+      color: var(--muted);
+      letter-spacing: 0.22em;
+      margin-bottom: 10px;
+    }
+
+    .section-title-banner {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 18px;
+      text-transform: uppercase;
+      font-family: "Cormorant Garamond", serif;
+      letter-spacing: 0.18em;
+      font-size: var(--font-md);
+      background:
+        linear-gradient(to right, rgba(198,71,58,0.6), rgba(227,191,114,0.9), rgba(58,111,191,0.6));
+      color: #000;
+      border-radius: 28px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+    }
+
+    .section-text {
+      font-size: var(--font-sm);
+      color: var(--muted);
+      text-align: justify;
+      text-justify: inter-word;
+      margin-top: 16px;
+      margin-bottom: var(--gap-sm);
+    }
+
+    /* ------------------------------------------------------------
        POSTER HERO
     ------------------------------------------------------------- */
+
     .poster {
-      border: 1px solid var(--border);
-      padding: 38px 24px 44px;
+      padding: 40px 24px 44px;
       text-align: center;
       margin-bottom: var(--gap-lg);
       background:
-        radial-gradient(circle at 20% -20%, rgba(22,42,77,0.6), transparent 55%),
-        radial-gradient(circle at 80% 120%, rgba(179,33,42,0.35), transparent 55%),
-        linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(0,0,0,0.85));
+        radial-gradient(circle at 50% 0%, rgba(227,191,114,0.20) 0, rgba(0,0,0,0.8) 55%),
+        rgba(5,5,5,0.95);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle “flag / light” bands */
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        linear-gradient(120deg, rgba(198,71,58,0.18), transparent 40%, rgba(58,111,191,0.18)),
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .poster-inner {
+      position: relative;
+      z-index: 1;
     }
 
     .poster-kicker {
       text-transform: uppercase;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.26em;
       font-size: var(--font-sm);
       margin-bottom: 10px;
       color: var(--muted);
@@ -78,52 +179,52 @@
 
     .poster-rule {
       width: 100%;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid rgba(227,191,114,0.55);
       margin: 12px auto 22px;
     }
 
     .poster-title {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.26em;
+      letter-spacing: 0.32em;
       font-size: var(--font-lg);
-      margin: 0 0 14px;
-      text-shadow: 0 0 20px rgba(12,24,52,0.9);
+      margin: 0 0 8px;
     }
 
     .poster-sub {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       font-size: var(--font-sm);
-      margin-bottom: 10px;
-      display: inline-block;
-      padding: 0 6px 4px;
-      border-bottom: 2px solid var(--patriot-red);
+      margin-bottom: 22px;
+      color: var(--fg);
     }
 
     .poster-tagline {
-      max-width: 560px;
+      max-width: 580px;
       margin: 0 auto;
       font-size: var(--font-sm);
-      letter-spacing: 0.07em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 22px;
     }
+
+    .poster-tagline span.red { color: var(--accent-red); }
+    .poster-tagline span.blue { color: var(--accent-blue); }
 
     .poster-cta {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     .btn {
-      padding: 10px 30px;
+      padding: 11px 30px;
       border-radius: 999px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-dark);
       font-size: var(--font-sm);
       text-transform: uppercase;
       letter-spacing: 0.14em;
@@ -135,119 +236,46 @@
     }
 
     .btn-primary {
-      background: var(--accent);
-      color: black;
-      border-color: var(--accent);
+      background: linear-gradient(
+        to right,
+        var(--accent-red),
+        var(--accent-gold),
+        var(--accent-blue)
+      );
+      color: #000;
+      border-color: rgba(0,0,0,0.9);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.7);
     }
 
     .btn-primary:hover {
-      background: #f4dca0;
+      filter: brightness(1.08);
     }
 
     .btn-outline {
       color: var(--muted);
-      background: transparent;
+      background: rgba(0,0,0,0.7);
+      border-color: rgba(255,255,255,0.12);
     }
 
     .btn-outline:hover {
+      background: rgba(255,255,255,0.04);
       color: var(--fg);
-      background: rgba(255,255,255,0.05);
     }
 
     .poster-meta {
       font-size: var(--font-sm);
       color: var(--muted);
-      margin-top: 6px;
+      margin-top: 10px;
       letter-spacing: 0.12em;
     }
 
+    .poster-meta span.red { color: var(--accent-red); }
+    .poster-meta span.blue { color: var(--accent-blue); }
+
     /* ------------------------------------------------------------
-       SECTION HEADINGS AS ROPE WORDMARKS
+       SIGN-UP
     ------------------------------------------------------------- */
-    .section {
-      margin-top: var(--gap-lg);
-      border-top: 1px solid var(--border);
-      padding-top: var(--gap-sm);
-      max-width: var(--text-width);
-      margin-left: auto;
-      margin-right: auto;
-      position: relative;
-    }
 
-    .section-heading {
-      text-align: center;
-      margin-bottom: var(--gap-sm);
-      position: relative;
-      padding-top: 10px;
-    }
-
-    .section-heading-inner {
-      display: inline-block;
-      padding: 10px 26px;
-      border-radius: 16px;
-      border: 3px solid var(--rope);
-      background:
-        radial-gradient(circle at 50% 20%, rgba(255,255,255,0.08), transparent 65%),
-        #050505;
-      box-shadow:
-        0 0 0 2px rgba(22,42,77,0.7),
-        0 0 18px rgba(0,0,0,0.85);
-      position: relative;
-    }
-
-    /* little rope texture: diagonal dashes */
-    .section-heading-inner::before {
-      content: "";
-      position: absolute;
-      inset: 2px;
-      border-radius: 12px;
-      border: 1px dashed rgba(215,193,154,0.4);
-      pointer-events: none;
-    }
-
-    .section-kicker {
-      text-transform: uppercase;
-      font-size: 0.72rem;
-      letter-spacing: 0.28em;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .section-title {
-      font-family: "Cormorant Garamond", serif;
-      text-transform: uppercase;
-      font-size: 1.1rem;
-      letter-spacing: 0.18em;
-      margin: 0;
-    }
-
-    /* red/blue underline band beneath heading block */
-    .section-heading::after {
-      content: "";
-      display: block;
-      margin: 12px auto 0;
-      width: 80%;
-      max-width: 420px;
-      height: 3px;
-      background: linear-gradient(
-        to right,
-        transparent,
-        var(--patriot-red),
-        var(--patriot-blue),
-        transparent
-      );
-      opacity: 0.9;
-    }
-
-    .section-text {
-      font-size: var(--font-sm);
-      color: var(--muted);
-      text-align: justify;
-      text-justify: inter-word;
-      margin-bottom: var(--gap-sm);
-    }
-
-    /* Sign-up */
     .signup-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -255,17 +283,35 @@
     }
 
     .signup-card {
-      padding: 16px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.6);
+      padding: 18px 16px 16px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 14px;
+      border: 1px solid var(--border-dark);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.7);
+      position: relative;
+    }
+
+    .signup-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      border: 2px solid transparent;
+      border-image: repeating-linear-gradient(
+        45deg,
+        rgba(227,191,114,0.9) 0 6px,
+        rgba(183,140,60,0.9) 6px 12px
+      ) 8;
+      opacity: 0.55;
+      pointer-events: none;
     }
 
     .signup-card h3 {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin: 0 0 6px;
-      font-size: 1rem;
+      letter-spacing: 0.16em;
+      margin: 0 0 8px;
+      font-size: 1.02rem;
     }
 
     .signup-card p {
@@ -275,16 +321,23 @@
       text-align: justify;
     }
 
-    /* Leaderboards */
+    /* ------------------------------------------------------------
+       TABLES / LEADERBOARDS
+    ------------------------------------------------------------- */
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
+      margin-top: 16px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.7);
     }
 
     th, td {
       border-bottom: 1px solid #1a1a1a;
-      padding: 6px 4px;
+      padding: 8px 10px;
       font-size: var(--font-sm);
     }
 
@@ -293,19 +346,24 @@
       letter-spacing: 0.12em;
       color: var(--muted);
       font-size: 0.78rem;
+      background: linear-gradient(
+        to right,
+        rgba(198,71,58,0.5),
+        rgba(227,191,114,0.7),
+        rgba(58,111,191,0.5)
+      );
     }
+
+    tr:last-child td { border-bottom: none; }
 
     .highlight {
       background: rgba(227,191,114,0.08);
-      transition: background 0.25s ease, transform 0.25s ease;
     }
 
-    tr:hover {
-      background: rgba(255,255,255,0.04);
-      transform: translateY(-1px);
-    }
+    /* ------------------------------------------------------------
+       PRICING
+    ------------------------------------------------------------- */
 
-    /* Pricing */
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -313,10 +371,12 @@
     }
 
     .pricing-card {
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.65);
-      padding: 14px;
+      background: radial-gradient(circle at 50% 0%, rgba(227,191,114,0.23), rgba(0,0,0,0.95));
+      padding: 16px 14px 14px;
       text-align: center;
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.7);
+      border: 1px solid rgba(227,191,114,0.5);
     }
 
     .pricing-label {
@@ -324,7 +384,7 @@
       font-size: 0.78rem;
       letter-spacing: 0.14em;
       color: var(--muted);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .pricing-amount {
@@ -333,11 +393,21 @@
       margin-bottom: 4px;
     }
 
-    /* Results submission mockup */
+    .pricing-note {
+      font-size: var(--font-sm);
+      color: var(--muted);
+    }
+
+    /* ------------------------------------------------------------
+       FORMS / RESULTS
+    ------------------------------------------------------------- */
+
     .results-form {
-      border: 1px dashed var(--border);
-      background: rgba(0,0,0,0.5);
-      padding: 18px;
+      border-radius: 16px;
+      border: 1px dashed rgba(227,191,114,0.6);
+      background: rgba(0,0,0,0.8);
+      padding: 18px 16px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
     }
 
     .results-form-row {
@@ -352,28 +422,39 @@
       font-size: 0.75rem;
       color: var(--muted);
       flex: 1 1 120px;
+      letter-spacing: 0.12em;
     }
 
     .results-form-row input {
       flex: 2 1 200px;
-      padding: 6px;
+      padding: 6px 8px;
       background: #000;
       border: 1px solid #333;
       color: var(--fg);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: var(--font-sm);
     }
 
     .results-form-note {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: var(--muted);
       margin-top: 4px;
     }
 
-    /* Seasonal Registry */
+    /* ------------------------------------------------------------
+       REGISTRY / CARDS
+    ------------------------------------------------------------- */
+
     .registry-card {
       padding: 16px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.55);
+      border-radius: 16px;
+      border: 1px solid var(--border-dark);
+      background:
+        linear-gradient(120deg, rgba(198,71,58,0.16), rgba(0,0,0,0.95)),
+        rgba(0,0,0,0.8);
       margin-bottom: 12px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
     }
 
     .registry-card h4 {
@@ -390,17 +471,14 @@
       color: var(--muted);
     }
 
-    .registry-card p.muted {
-      font-size: 0.75rem;
-      opacity: 0.8;
-    }
-
-    /* Data explainer */
     .arch-diagram {
       padding: 16px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.5);
+      border-radius: 16px;
+      border: 1px solid rgba(58,111,191,0.6);
+      background:
+        linear-gradient(to right, rgba(58,111,191,0.35), rgba(0,0,0,0.96));
       margin-top: 18px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
       font-size: var(--font-sm);
       color: var(--muted);
     }
@@ -409,12 +487,15 @@
       text-align: center;
       margin-top: var(--gap-lg);
       padding-top: 20px;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--border-dark);
       font-size: var(--font-sm);
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.14em;
     }
+
+    footer span.red { color: var(--accent-red); }
+    footer span.blue { color: var(--accent-blue); }
 
     @media (max-width: 720px) {
       .signup-grid,
@@ -422,12 +503,9 @@
         grid-template-columns: 1fr;
       }
 
-      .section-heading-inner {
-        padding: 10px 18px;
-      }
-
-      .section-heading::after {
-        width: 90%;
+      .section-title-banner {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -436,26 +514,32 @@
 <div class="page">
 
   <!-- POSTER HERO -->
-  <section class="poster">
-    <div class="poster-kicker">UNITED STATES POLO PATRONS ASSOCIATION</div>
-    <div class="poster-rule"></div>
-    <h1 class="poster-title">COWBOY POLO CIRCUIT</h1>
-    <div class="poster-sub">AN AMERICAN DEVELOPMENT LEAGUE FOR ARENA & SMALL-FIELD POLO</div>
-    <p class="poster-tagline">Handicaps • Horses • Chapters • All Tracked Through the Patronium Ecosystem</p>
-    <div class="poster-cta">
-      <a href="#signup" class="btn btn-primary">Join the Circuit</a>
-      <a href="#leaderboards" class="btn btn-outline">View Leaderboards</a>
+  <section class="poster rope-frame">
+    <div class="poster-inner">
+      <div class="poster-kicker">UNITED STATES POLO PATRONS ASSOCIATION</div>
+      <div class="poster-rule"></div>
+      <h1 class="poster-title">COWBOY POLO CIRCUIT</h1>
+      <div class="poster-sub">AN AMERICAN DEVELOPMENT LEAGUE FOR ARENA & SMALL-FIELD POLO</div>
+      <p class="poster-tagline">
+        Handicaps • Horses • Chapters • All Tracked Through the
+        <span class="red">Patronium</span> &nbsp;Polo <span class="blue">Ecosystem</span>
+      </p>
+      <div class="poster-cta">
+        <a href="#signup" class="btn btn-primary">Join the Circuit</a>
+        <a href="#leaderboards" class="btn btn-outline">View Leaderboards</a>
+      </div>
+      <div class="poster-meta">
+        Inaugural Seasons Beginning with <span class="blue">Charleston Polo</span> &mdash;
+        Official Circuit of <span class="red">STRING 7̶7̶7̶ REMUDA</span>
+      </div>
     </div>
-    <div class="poster-meta">Inaugural Seasons Beginning with Charleston Polo • Official Circuit of STRING 7̶7̶7̶ REMUDA</div>
   </section>
 
   <!-- SIGN-UP -->
   <section class="section" id="signup">
     <div class="section-heading">
-      <div class="section-heading-inner">
-        <div class="section-kicker">Circuit Entry</div>
-        <h2 class="section-title">Sign Up for Cowboy Polo</h2>
-      </div>
+      <div class="section-kicker">Circuit Entry</div>
+      <div class="section-title-banner">Sign Up for Cowboy Polo</div>
     </div>
 
     <p class="section-text">
@@ -480,10 +564,8 @@
   <!-- PLAYER LEADERBOARD -->
   <section class="section" id="leaderboards">
     <div class="section-heading">
-      <div class="section-heading-inner">
-        <div class="section-kicker">Rankings</div>
-        <h2 class="section-title">Player Handicap Leaderboard</h2>
-      </div>
+      <div class="section-kicker">Rankings</div>
+      <div class="section-title-banner">Player Handicap Leaderboard</div>
     </div>
 
     <table>
@@ -501,10 +583,8 @@
   <!-- HORSE LEADERBOARD -->
   <section class="section">
     <div class="section-heading">
-      <div class="section-heading-inner">
-        <div class="section-kicker">String 7̶7̶7̶ Remuda</div>
-        <h2 class="section-title">Horse Performance Leaderboard</h2>
-      </div>
+      <div class="section-kicker">String 7̶7̶7̶ Remuda</div>
+      <div class="section-title-banner">Horse Performance Leaderboard</div>
     </div>
 
     <table>
@@ -522,10 +602,8 @@
   <!-- PRICING HINTS -->
   <section class="section">
     <div class="section-heading">
-      <div class="section-heading-inner">
-        <div class="section-kicker">Season Pricing</div>
-        <h2 class="section-title">Participation Costs (Mock-Up)</h2>
-      </div>
+      <div class="section-kicker">Season Awards & Entries</div>
+      <div class="section-title-banner">Participation Costs (Mock-Up)</div>
     </div>
 
     <div class="pricing-grid">
@@ -550,10 +628,8 @@
   <!-- OFFICIAL CHUKKER SUBMISSIONS (MOCK-UP) -->
   <section class="section">
     <div class="section-heading">
-      <div class="section-heading-inner">
-        <div class="section-kicker">Match Reporting</div>
-        <h2 class="section-title">Official Sanctioned Chukker Submission</h2>
-      </div>
+      <div class="section-kicker">Match Reporting</div>
+      <div class="section-title-banner">Official Sanctioned Chukker Submission</div>
     </div>
 
     <div class="results-form">
@@ -564,7 +640,7 @@
         <label>Date</label><input placeholder="MM/DD/YYYY" />
       </div>
       <div class="results-form-row">
-        <label>Players & Scores</label><input placeholder="Rider A +2, Rider B 0 ..." />
+        <label>Players &amp; Scores</label><input placeholder="Rider A +2, Rider B 0 ..." />
       </div>
       <div class="results-form-row">
         <label>Horses Used</label><input placeholder="Maverick, Temple Bell ..." />
@@ -579,10 +655,8 @@
   <!-- SEASONAL ON-CHAIN REGISTRY (MOCK-UP) -->
   <section class="section">
     <div class="section-heading">
-      <div class="section-heading-inner">
-        <div class="section-kicker">On-Chain Registry</div>
-        <h2 class="section-title">Seasonal Results (Mock-Up)</h2>
-      </div>
+      <div class="section-kicker">On-Chain Registry</div>
+      <div class="section-title-banner">Seasonal Results (Mock-Up)</div>
     </div>
 
     <div class="registry-card">
@@ -601,16 +675,13 @@
   <!-- DATA EXPLAINER (MOCK-UP) -->
   <section class="section">
     <div class="section-heading">
-      <div class="section-heading-inner">
-        <div class="section-kicker">Data Flow</div>
-        <h2 class="section-title">How Results Are Stored</h2>
-      </div>
+      <div class="section-kicker">Data Flow</div>
+      <div class="section-title-banner">How Results Are Stored</div>
     </div>
-
     <p class="section-text">
       The Cowboy Polo Circuit uses a hybrid storage model. Live match data is kept off-chain for
-      performance and rapid updating. End-of-season summaries are published to IPFS, and the IPFS hash is
-      placed on-chain on the Base Network for transparency and permanence.
+      performance and rapid updating. End-of-season summaries are published to IPFS, and the IPFS
+      hash is placed on-chain on the Base Network for transparency and permanence.
     </p>
 
     <div class="arch-diagram">
@@ -625,10 +696,8 @@
   <!-- CHAPTER SUBMISSION UI (MOCK-UP) -->
   <section class="section">
     <div class="section-heading">
-      <div class="section-heading-inner">
-        <div class="section-kicker">Chapter Tools</div>
-        <h2 class="section-title">Publish Season Summary (Mock-Up)</h2>
-      </div>
+      <div class="section-kicker">Chapter Tools</div>
+      <div class="section-title-banner">Publish Season Summary (Mock-Up)</div>
     </div>
 
     <div class="results-form">
@@ -646,12 +715,13 @@
   </section>
 
   <footer>
-    &copy; <span id="year"></span> USPPA — Cowboy Polo Circuit
+    &copy; <span id="year"></span> <span class="blue">USPPA</span> &mdash; Cowboy Polo Circuit
+    · <span class="red">STRING 7̶7̶7̶ REMUDA</span>
   </footer>
 </div>
 
 <script>
-  document.getElementById("year").textContent = new Date().getFullYear();
+document.getElementById("year").textContent = new Date().getFullYear();
 </script>
 
 </body>
