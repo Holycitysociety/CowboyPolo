@@ -2,208 +2,307 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Cowboy Polo Circuit — Comic Noir Mockup</title>
+<title>Cowboy Polo Circuit — USPPA</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600&family=IM+Fell+English+SC&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;700&family=EB+Garamond:wght@400;500&family=IM+Fell+English+SC&family=Source+Code+Pro&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --bg: #000;
-  --fg: #fff;
-  --muted: #aaa;
-  --accent: #e3bf72;
-  --rule: #444;
-  --halftone: radial-gradient(circle, #fff2 1px, transparent 1px);
-}
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --gray: #bbbbbb;
+    --muted: #888;
+    --line: #333;
+    --accent: #e3bf72; /* tiny gold optional */
+  }
 
-body {
-  background: var(--bg);
-  color: var(--fg);
-  margin: 0;
-  font-family: "EB Garamond", serif;
-}
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "EB Garamond", serif;
+    line-height: 1.6;
+  }
 
-/* —————————————— GLOBAL STYLES —————————————— */
-.section {
-  padding: 80px 24px;
-  max-width: 900px;
-  margin: 0 auto;
-  position: relative;
-}
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
 
-/* angled graphic-novel heading panels */
-.header-panel {
-  transform: skew(-6deg);
-  background: #111;
-  padding: 18px 0;
-  margin-bottom: 32px;
-  border-top: 2px solid var(--fg);
-  border-bottom: 2px solid var(--fg);
-}
+  /***********************************************
+      HERO POSTER
+  ************************************************/
+  .hero {
+    text-align: center;
+    padding: 120px 20px 140px;
+    background:
+      radial-gradient(circle at 50% 35%, #222 0%, #000 55%, #000 100%);
+  }
 
-.header-panel h1, 
-.header-panel h2 {
-  transform: skew(6deg);
-  text-align: center;
-  font-family: "Cinzel", serif;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin: 0;
-}
+  .hero h1, .hero h2, .hero h3 {
+    margin: 0;
+    padding: 0;
+  }
 
-/* halftone background overlays */
-.halftone::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--halftone);
-  background-size: 6px 6px;
-  opacity: 0.14;
-  pointer-events: none;
-}
+  .hero-org {
+    font-family: "Cormorant Garamond", serif;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 1rem;
+    margin-bottom: 18px;
+  }
 
-/* white-outline noir boxes */
-.noir-box {
-  border: 2px solid var(--fg);
-  padding: 18px 28px;
-  margin: 40px 0;
-  background: #0008;
-  box-shadow: 0 0 12px #000;
-}
+  .hero-presents {
+    font-family: "IM Fell English SC";
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 28px;
+  }
 
-/* comic divider */
-.comic-divider {
-  text-align: center;
-  margin: 40px 0 50px;
-  font-size: 1.4rem;
-  letter-spacing: 0.4em;
-  opacity: 0.9;
-}
+  .hero-main {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 3.2rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
 
-/* ASCII charts */
-.chart-line {
-  font-family: monospace;
-  white-space: pre;
-  margin: 6px 0;
-}
+  .hero-tagline {
+    margin-top: 20px;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
 
-/* micro cowboy silhouettes drawn with CSS */
-.cowboy-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--fg);
-  clip-path: polygon(
-    20% 75%, 30% 55%, 15% 45%, 40% 10%, 60% 10%, 
-    85% 45%, 70% 55%, 80% 75%
-  );
-  margin: 0 auto 20px;
-  opacity: 0.8;
-}
+  .divider {
+    width: 80%;
+    margin: 34px auto;
+    height: 1px;
+    background: var(--line);
+  }
 
-.horse-icon {
-  width: 56px;
-  height: 36px;
-  background: var(--fg);
-  clip-path: polygon(
-    5% 80%, 20% 50%, 35% 45%, 45% 50%, 65% 48%, 
-    80% 55%, 95% 75%, 85% 80%, 70% 60%, 55% 65%, 
-    45% 85%, 30% 90%, 20% 85%
-  );
-  margin: 0 auto;
-  opacity: 0.85;
-}
+  .hero-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 40px;
+    align-items: center;
+  }
 
-/* noir footer */
-footer {
-  text-align: center;
-  padding: 40px 12px;
-  color: var(--muted);
-  font-family: "IM Fell English SC";
-  border-top: 1px solid var(--rule);
-  letter-spacing: 0.14em;
-  font-size: 0.9rem;
-}
+  .btn {
+    padding: 12px 28px;
+    text-transform: uppercase;
+    font-family: "Cormorant Garamond";
+    letter-spacing: 0.16em;
+    font-size: 0.85rem;
+    border: 1px solid var(--fg);
+    color: var(--fg);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 260px;
+    text-align: center;
+  }
+  .btn:hover { background: var(--fg); color: #000; }
+
+  /***********************************************
+      SECTION HEADINGS
+  ************************************************/
+  .section-title {
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "IM Fell English SC";
+    letter-spacing: 0.2em;
+    margin: 80px 0 28px;
+    font-size: 1.2rem;
+  }
+
+  .section-divider {
+    width: 60%;
+    margin: 0 auto 48px;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /***********************************************
+      TWO-COLUMN LAYOUT
+  ************************************************/
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 80px;
+  }
+
+  /***********************************************
+      LEADERBOARD STYLES
+  ************************************************/
+  .board h3 {
+    font-family: "Cormorant Garamond";
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  .board table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+
+  .board table tr {
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .board table td {
+    padding: 8px 0;
+  }
+
+  /***********************************************
+      ASCII CHARTS
+  ************************************************/
+  .ascii-chart {
+    font-family: "Source Code Pro", monospace;
+    white-space: pre;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    color: var(--gray);
+    padding: 14px 0 0;
+  }
+
+  /***********************************************
+      PRIZES & AWARDS
+  ************************************************/
+  .prize-list {
+    max-width: 760px;
+    margin: 0 auto;
+    font-size: 1.05rem;
+  }
+
+  .prize-item {
+    margin-bottom: 18px;
+    letter-spacing: 0.05em;
+  }
+
+  .prize-item::before {
+    content: "★ ";
+    color: var(--fg);
+    font-size: 1.1rem;
+  }
+
+  /***********************************************
+      FOOTER
+  ************************************************/
+  footer {
+    margin-top: 100px;
+    padding: 30px 0;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--muted);
+    font-family: "IM Fell English SC";
+    letter-spacing: 0.15em;
+    font-size: 0.8rem;
+  }
+
+
+  /***********************************************
+      MOBILE
+  ************************************************/
+  @media(max-width: 800px){
+    .two-col { grid-template-columns: 1fr; }
+    .hero-main { font-size: 2.2rem; }
+  }
 </style>
 </head>
-
 <body>
 
-<!-- —————————————— HERO POSTER —————————————— -->
-<section class="section halftone">
-  <div class="header-panel">
-    <h1>United States Polo Patrons Association</h1>
+<div class="page">
+
+  <!-- HERO POSTER -->
+  <section class="hero">
+    <div class="hero-org">UNITED STATES POLO PATRONS ASSOCIATION</div>
+    <div class="hero-presents">PRESENTS THE</div>
+    <h1 class="hero-main">COWBOY<br>POLO<br>CIRCUIT</h1>
+
+    <div class="divider"></div>
+
+    <div class="hero-tagline">
+      AN AMERICAN INITIATIVE FOR EMERGING PLAYERS, HORSES & CLUBS
+    </div>
+
+    <div class="hero-buttons">
+      <div class="btn">REGISTER FOR CIRCUIT</div>
+      <div class="btn">SUBMIT CHUKKER RESULTS</div>
+      <div class="btn">LEADERBOARD ACCESS</div>
+    </div>
+  </section>
+
+  <!-- TWO COLUMN SECTION -->
+  <div class="section-title">CIRCUIT STANDINGS</div>
+  <div class="section-divider"></div>
+
+  <div class="two-col">
+
+    <!-- PLAYER LEADERBOARD -->
+    <div class="board">
+      <h3>Player Leaderboard</h3>
+      <table>
+        <tr><td>T. Dawson</td><td>+2</td></tr>
+        <tr><td>J. Mercer</td><td>+1</td></tr>
+        <tr><td>R. Hayes</td><td>0</td></tr>
+        <tr><td>S. Bell</td><td>0</td></tr>
+        <tr><td>M. Carter</td><td>-1</td></tr>
+      </table>
+    </div>
+
+    <!-- HORSE LEADERBOARD -->
+    <div class="board">
+      <h3>Horse Performance</h3>
+      <table>
+        <tr><td>THUNDERBIRD</td><td>92 pts</td></tr>
+        <tr><td>SUNDANCE</td><td>68 pts</td></tr>
+        <tr><td>CHOLLA</td><td>44 pts</td></tr>
+        <tr><td>ARROW</td><td>38 pts</td></tr>
+        <tr><td>MOJAVE</td><td>30 pts</td></tr>
+      </table>
+
+      <div class="ascii-chart">
+THUNDERBIRD   ████████████████████ 92
+SUNDANCE      ████████████         68
+CHOLLA        ████████             44
+ARROW         ██████               38
+MOJAVE        █████                30
+      </div>
+
+    </div>
   </div>
 
-  <div style="text-align:center; margin-top: -10px;">
-    <span style="letter-spacing:0.25em; font-family:'IM Fell English SC';">presents</span>
+
+  <!-- PRIZES SECTION -->
+  <div class="section-title">Season Prizes & Awards</div>
+  <div class="section-divider"></div>
+
+  <div class="prize-list">
+    <div class="prize-item">High-Point Rider of the Circuit</div>
+    <div class="prize-item">String 7̶7̶7̶ Remuda — Horse of the Season</div>
+    <div class="prize-item">Most Improved Player</div>
+    <div class="prize-item">Best OTTB-to-Cowboy Transformation</div>
+    <div class="prize-item">Outstanding Young Horse Award</div>
+    <div class="prize-item">Excellence in Horsemanship</div>
   </div>
 
-  <div class="header-panel" style="margin-top:28px;">
-    <h1>The Cowboy Polo Circuit</h1>
-  </div>
+  <footer>
+    COWBOY POLO CIRCUIT • UNITED STATES POLO PATRONS ASSOCIATION • STRING 7̶7̶7̶ REMUDA
+  </footer>
 
-  <div class="cowboy-icon"></div>
-
-  <p style="text-align:center; max-width:680px; margin:0 auto; font-size:1.2rem; opacity:0.9;">
-    An American development league for emerging riders, remuda horses, ranch players, and future pros — all within the USPPA ecosystem.
-  </p>
-
-  <div class="comic-divider">✦ ✦ ✦</div>
-
-</section>
-
-<!-- —————————————— PLAYER LEADERBOARD —————————————— -->
-<section class="section">
-
-  <div class="header-panel"><h2>Player Leaderboard</h2></div>
-
-  <div class="noir-box">
-    <div class="chart-line">T. Dawson       ████████████████████  +2</div>
-    <div class="chart-line">J. Mercer       ███████████████      +1</div>
-    <div class="chart-line">S. Bell         ████████             0</div>
-    <div class="chart-line">R. Perez        ██████████████       +1</div>
-  </div>
-
-</section>
-
-<!-- —————————————— HORSE PERFORMANCE —————————————— -->
-<section class="section halftone">
-
-  <div class="header-panel"><h2>String 7̶7̶7̶ Remuda — Horse Standings</h2></div>
-
-  <div class="horse-icon"></div>
-
-  <div class="noir-box">
-    <div class="chart-line">THUNDERBIRD     ████████████████████████  92 pts</div>
-    <div class="chart-line">SUNDANCE        ████████████████          74 pts</div>
-    <div class="chart-line">CHOLLA          ██████████                58 pts</div>
-    <div class="chart-line">GHOST PEPPER    ███████                   41 pts</div>
-  </div>
-
-</section>
-
-<!-- —————————————— SEASON PRIZES —————————————— -->
-<section class="section">
-
-  <div class="header-panel"><h2>Season Awards</h2></div>
-
-  <div class="noir-box" style="text-align:center;">
-    <p>★ High-Point Rider of the Circuit</p>
-    <p>★ String 777 Horse of the Season</p>
-    <p>★ Best OTTB-to-Cowboy Transformation</p>
-    <p>★ Outstanding Young Horse</p>
-    <p>★ Most Improved Rider</p>
-  </div>
-
-</section>
-
-<!-- —————————————— FOOTER —————————————— -->
-<footer>
-  COWBOY POLO CIRCUIT — USPPA  
-  <br>STRING 7̶7̶7̶ REMUDA • CHARLESTON POLO • THE POLO LIFE  
-  <br>&copy; 2025  
-</footer>
+</div>
 
 </body>
 </html>
