@@ -1,529 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Cowboy Polo Circuit — USPPA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<title>Cowboy Polo Circuit — USPPA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet"/>
+<!-- Cowboy-Sport Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --bg: #050505;
-      --fg: #f5f5f5;
-      --muted: #a7a7a7;
-      --accent: #e3bf72;
-      --border: #262626;
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --fg: #ffffff;
+    --muted: #c7c7c7;
+    --accent: #e6c27a;
+    --brown: #1f1b16;
+    --rule: #3a3228;
+  }
 
-      --font-lg: clamp(2.2rem, 6vw, 3.2rem);
-      --font-md: clamp(1.2rem, 3.4vw, 1.45rem);
-      --font-sm: 0.85rem;
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Inter", sans-serif;
+    line-height: 1.55;
+  }
 
-      --max-width: 920px;
-      --text-width: 720px;
-      --gap-lg: 64px;
-      --gap-md: 42px;
-      --gap-sm: 24px;
-    }
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 18px 96px;
+  }
 
-    * { box-sizing: border-box; }
+  /* HEADER POSTER */
+  .poster {
+    text-align: center;
+    padding: 40px 0 60px;
+    background: linear-gradient(to bottom, #1b1813, #0a0a0a 70%);
+    border-bottom: 1px solid var(--rule);
+  }
 
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at 50% -10%, rgba(255,255,255,0.08) 0, rgba(0,0,0,0.95) 50%),
-        radial-gradient(circle at 50% 70%, rgba(255,255,255,0.05) 0, rgba(0,0,0,0.98) 60%),
-        var(--bg);
-      color: var(--fg);
-      font-family: "EB Garamond", Georgia, serif;
-      line-height: 1.62;
-    }
+  .poster h1 {
+    font-family: "Anton", sans-serif;
+    font-size: 3.2rem;
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
 
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+  .poster-sub {
+    font-family: "Bebas Neue", sans-serif;
+    letter-spacing: 0.12em;
+    font-size: 1.2rem;
+    margin-top: 12px;
+    color: var(--accent);
+  }
 
-    .page {
-      max-width: var(--max-width);
-      margin: 40px auto 80px;
-      padding: 0 16px;
-    }
+  /* BUTTONS */
+  .btn {
+    display: inline-block;
+    background: var(--accent);
+    padding: 12px 32px;
+    border-radius: 6px;
+    color: #000;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.08em;
+    margin-top: 26px;
+    text-decoration: none;
+  }
 
-    /* ------------------------------------------------------------
-       POSTER HERO
-    ------------------------------------------------------------- */
-    .poster {
-      border: 1px solid var(--border);
-      padding: 38px 24px 44px;
-      text-align: center;
-      margin-bottom: var(--gap-lg);
-      background:
-        linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(0,0,0,0.75)),
-        rgba(0,0,0,0.6);
-    }
+  /* SECTION TITLES */
+  .section-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    margin: 44px 0 6px;
+    text-transform: uppercase;
+  }
 
-    .poster-kicker {
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      font-size: var(--font-sm);
-      margin-bottom: 10px;
-      color: var(--muted);
-    }
+  .section-rule {
+    height: 3px;
+    width: 70px;
+    background: var(--accent);
+    margin: 0 0 20px;
+  }
 
-    .poster-rule {
-      width: 100%;
-      border-top: 1px solid var(--border);
-      margin: 12px auto 22px;
-    }
+  .text-block {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 26px;
+  }
 
-    .poster-title {
-      font-family: "Cormorant Garamond", serif;
-      text-transform: uppercase;
-      letter-spacing: 0.26em;
-      font-size: var(--font-lg);
-      margin: 0 0 14px;
-    }
+  .leaderboard {
+    margin-top: 24px;
+    padding: 20px;
+    background: #14110e;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+  }
 
-    .poster-sub {
-      font-family: "Cormorant Garamond", serif;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      font-size: var(--font-sm);
-      margin-bottom: 22px;
-    }
+  .leaderboard h3 {
+    margin: 0 0 12px;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+  }
 
-    .poster-tagline {
-      max-width: 560px;
-      margin: 0 auto;
-      font-size: var(--font-sm);
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 22px;
-    }
-
-    .poster-cta {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 22px;
-    }
-
-    .btn {
-      padding: 10px 30px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: var(--font-sm);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      display: inline-flex;
-      justify-content: center;
-      min-width: 200px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: black;
-      border-color: var(--accent);
-    }
-
-    .btn-primary:hover {
-      background: #f4dca0;
-    }
-
-    .btn-outline {
-      color: var(--muted);
-      background: transparent;
-    }
-
-    .poster-meta {
-      font-size: var(--font-sm);
-      color: var(--muted);
-      margin-top: 6px;
-      letter-spacing: 0.12em;
-    }
-
-    /* ------------------------------------------------------------
-       SECTIONS
-    ------------------------------------------------------------- */
-
-    .section {
-      margin-top: var(--gap-lg);
-      border-top: 1px solid var(--border);
-      padding-top: var(--gap-sm);
-      max-width: var(--text-width);
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .section-kicker {
-      text-transform: uppercase;
-      font-size: var(--font-sm);
-      color: var(--muted);
-      letter-spacing: 0.2em;
-      margin-bottom: 6px;
-    }
-
-    .section-title {
-      font-family: "Cormorant Garamond", serif;
-      text-transform: uppercase;
-      font-size: 1.5rem;
-      letter-spacing: 0.1em;
-      margin-bottom: 14px;
-    }
-
-    .section-text {
-      font-size: var(--font-sm);
-      color: var(--muted);
-      text-align: justify;
-      text-justify: inter-word;
-      margin-bottom: var(--gap-sm);
-    }
-
-    /* Sign-up */
-    .signup-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-
-    .signup-card {
-      padding: 16px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.6);
-    }
-
-    .signup-card h3 {
-      font-family: "Cormorant Garamond", serif;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin: 0 0 6px;
-      font-size: 1rem;
-    }
-
-    .signup-card p {
-      margin: 0 0 6px;
-      font-size: var(--font-sm);
-      color: var(--muted);
-      text-align: justify;
-    }
-
-    /* Leaderboards */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-    }
-
-    th, td {
-      border-bottom: 1px solid #1a1a1a;
-      padding: 6px 4px;
-      font-size: var(--font-sm);
-    }
-
-    th {
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      font-size: 0.78rem;
-    }
-
-    .highlight {
-      background: rgba(227,191,114,0.08);
-    }
-
-    /* Pricing */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .pricing-card {
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.65);
-      padding: 14px;
-      text-align: center;
-    }
-
-    .pricing-label {
-      text-transform: uppercase;
-      font-size: 0.78rem;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .pricing-amount {
-      font-size: 1.2rem;
-      color: var(--fg);
-      margin-bottom: 4px;
-    }
-
-    /* Results submission mockup */
-    .results-form {
-      border: 1px dashed var(--border);
-      background: rgba(0,0,0,0.5);
-      padding: 18px;
-    }
-
-    .results-form-row {
-      margin-bottom: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .results-form-row label {
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      color: var(--muted);
-      flex: 1 1 120px;
-    }
-
-    .results-form-row input {
-      flex: 2 1 200px;
-      padding: 6px;
-      background: #000;
-      border: 1px solid #333;
-      color: var(--fg);
-    }
-
-    /* Seasonal Registry */
-    .registry-card {
-      padding: 16px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.55);
-      margin-bottom: 12px;
-    }
-
-    .registry-card h4 {
-      margin: 0 0 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-family: "Cormorant Garamond", serif;
-      font-size: 1rem;
-    }
-
-    .registry-card p {
-      font-size: var(--font-sm);
-      margin: 0 0 4px;
-      color: var(--muted);
-    }
-
-    /* Data explainer */
-    .arch-diagram {
-      padding: 16px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.5);
-      margin-top: 18px;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: var(--gap-lg);
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-      font-size: var(--font-sm);
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-    }
-
-    @media (max-width: 720px) {
-      .signup-grid,
-      .pricing-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  .lb-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #242018;
+    font-size: 0.95rem;
+    color: var(--fg);
+  }
+</style>
 </head>
+
 <body>
 <div class="page">
 
-  <!-- POSTER HERO -->
-  <section class="poster">
-    <div class="poster-kicker">UNITED STATES POLO PATRONS ASSOCIATION</div>
-    <div class="poster-rule"></div>
-    <h1 class="poster-title">COWBOY POLO CIRCUIT</h1>
-    <div class="poster-sub">AN AMERICAN DEVELOPMENT LEAGUE FOR ARENA & SMALL-FIELD POLO</div>
-    <p class="poster-tagline">Handicaps • Horses • Chapters • All Tracked Through the Patronium Ecosystem</p>
-    <div class="poster-cta">
-      <a href="#signup" class="btn btn-primary">Join the Circuit</a>
-      <a href="#leaderboards" class="btn btn-outline">View Leaderboards</a>
-    </div>
-    <div class="poster-meta">Inaugural Seasons Beginning with Charleston Polo • Official Circuit of STRING 7̶7̶7̶ REMUDA</div>
-  </section>
+  <!-- POSTER -->
+  <div class="poster">
+    <h1>COWBOY POLO CIRCUIT</h1>
+    <div class="poster-sub">A National Recreational Polo League</div>
+    <a class="btn" href="#">Sign Up for the Circuit</a>
+  </div>
 
-  <!-- SIGN-UP -->
-  <section class="section" id="signup">
-    <div class="section-kicker">Circuit Entry</div>
-    <h2 class="section-title">Sign Up for Cowboy Polo</h2>
-    <p class="section-text">The Cowboy Polo Circuit invites riders, horses, barns, and chapters to participate in a transparent,
-      American-made development pathway for small-field polo. Below is the mock-up of the entry system.</p>
+  <!-- INTRO -->
+  <div class="section-title">About the Circuit</div>
+  <div class="section-rule"></div>
+  <p class="text-block">
+    The Cowboy Polo Circuit is America’s grassroots polo league — recreational,
+    competitive, accessible, and built for riders who want to learn, play, train horses,
+    and compete in a decentralized national format.
+  </p>
 
-    <div class="signup-grid">
-      <div class="signup-card">
-        <h3>Rider Enrollment</h3>
-        <p>Join the Circuit, receive your initial rating, attend clinics, and earn seasonal handicaps.</p>
-        <p><strong>Mock-up button: Join as Rider</strong></p>
-      </div>
-      <div class="signup-card">
-        <h3>Barn / Arena Enrollment</h3>
-        <p>Register your facility for sanctioned Cowboy Polo matches using standard arena dimensions.</p>
-        <p><strong>Mock-up button: Register a Barn</strong></p>
-      </div>
-    </div>
-  </section>
+  <!-- PLAYER LEADERBOARD MOCKUP -->
+  <div class="section-title">Player Leaderboard</div>
+  <div class="section-rule"></div>
 
-  <!-- PLAYER LEADERBOARD -->
-  <section class="section" id="leaderboards">
-    <div class="section-kicker">Rankings</div>
-    <h2 class="section-title">Player Handicap Leaderboard</h2>
+  <div class="leaderboard">
+    <h3>Top Player Handicaps</h3>
 
-    <table>
-      <thead>
-        <tr><th>Player</th><th>Chapter</th><th>Handicap</th></tr>
-      </thead>
-      <tbody>
-        <tr class="highlight"><td>Rider A</td><td>Charleston Polo</td><td>+1</td></tr>
-        <tr><td>Rider B</td><td>Charleston Polo</td><td>0</td></tr>
-        <tr><td>Rider C</td><td>Independent</td><td>-1</td></tr>
-      </tbody>
-    </table>
-  </section>
+    <div class="lb-row"><span>Ryder Mitchell</span><span>+2</span></div>
+    <div class="lb-row"><span>Casey Navarro</span><span>+1</span></div>
+    <div class="lb-row"><span>Jess Carter</span><span>+1</span></div>
+    <div class="lb-row"><span>Lane Douglas</span><span>0</span></div>
+  </div>
 
-  <!-- HORSE LEADERBOARD -->
-  <section class="section">
-    <div class="section-kicker">String 7̶7̶7̶ Remuda</div>
-    <h2 class="section-title">Horse Performance Leaderboard</h2>
+  <!-- HORSE PERFORMANCES -->
+  <div class="section-title">Horse Performance</div>
+  <div class="section-rule"></div>
 
-    <table>
-      <thead>
-        <tr><th>Horse</th><th>Rider / Patron</th><th>Score</th></tr>
-      </thead>
-      <tbody>
-        <tr class="highlight"><td>Maverick</td><td>Rider A</td><td>92</td></tr>
-        <tr><td>Temple Bell</td><td>Rider B</td><td>88</td></tr>
-        <tr><td>Old Dominion</td><td>Rider C</td><td>81</td></tr>
-      </tbody>
-    </table>
-  </section>
+  <div class="leaderboard">
+    <h3>String 777 Remuda — Standings</h3>
 
-  <!-- PRICING HINTS -->
-  <section class="section">
-    <div class="section-kicker">Season Pricing</div>
-    <h2 class="section-title">Participation Costs (Mock-Up)</h2>
+    <div class="lb-row"><span>“Dusty Jet”</span><span>92 pts</span></div>
+    <div class="lb-row"><span>“Copper Trail”</span><span>88 pts</span></div>
+    <div class="lb-row"><span>“Sierra Gold”</span><span>85 pts</span></div>
+    <div class="lb-row"><span>“River Scout”</span><span>79 pts</span></div>
+  </div>
 
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <div class="pricing-label">Rider Pass</div>
-        <div class="pricing-amount">$250</div>
-        <div class="pricing-note">Per Season</div>
-      </div>
-      <div class="pricing-card">
-        <div class="pricing-label">Horse Entry</div>
-        <div class="pricing-amount">$150</div>
-        <div class="pricing-note">Per Horse, Per Season</div>
-      </div>
-      <div class="pricing-card">
-        <div class="pricing-label">Arena Sanction Fee</div>
-        <div class="pricing-amount">$400</div>
-        <div class="pricing-note">Per Facility</div>
-      </div>
-    </div>
-  </section>
+  <!-- SEASON PRICING -->
+  <div class="section-title">Season Pricing (Mockup)</div>
+  <div class="section-rule"></div>
+  <p class="text-block">
+    Full Season (12 Weeks): $950 •  
+    Half Season: $550 •  
+    Per-Chukker Drop-In: $60
+  </p>
 
-  <!-- OFFICIAL CHUKKER SUBMISSIONS (MOCK-UP) -->
-  <section class="section">
-    <div class="section-kicker">Match Reporting</div>
-    <h2 class="section-title">Official Sanctioned Chukker Submission</h2>
+  <!-- RESULTS SUBMISSION -->
+  <div class="section-title">Submit Chukker Results</div>
+  <div class="section-rule"></div>
+  <p class="text-block">
+    Official sanctioned results are stored on-chain at the end of each season.
+    Match captains may submit weekly chukker sheets through the USPPA coordinator portal.
+  </p>
 
-    <div class="results-form">
-      <div class="results-form-row">
-        <label>Chapter</label><input placeholder="Charleston Polo (mock)" />
-      </div>
-      <div class="results-form-row">
-        <label>Date</label><input placeholder="MM/DD/YYYY" />
-      </div>
-      <div class="results-form-row">
-        <label>Players & Scores</label><input placeholder="Rider A +2, Rider B 0 ..." />
-      </div>
-      <div class="results-form-row">
-        <label>Horses Used</label><input placeholder="Maverick, Temple Bell ..." />
-      </div>
-      <div class="results-form-row">
-        <label>Notes</label><input placeholder="Optional notes" />
-      </div>
-      <p class="results-form-note">This is a mock-up. No data is stored.</p>
-    </div>
-  </section>
-
-  <!-- SEASONAL ON-CHAIN REGISTRY (MOCK-UP) -->
-  <section class="section">
-    <div class="section-kicker">On-Chain Registry</div>
-    <h2 class="section-title">Seasonal Results (Mock-Up)</h2>
-
-    <div class="registry-card">
-      <h4>Season 2025 — Charleston Polo</h4>
-      <p><strong>IPFS Hash:</strong> bafybeiexamplehash000111222 (mock)</p>
-      <p><strong>View on BaseScan:</strong> (mock link)</p>
-      <p class="muted">Stored Permanently on the Base Network</p>
-    </div>
-    <div class="registry-card">
-      <h4>Season 2024 — USPPA Pilot</h4>
-      <p><strong>IPFS Hash:</strong> bafybeidemoresult999xxx (mock)</p>
-      <p><strong>View on BaseScan:</strong> (mock link)</p>
-    </div>
-  </section>
-
-  <!-- DATA EXPLAINER (MOCK-UP) -->
-  <section class="section">
-    <div class="section-kicker">Data Flow</div>
-    <h2 class="section-title">How Results Are Stored</h2>
-    <p class="section-text">The Cowboy Polo Circuit uses a hybrid storage model. Live match data is kept off-chain for
-      performance and rapid updating. End-of-season summaries are published to IPFS, and the IPFS hash is placed on-chain
-      on the Base Network for transparency and permanence.</p>
-
-    <div class="arch-diagram">
-      <p><strong>Match →</strong> Supabase (off-chain detailed log)</p>
-      <p><strong>Season Summary →</strong> JSON → IPFS</p>
-      <p><strong>IPFS Hash →</strong> Base Smart Contract (immutable)</p>
-      <p><strong>Leaderboards →</strong> Off-chain, public-facing</p>
-      <p><strong>Tribute →</strong> Patronium snapshot per season</p>
-    </div>
-  </section>
-
-  <!-- CHAPTER SUBMISSION UI (MOCK-UP) -->
-  <section class="section">
-    <div class="section-kicker">Chapter Tools</div>
-    <h2 class="section-title">Publish Season Summary (Mock-Up)</h2>
-
-    <div class="results-form">
-      <div class="results-form-row">
-        <label>Upload Season File</label><input type="file"/>
-      </div>
-      <div class="results-form-row">
-        <label>Season Number</label><input placeholder="2025"/>
-      </div>
-      <div class="results-form-row">
-        <label>Confirm Chapter</label><input placeholder="Charleston Polo (mock)"/>
-      </div>
-      <p class="results-form-note">Button placeholder: “Publish to Chain” (mock-up only)</p>
-    </div>
-  </section>
-
-  <footer>
-    &copy; <span id="year"></span> USPPA — Cowboy Polo Circuit
-  </footer>
 </div>
-
-<script>
-document.getElementById("year").textContent = new Date().getFullYear();
-</script>
-
 </body>
 </html>
