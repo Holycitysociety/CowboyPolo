@@ -14,12 +14,12 @@
       --fg: #f5f5f5;
       --muted: #a7a7a7;
 
-      --accent-gold: #e3bf72;
-      --accent-gold-deep: #b78c3c;
-      --accent-red: #c6473a;
-      --accent-blue: #3a6fbf;
+      /* Patriot accents */
+      --red: #7b2f2f;
+      --blue: #1f2637;
+      --gold: #e3bf72;
 
-      --border-dark: #262626;
+      --border: #262626;
 
       --font-lg: clamp(2.2rem, 6vw, 3.2rem);
       --font-md: clamp(1.2rem, 3.4vw, 1.45rem);
@@ -37,16 +37,15 @@
     body {
       margin: 0;
       background:
-        radial-gradient(circle at 0% 0%, rgba(198,71,58,0.35) 0, transparent 45%),
-        radial-gradient(circle at 100% 0%, rgba(58,111,191,0.35) 0, transparent 45%),
-        radial-gradient(circle at 50% 75%, rgba(227,191,114,0.20) 0, transparent 55%),
+        radial-gradient(circle at 50% -10%, rgba(227,191,114,0.08) 0, rgba(0,0,0,0.98) 55%),
+        radial-gradient(circle at 50% 80%, rgba(31,38,55,0.18) 0, rgba(0,0,0,0.98) 60%),
         var(--bg);
       color: var(--fg);
       font-family: "EB Garamond", Georgia, serif;
       line-height: 1.62;
     }
 
-    a { color: var(--accent-gold); text-decoration: none; }
+    a { color: var(--gold); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     .page {
@@ -56,111 +55,34 @@
     }
 
     /* ------------------------------------------------------------
-       COMMON ELEMENTS
-    ------------------------------------------------------------- */
-
-    .rope-frame {
-      border: 2px solid transparent;
-      border-radius: 18px;
-      border-image: repeating-linear-gradient(
-        45deg,
-        var(--accent-gold) 0 6px,
-        var(--accent-gold-deep) 6px 12px
-      ) 8;
-      box-shadow:
-        0 0 0 1px rgba(0,0,0,0.8),
-        0 12px 30px rgba(0,0,0,0.7);
-    }
-
-    .section {
-      margin-top: var(--gap-lg);
-      padding-top: var(--gap-sm);
-      max-width: var(--text-width);
-      margin-left: auto;
-      margin-right: auto;
-      position: relative;
-    }
-
-    .section::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 10%;
-      right: 10%;
-      height: 1px;
-      background: linear-gradient(
-        to right,
-        rgba(198,71,58,0.0),
-        rgba(198,71,58,0.85),
-        rgba(58,111,191,0.85),
-        rgba(58,111,191,0.0)
-      );
-      opacity: 0.8;
-    }
-
-    .section-heading {
-      text-align: center;
-      margin-bottom: var(--gap-sm);
-    }
-
-    .section-kicker {
-      text-transform: uppercase;
-      font-size: var(--font-sm);
-      color: var(--muted);
-      letter-spacing: 0.22em;
-      margin-bottom: 10px;
-    }
-
-    .section-title-banner {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 18px;
-      text-transform: uppercase;
-      font-family: "Cormorant Garamond", serif;
-      letter-spacing: 0.18em;
-      font-size: var(--font-md);
-      background:
-        linear-gradient(to right, rgba(198,71,58,0.6), rgba(227,191,114,0.9), rgba(58,111,191,0.6));
-      color: #000;
-      border-radius: 28px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.7);
-    }
-
-    .section-text {
-      font-size: var(--font-sm);
-      color: var(--muted);
-      text-align: justify;
-      text-justify: inter-word;
-      margin-top: 16px;
-      margin-bottom: var(--gap-sm);
-    }
-
-    /* ------------------------------------------------------------
        POSTER HERO
     ------------------------------------------------------------- */
-
     .poster {
-      padding: 40px 24px 44px;
+      border: 1px solid var(--border);
+      padding: 38px 24px 44px;
       text-align: center;
       margin-bottom: var(--gap-lg);
       background:
-        radial-gradient(circle at 50% 0%, rgba(227,191,114,0.20) 0, rgba(0,0,0,0.8) 55%),
-        rgba(5,5,5,0.95);
+        linear-gradient(to bottom, rgba(255,255,255,0.04), rgba(0,0,0,0.85)),
+        rgba(0,0,0,0.7);
       position: relative;
       overflow: hidden;
     }
 
-    /* subtle “flag / light” bands */
+    /* faint diagonal patriotic wash */
     .poster::before {
       content: "";
       position: absolute;
       inset: -40%;
-      background:
-        linear-gradient(120deg, rgba(198,71,58,0.18), transparent 40%, rgba(58,111,191,0.18)),
-        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 55%);
+      background: linear-gradient(
+        120deg,
+        transparent 0,
+        rgba(31,38,55,0.18) 30%,
+        rgba(123,47,47,0.18) 55%,
+        transparent 80%
+      );
       mix-blend-mode: screen;
-      opacity: 0.9;
+      opacity: 0.35;
       pointer-events: none;
     }
 
@@ -171,7 +93,7 @@
 
     .poster-kicker {
       text-transform: uppercase;
-      letter-spacing: 0.26em;
+      letter-spacing: 0.22em;
       font-size: var(--font-sm);
       margin-bottom: 10px;
       color: var(--muted);
@@ -179,52 +101,62 @@
 
     .poster-rule {
       width: 100%;
-      border-top: 1px solid rgba(227,191,114,0.55);
+      border-top: 1px solid var(--border);
       margin: 12px auto 22px;
+      position: relative;
+    }
+
+    .poster-rule::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -1px;
+      width: 120px;
+      height: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, var(--blue), var(--gold), var(--red));
+      opacity: 0.8;
     }
 
     .poster-title {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.32em;
+      letter-spacing: 0.26em;
       font-size: var(--font-lg);
-      margin: 0 0 8px;
+      margin: 0 0 14px;
     }
 
     .poster-sub {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.18em;
       font-size: var(--font-sm);
       margin-bottom: 22px;
-      color: var(--fg);
+      color: var(--gold);
     }
 
     .poster-tagline {
-      max-width: 580px;
+      max-width: 560px;
       margin: 0 auto;
       font-size: var(--font-sm);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 22px;
     }
-
-    .poster-tagline span.red { color: var(--accent-red); }
-    .poster-tagline span.blue { color: var(--accent-blue); }
 
     .poster-cta {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
     }
 
     .btn {
-      padding: 11px 30px;
+      padding: 10px 30px;
       border-radius: 999px;
-      border: 1px solid var(--border-dark);
+      border: 1px solid var(--border);
       font-size: var(--font-sm);
       text-transform: uppercase;
       letter-spacing: 0.14em;
@@ -233,49 +165,86 @@
       min-width: 200px;
       cursor: pointer;
       transition: 0.2s;
+      background: transparent;
     }
 
     .btn-primary {
-      background: linear-gradient(
-        to right,
-        var(--accent-red),
-        var(--accent-gold),
-        var(--accent-blue)
-      );
-      color: #000;
-      border-color: rgba(0,0,0,0.9);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+      background: var(--gold);
+      color: black;
+      border-color: var(--gold);
     }
 
     .btn-primary:hover {
-      filter: brightness(1.08);
+      background: #f4dca0;
     }
 
     .btn-outline {
       color: var(--muted);
-      background: rgba(0,0,0,0.7);
-      border-color: rgba(255,255,255,0.12);
+      border-color: var(--border);
     }
 
     .btn-outline:hover {
-      background: rgba(255,255,255,0.04);
-      color: var(--fg);
+      border-color: var(--gold);
+      color: var(--gold);
     }
 
     .poster-meta {
       font-size: var(--font-sm);
       color: var(--muted);
-      margin-top: 10px;
+      margin-top: 6px;
       letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
-    .poster-meta span.red { color: var(--accent-red); }
-    .poster-meta span.blue { color: var(--accent-blue); }
-
     /* ------------------------------------------------------------
-       SIGN-UP
+       SECTIONS
     ------------------------------------------------------------- */
 
+    .section {
+      margin-top: var(--gap-lg);
+      border-top: 1px solid var(--border);
+      padding-top: var(--gap-sm);
+      max-width: var(--text-width);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      font-size: var(--font-sm);
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-family: "Cormorant Garamond", serif;
+      text-transform: uppercase;
+      font-size: 1.5rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: "";
+      display: block;
+      width: 70px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--gold), var(--red));
+      margin-top: 6px;
+      opacity: 0.7;
+    }
+
+    .section-text {
+      font-size: var(--font-sm);
+      color: var(--muted);
+      text-align: justify;
+      text-justify: inter-word;
+      margin-bottom: var(--gap-sm);
+    }
+
+    /* Sign-up */
     .signup-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -283,35 +252,28 @@
     }
 
     .signup-card {
-      padding: 18px 16px 16px;
-      background: rgba(0,0,0,0.8);
-      border-radius: 14px;
-      border: 1px solid var(--border-dark);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.7);
+      padding: 16px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.7);
       position: relative;
+      overflow: hidden;
     }
 
     .signup-card::before {
       content: "";
       position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      border: 2px solid transparent;
-      border-image: repeating-linear-gradient(
-        45deg,
-        rgba(227,191,114,0.9) 0 6px,
-        rgba(183,140,60,0.9) 6px 12px
-      ) 8;
-      opacity: 0.55;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(227,191,114,0.15), transparent 55%);
+      opacity: 0.35;
       pointer-events: none;
     }
 
     .signup-card h3 {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      margin: 0 0 8px;
-      font-size: 1.02rem;
+      letter-spacing: 0.1em;
+      margin: 0 0 6px;
+      font-size: 1rem;
     }
 
     .signup-card p {
@@ -321,23 +283,16 @@
       text-align: justify;
     }
 
-    /* ------------------------------------------------------------
-       TABLES / LEADERBOARDS
-    ------------------------------------------------------------- */
-
+    /* Leaderboards */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 16px;
-      background: rgba(0,0,0,0.8);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 10px 26px rgba(0,0,0,0.7);
+      margin-top: 12px;
     }
 
     th, td {
       border-bottom: 1px solid #1a1a1a;
-      padding: 8px 10px;
+      padding: 6px 4px;
       font-size: var(--font-sm);
     }
 
@@ -346,40 +301,47 @@
       letter-spacing: 0.12em;
       color: var(--muted);
       font-size: 0.78rem;
+    }
+
+    .highlight {
       background: linear-gradient(
-        to right,
-        rgba(198,71,58,0.5),
-        rgba(227,191,114,0.7),
-        rgba(58,111,191,0.5)
+        90deg,
+        rgba(31,38,55,0.45),
+        rgba(227,191,114,0.16),
+        rgba(123,47,47,0.45)
       );
     }
 
-    tr:last-child td { border-bottom: none; }
-
-    .highlight {
-      background: rgba(227,191,114,0.08);
+    .highlight td {
+      border-bottom-color: rgba(255,255,255,0.1);
     }
 
-    /* ------------------------------------------------------------
-       PRICING
-    ------------------------------------------------------------- */
-
-    .pricing-grid {
+    /* Awards (formerly pricing) */
+    .awards-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 18px;
     }
 
-    .pricing-card {
-      background: radial-gradient(circle at 50% 0%, rgba(227,191,114,0.23), rgba(0,0,0,0.95));
-      padding: 16px 14px 14px;
-      text-align: center;
-      border-radius: 16px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.7);
-      border: 1px solid rgba(227,191,114,0.5);
+    .awards-card {
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.7);
+      padding: 14px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
     }
 
-    .pricing-label {
+    .awards-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(227,191,114,0.18), transparent 55%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .awards-label {
       text-transform: uppercase;
       font-size: 0.78rem;
       letter-spacing: 0.14em;
@@ -387,27 +349,25 @@
       margin-bottom: 6px;
     }
 
-    .pricing-amount {
-      font-size: 1.2rem;
+    .awards-title {
+      font-size: 1.05rem;
       color: var(--fg);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      font-family: "Cormorant Garamond", serif;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
-    .pricing-note {
+    .awards-desc {
       font-size: var(--font-sm);
       color: var(--muted);
     }
 
-    /* ------------------------------------------------------------
-       FORMS / RESULTS
-    ------------------------------------------------------------- */
-
+    /* Results submission mockup */
     .results-form {
-      border-radius: 16px;
-      border: 1px dashed rgba(227,191,114,0.6);
-      background: rgba(0,0,0,0.8);
-      padding: 18px 16px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
+      border: 1px dashed var(--border);
+      background: rgba(0,0,0,0.6);
+      padding: 18px;
     }
 
     .results-form-row {
@@ -422,39 +382,44 @@
       font-size: 0.75rem;
       color: var(--muted);
       flex: 1 1 120px;
-      letter-spacing: 0.12em;
     }
 
     .results-form-row input {
       flex: 2 1 200px;
-      padding: 6px 8px;
+      padding: 6px;
       background: #000;
       border: 1px solid #333;
       color: var(--fg);
-      border-radius: 4px;
-      font-family: inherit;
-      font-size: var(--font-sm);
     }
 
     .results-form-note {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--muted);
-      margin-top: 4px;
+      margin-top: 8px;
     }
 
-    /* ------------------------------------------------------------
-       REGISTRY / CARDS
-    ------------------------------------------------------------- */
-
+    /* Seasonal Registry */
     .registry-card {
       padding: 16px;
-      border-radius: 16px;
-      border: 1px solid var(--border-dark);
-      background:
-        linear-gradient(120deg, rgba(198,71,58,0.16), rgba(0,0,0,0.95)),
-        rgba(0,0,0,0.8);
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.65);
       margin-bottom: 12px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .registry-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        120deg,
+        rgba(31,38,55,0.2),
+        transparent 40%,
+        rgba(123,47,47,0.2)
+      );
+      opacity: 0.35;
+      pointer-events: none;
     }
 
     .registry-card h4 {
@@ -471,14 +436,14 @@
       color: var(--muted);
     }
 
+    .muted { color: var(--muted); }
+
+    /* Data explainer */
     .arch-diagram {
       padding: 16px;
-      border-radius: 16px;
-      border: 1px solid rgba(58,111,191,0.6);
-      background:
-        linear-gradient(to right, rgba(58,111,191,0.35), rgba(0,0,0,0.96));
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.6);
       margin-top: 18px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
       font-size: var(--font-sm);
       color: var(--muted);
     }
@@ -487,25 +452,21 @@
       text-align: center;
       margin-top: var(--gap-lg);
       padding-top: 20px;
-      border-top: 1px solid var(--border-dark);
+      border-top: 1px solid var(--border);
       font-size: var(--font-sm);
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.14em;
     }
 
-    footer span.red { color: var(--accent-red); }
-    footer span.blue { color: var(--accent-blue); }
-
     @media (max-width: 720px) {
       .signup-grid,
-      .pricing-grid {
+      .awards-grid {
         grid-template-columns: 1fr;
       }
 
-      .section-title-banner {
-        width: 100%;
-        justify-content: center;
+      .poster {
+        padding-inline: 18px;
       }
     }
   </style>
@@ -514,34 +475,29 @@
 <div class="page">
 
   <!-- POSTER HERO -->
-  <section class="poster rope-frame">
+  <section class="poster">
     <div class="poster-inner">
       <div class="poster-kicker">UNITED STATES POLO PATRONS ASSOCIATION</div>
       <div class="poster-rule"></div>
       <h1 class="poster-title">COWBOY POLO CIRCUIT</h1>
       <div class="poster-sub">AN AMERICAN DEVELOPMENT LEAGUE FOR ARENA & SMALL-FIELD POLO</div>
       <p class="poster-tagline">
-        Handicaps • Horses • Chapters • All Tracked Through the
-        <span class="red">Patronium</span> &nbsp;Polo <span class="blue">Ecosystem</span>
+        Handicaps • Horses • Chapters • All Tracked Through the Patronium Ecosystem
       </p>
       <div class="poster-cta">
         <a href="#signup" class="btn btn-primary">Join the Circuit</a>
         <a href="#leaderboards" class="btn btn-outline">View Leaderboards</a>
       </div>
       <div class="poster-meta">
-        Inaugural Seasons Beginning with <span class="blue">Charleston Polo</span> &mdash;
-        Official Circuit of <span class="red">STRING 7̶7̶7̶ REMUDA</span>
+        INAUGURAL SEASONS BEGINNING WITH CHARLESTON POLO • OFFICIAL CIRCUIT OF STRING 7̶7̶7̶ REMUDA
       </div>
     </div>
   </section>
 
   <!-- SIGN-UP -->
   <section class="section" id="signup">
-    <div class="section-heading">
-      <div class="section-kicker">Circuit Entry</div>
-      <div class="section-title-banner">Sign Up for Cowboy Polo</div>
-    </div>
-
+    <div class="section-kicker">Circuit Entry</div>
+    <h2 class="section-title">Sign Up for Cowboy Polo</h2>
     <p class="section-text">
       The Cowboy Polo Circuit invites riders, horses, barns, and chapters to participate in a transparent,
       American-made development pathway for small-field polo. Below is the mock-up of the entry system.
@@ -550,23 +506,27 @@
     <div class="signup-grid">
       <div class="signup-card">
         <h3>Rider Enrollment</h3>
-        <p>Join the Circuit, receive your initial rating, attend clinics, and earn seasonal handicaps.</p>
-        <p><strong>Mock-up button: Join as Rider</strong></p>
+        <p>
+          Join the Circuit, receive your initial rating, attend clinics, and earn seasonal handicaps. Riders
+          are tracked across seasons with performance history tied into Patronium snapshots.
+        </p>
+        <p><strong>Mock-up button:</strong> Join as Rider</p>
       </div>
       <div class="signup-card">
         <h3>Barn / Arena Enrollment</h3>
-        <p>Register your facility for sanctioned Cowboy Polo matches using standard arena dimensions.</p>
-        <p><strong>Mock-up button: Register a Barn</strong></p>
+        <p>
+          Register your facility for sanctioned Cowboy Polo matches using standard arena or small-field
+          dimensions. Certified arenas become eligible to host official chukkers and report results.
+        </p>
+        <p><strong>Mock-up button:</strong> Register a Barn</p>
       </div>
     </div>
   </section>
 
   <!-- PLAYER LEADERBOARD -->
   <section class="section" id="leaderboards">
-    <div class="section-heading">
-      <div class="section-kicker">Rankings</div>
-      <div class="section-title-banner">Player Handicap Leaderboard</div>
-    </div>
+    <div class="section-kicker">Rankings</div>
+    <h2 class="section-title">Player Handicap Leaderboard</h2>
 
     <table>
       <thead>
@@ -582,10 +542,8 @@
 
   <!-- HORSE LEADERBOARD -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">String 7̶7̶7̶ Remuda</div>
-      <div class="section-title-banner">Horse Performance Leaderboard</div>
-    </div>
+    <div class="section-kicker">String 7̶7̶7̶ Remuda</div>
+    <h2 class="section-title">Horse Performance Leaderboard</h2>
 
     <table>
       <thead>
@@ -599,38 +557,45 @@
     </table>
   </section>
 
-  <!-- PRICING HINTS -->
+  <!-- SEASON AWARDS (PRIZES) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">Season Awards & Entries</div>
-      <div class="section-title-banner">Participation Costs (Mock-Up)</div>
-    </div>
+    <div class="section-kicker">Season Awards</div>
+    <h2 class="section-title">Prizes & Recognition (Mock-Up)</h2>
 
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <div class="pricing-label">Rider Pass</div>
-        <div class="pricing-amount">$250</div>
-        <div class="pricing-note">Per Season</div>
+    <div class="awards-grid">
+      <div class="awards-card">
+        <div class="awards-label">Players</div>
+        <div class="awards-title">Circuit Champion</div>
+        <p class="awards-desc">
+          Custom Cowboy Polo buckle, feature on <em>The Polo Life</em>, and a Patronium award allocation
+          recognising the season’s top-performing rider.
+        </p>
       </div>
-      <div class="pricing-card">
-        <div class="pricing-label">Horse Entry</div>
-        <div class="pricing-amount">$150</div>
-        <div class="pricing-note">Per Horse, Per Season</div>
+
+      <div class="awards-card">
+        <div class="awards-label">Horses</div>
+        <div class="awards-title">Best String 7̶7̶7̶ Horse</div>
+        <p class="awards-desc">
+          Honours the top horse in the Remuda for consistency, heart, and rideability. Includes a training
+          stipend credit and feature in the Remuda registry.
+        </p>
       </div>
-      <div class="pricing-card">
-        <div class="pricing-label">Arena Sanction Fee</div>
-        <div class="pricing-amount">$400</div>
-        <div class="pricing-note">Per Facility</div>
+
+      <div class="awards-card">
+        <div class="awards-label">Chapters</div>
+        <div class="awards-title">Chapter of the Year</div>
+        <p class="awards-desc">
+          Awarded to the Chapter that best embodies the USPPA ethos: fair play, good horsemanship, and
+          open access for new riders. Receives priority support for the next season.
+        </p>
       </div>
     </div>
   </section>
 
   <!-- OFFICIAL CHUKKER SUBMISSIONS (MOCK-UP) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">Match Reporting</div>
-      <div class="section-title-banner">Official Sanctioned Chukker Submission</div>
-    </div>
+    <div class="section-kicker">Match Reporting</div>
+    <h2 class="section-title">Official Sanctioned Chukker Submission</h2>
 
     <div class="results-form">
       <div class="results-form-row">
@@ -654,16 +619,14 @@
 
   <!-- SEASONAL ON-CHAIN REGISTRY (MOCK-UP) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">On-Chain Registry</div>
-      <div class="section-title-banner">Seasonal Results (Mock-Up)</div>
-    </div>
+    <div class="section-kicker">On-Chain Registry</div>
+    <h2 class="section-title">Seasonal Results (Mock-Up)</h2>
 
     <div class="registry-card">
       <h4>Season 2025 — Charleston Polo</h4>
       <p><strong>IPFS Hash:</strong> bafybeiexamplehash000111222 (mock)</p>
       <p><strong>View on BaseScan:</strong> (mock link)</p>
-      <p class="muted">Stored Permanently on the Base Network</p>
+      <p class="muted">Stored permanently on the Base Network.</p>
     </div>
     <div class="registry-card">
       <h4>Season 2024 — USPPA Pilot</h4>
@@ -674,14 +637,12 @@
 
   <!-- DATA EXPLAINER (MOCK-UP) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">Data Flow</div>
-      <div class="section-title-banner">How Results Are Stored</div>
-    </div>
+    <div class="section-kicker">Data Flow</div>
+    <h2 class="section-title">How Results Are Stored</h2>
     <p class="section-text">
-      The Cowboy Polo Circuit uses a hybrid storage model. Live match data is kept off-chain for
-      performance and rapid updating. End-of-season summaries are published to IPFS, and the IPFS
-      hash is placed on-chain on the Base Network for transparency and permanence.
+      The Cowboy Polo Circuit uses a hybrid storage model. Live match data is kept off-chain for performance
+      and rapid updating. End-of-season summaries are published to IPFS, and the IPFS hash is placed on-chain
+      on the Base Network for transparency and permanence.
     </p>
 
     <div class="arch-diagram">
@@ -695,10 +656,8 @@
 
   <!-- CHAPTER SUBMISSION UI (MOCK-UP) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">Chapter Tools</div>
-      <div class="section-title-banner">Publish Season Summary (Mock-Up)</div>
-    </div>
+    <div class="section-kicker">Chapter Tools</div>
+    <h2 class="section-title">Publish Season Summary (Mock-Up)</h2>
 
     <div class="results-form">
       <div class="results-form-row">
@@ -710,13 +669,12 @@
       <div class="results-form-row">
         <label>Confirm Chapter</label><input placeholder="Charleston Polo (mock)"/>
       </div>
-      <p class="results-form-note">Button placeholder: “Publish to Chain” (mock-up only)</p>
+      <p class="results-form-note">Button placeholder: “Publish to Chain” (mock-up only).</p>
     </div>
   </section>
 
   <footer>
-    &copy; <span id="year"></span> <span class="blue">USPPA</span> &mdash; Cowboy Polo Circuit
-    · <span class="red">STRING 7̶7̶7̶ REMUDA</span>
+    &copy; <span id="year"></span> USPPA — Cowboy Polo Circuit
   </footer>
 </div>
 
