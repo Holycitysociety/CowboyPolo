@@ -16,16 +16,13 @@
       --bg: #000000;
       --fg: #ffffff;
       --muted: #c7c7c7;
-      --ink: #111111;
-      --paper: #f8f8f8;
       --border: #333333;
-      --accent: #ffffff;
       --max-width: 900px;
       --section-gap: 72px;
 
-      /* new highlight colors */
-      --hl-strong: rgba(227, 191, 114, 0.55);
-      --hl-soft: rgba(227, 191, 114, 0.16);
+      /* unified, very subtle bronze highlight */
+      --hl-strong: rgba(182, 139, 60, 0.24);
+      --hl-soft:   rgba(182, 139, 60, 0.08);
     }
 
     * {
@@ -46,14 +43,14 @@
       padding: 36px 18px 96px;
     }
 
-    /* HERO POSTER (Tall & Centered) */
+    /* HERO POSTER (Tall & Centered, same highlight family) */
     .hero {
       text-align: center;
       padding: 56px 18px 64px;
       border: 1px solid var(--border);
       background:
-        radial-gradient(circle at 30% 10%, #333333 0, #000000 50%),
-        linear-gradient(to bottom, #111111, #000000 55%, #121212 100%);
+        radial-gradient(circle at 50% 0%, var(--hl-strong) 0, var(--hl-soft) 36%, transparent 72%),
+        #050505;
     }
 
     .hero-topline {
@@ -228,9 +225,8 @@
       text-align: justify;
     }
 
-    /* GOLD/ORANGE GRADIENT CARDS */
+    /* UNIFIED SUBTLE HIGHLIGHT CARDS */
 
-    /* Base card shape for everything */
     .panel,
     .board,
     .chart {
@@ -238,8 +234,8 @@
       margin: 24px auto 0;
       border-radius: 4px;
       border: 1px solid var(--border);
-      padding: 20px 18px 22px;
       color: var(--fg);
+      background-color: #050505;
     }
 
     /* Panel: highlight from left */
@@ -247,6 +243,7 @@
       background:
         radial-gradient(circle at 0% 50%, var(--hl-strong) 0, var(--hl-soft) 28%, transparent 70%),
         #050505;
+      padding: 20px 18px 22px;
     }
 
     /* Board: highlight from top-center */
