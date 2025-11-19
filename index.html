@@ -209,52 +209,31 @@
       margin-right: auto;
     }
 
-    /* wordmark-style section heading */
-    .section-heading {
-      text-align: center;
-      margin-bottom: var(--gap-sm);
-    }
-
-    .section-heading .section-kicker {
+    .section-kicker {
       text-transform: uppercase;
       font-size: var(--font-sm);
       color: var(--muted);
-      letter-spacing: 0.22em;
-      margin-bottom: 4px;
+      letter-spacing: 0.2em;
+      margin-bottom: 6px;
     }
 
-    .section-heading .section-title {
+    .section-title {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      font-size: var(--font-md);
-      letter-spacing: 0.18em;
-      margin: 0;
-      padding: 6px 22px 8px;
+      font-size: 1.5rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
       position: relative;
-      display: inline-block;
-      white-space: nowrap;
-      max-width: 100%;
     }
 
-    .section-heading .section-title::before,
-    .section-heading .section-title::after {
+    .section-title::after {
       content: "";
-      position: absolute;
-      top: 50%;
-      height: 1px;
-      width: min(70px, 18vw);
-      background: linear-gradient(90deg, var(--blue), var(--gold));
+      display: block;
+      width: 70px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--gold), var(--red));
+      margin-top: 6px;
       opacity: 0.7;
-    }
-
-    .section-heading .section-title::before {
-      right: 100%;
-      margin-right: 10px;
-    }
-
-    .section-heading .section-title::after {
-      left: 100%;
-      margin-left: 10px;
     }
 
     .section-text {
@@ -337,7 +316,7 @@
       border-bottom-color: rgba(255,255,255,0.1);
     }
 
-    /* Awards (prizes) */
+    /* Awards (formerly pricing) */
     .awards-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -489,10 +468,6 @@
       .poster {
         padding-inline: 18px;
       }
-
-      .section-heading .section-title {
-        white-space: normal;
-      }
     }
   </style>
 </head>
@@ -521,11 +496,8 @@
 
   <!-- SIGN-UP -->
   <section class="section" id="signup">
-    <div class="section-heading">
-      <div class="section-kicker">Circuit Entry</div>
-      <h2 class="section-title">Sign Up for Cowboy Polo</h2>
-    </div>
-
+    <div class="section-kicker">Circuit Entry</div>
+    <h2 class="section-title">Sign Up for Cowboy Polo</h2>
     <p class="section-text">
       The Cowboy Polo Circuit invites riders, horses, barns, and chapters to participate in a transparent,
       American-made development pathway for small-field polo. Below is the mock-up of the entry system.
@@ -553,10 +525,8 @@
 
   <!-- PLAYER LEADERBOARD -->
   <section class="section" id="leaderboards">
-    <div class="section-heading">
-      <div class="section-kicker">Rankings</div>
-      <h2 class="section-title">Player Handicap Leaderboard</h2>
-    </div>
+    <div class="section-kicker">Rankings</div>
+    <h2 class="section-title">Player Handicap Leaderboard</h2>
 
     <table>
       <thead>
@@ -572,10 +542,8 @@
 
   <!-- HORSE LEADERBOARD -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">String 7̶7̶7̶ Remuda</div>
-      <h2 class="section-title">Horse Performance Leaderboard</h2>
-    </div>
+    <div class="section-kicker">String 7̶7̶7̶ Remuda</div>
+    <h2 class="section-title">Horse Performance Leaderboard</h2>
 
     <table>
       <thead>
@@ -591,10 +559,8 @@
 
   <!-- SEASON AWARDS (PRIZES) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">Season Awards</div>
-      <h2 class="section-title">Prizes & Recognition (Mock-Up)</h2>
-    </div>
+    <div class="section-kicker">Season Awards</div>
+    <h2 class="section-title">Prizes & Recognition (Mock-Up)</h2>
 
     <div class="awards-grid">
       <div class="awards-card">
@@ -628,10 +594,8 @@
 
   <!-- OFFICIAL CHUKKER SUBMISSIONS (MOCK-UP) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">Match Reporting</div>
-      <h2 class="section-title">Official Sanctioned Chukker Submission</h2>
-    </div>
+    <div class="section-kicker">Match Reporting</div>
+    <h2 class="section-title">Official Sanctioned Chukker Submission</h2>
 
     <div class="results-form">
       <div class="results-form-row">
@@ -655,10 +619,8 @@
 
   <!-- SEASONAL ON-CHAIN REGISTRY (MOCK-UP) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">On-Chain Registry</div>
-      <h2 class="section-title">Seasonal Results (Mock-Up)</h2>
-    </div>
+    <div class="section-kicker">On-Chain Registry</div>
+    <h2 class="section-title">Seasonal Results (Mock-Up)</h2>
 
     <div class="registry-card">
       <h4>Season 2025 — Charleston Polo</h4>
@@ -675,11 +637,8 @@
 
   <!-- DATA EXPLAINER (MOCK-UP) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">Data Flow</div>
-      <h2 class="section-title">How Results Are Stored</h2>
-    </div>
-
+    <div class="section-kicker">Data Flow</div>
+    <h2 class="section-title">How Results Are Stored</h2>
     <p class="section-text">
       The Cowboy Polo Circuit uses a hybrid storage model. Live match data is kept off-chain for performance
       and rapid updating. End-of-season summaries are published to IPFS, and the IPFS hash is placed on-chain
@@ -697,10 +656,8 @@
 
   <!-- CHAPTER SUBMISSION UI (MOCK-UP) -->
   <section class="section">
-    <div class="section-heading">
-      <div class="section-kicker">Chapter Tools</div>
-      <h2 class="section-title">Publish Season Summary (Mock-Up)</h2>
-    </div>
+    <div class="section-kicker">Chapter Tools</div>
+    <h2 class="section-title">Publish Season Summary (Mock-Up)</h2>
 
     <div class="results-form">
       <div class="results-form-row">
