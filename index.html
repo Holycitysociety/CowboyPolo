@@ -224,15 +224,36 @@
       text-align: justify;
     }
 
-    /* WHITE PANELS (for contrast) */
+    /* HIGHLIGHT CARDS (replacing white panels everywhere) */
     .panel {
       max-width: 720px;
       margin: 26px auto 0;
-      background: var(--paper);
-      color: #000;
+      background:
+        linear-gradient(to bottom, #1b1b1b 0%, #050505 55%, #000000 100%);
+      color: var(--fg);
       border-radius: 4px;
-      border: 1px solid #111;
+      border: 1px solid #333333;
       padding: 20px 18px 22px;
+      box-shadow:
+        0 0 0 1px #050505,
+        0 18px 40px rgba(0, 0, 0, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% 0%, rgba(255,255,255,0.12), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
     }
 
     .panel-title {
@@ -246,6 +267,7 @@
     .panel p {
       margin: 0 0 10px;
       font-size: 0.95rem;
+      color: var(--muted);
     }
 
     /* Leaderboard tables */
@@ -458,23 +480,25 @@
         </p>
       </div>
 
-      <!-- White panel: Signup roles -->
+      <!-- Highlight card: Signup roles -->
       <div class="panel" id="signup">
-        <div class="panel-title">Season Sign-Up & Roles</div>
-        <p>
-          <strong>Riders</strong> enroll to receive a provisional Cowboy Polo
-          Circuit handicap and to be included in sanctioned match scheduling.
-        </p>
-        <p>
-          <strong>Horses</strong> are entered into the Circuit pool — either as part
-          of the String 7̶7̶7̶ Remuda or privately owned — and begin to accumulate a
-          performance trace: chukkers played, points contributed, and awards earned.
-        </p>
-        <p>
-          <strong>Host Arenas</strong> apply to carry official Circuit dates, submit
-          results, and participate in seasonal prize pools for facilities that
-          reliably grow the sport.
-        </p>
+        <div class="panel-inner">
+          <div class="panel-title">Season Sign-Up & Roles</div>
+          <p>
+            <strong>Riders</strong> enroll to receive a provisional Cowboy Polo
+            Circuit handicap and to be included in sanctioned match scheduling.
+          </p>
+          <p>
+            <strong>Horses</strong> are entered into the Circuit pool — either as part
+            of the String 7̶7̶7̶ Remuda or privately owned — and begin to accumulate a
+            performance trace: chukkers played, points contributed, and awards earned.
+          </p>
+          <p>
+            <strong>Host Arenas</strong> apply to carry official Circuit dates, submit
+            results, and participate in seasonal prize pools for facilities that
+            reliably grow the sport.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -664,18 +688,20 @@
       </ul>
 
       <div class="panel">
-        <div class="panel-title">How Prizes Relate to the Leaderboards</div>
-        <p>
-          Each prize draws directly from the same seasonal dataset. Instead of
-          inventing separate “award criteria,” the Cowboy Polo Circuit treats
-          the awards as narrative summaries of what the stats already say.
-        </p>
-        <p>
-          At season’s end, a snapshot is taken: standings, horse scores, arena
-          participation, and growth metrics. That snapshot can be hashed
-          and stored on-chain, so every award can be traced back to the
-          recorded performance that earned it.
-        </p>
+        <div class="panel-inner">
+          <div class="panel-title">How Prizes Relate to the Leaderboards</div>
+          <p>
+            Each prize draws directly from the same seasonal dataset. Instead of
+            inventing separate “award criteria,” the Cowboy Polo Circuit treats
+            the awards as narrative summaries of what the stats already say.
+          </p>
+          <p>
+            At season’s end, a snapshot is taken: standings, horse scores, arena
+            participation, and growth metrics. That snapshot can be hashed
+            and stored on-chain, so every award can be traced back to the
+            recorded performance that earned it.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -697,19 +723,21 @@
       </div>
 
       <div class="panel">
-        <div class="panel-title">Result Submission (Mock)</div>
-        <p>
-          <strong>Chukker Sheet Fields:</strong> Date, host arena, chapter,
-          teams, riders, horses, scoreline, and notes. In the live system,
-          these would be entered or uploaded via a secure portal and verified
-          before they touch the leaderboards.
-        </p>
-        <p>
-          At the close of the season, the full dataset can be compressed into
-          a canonical record: a hash and summary stored on-chain, with
-          human-readable tables presented here for patrons, players, and
-          the public.
-        </p>
+        <div class="panel-inner">
+          <div class="panel-title">Result Submission (Mock)</div>
+          <p>
+            <strong>Chukker Sheet Fields:</strong> Date, host arena, chapter,
+            teams, riders, horses, scoreline, and notes. In the live system,
+            these would be entered or uploaded via a secure portal and verified
+            before they touch the leaderboards.
+          </p>
+          <p>
+            At the close of the season, the full dataset can be compressed into
+            a canonical record: a hash and summary stored on-chain, with
+            human-readable tables presented here for patrons, players, and
+            the public.
+          </p>
+        </div>
       </div>
     </section>
 
