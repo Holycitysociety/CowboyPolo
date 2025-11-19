@@ -45,7 +45,7 @@
       padding: 56px 18px 64px;
       border: 1px solid var(--border);
       background:
-        radial-gradient(circle at 30% 10%, #333333 0, #000000 50%),
+        radial-gradient(circle at 30% 10%, rgba(255,255,255,0.18) 0, #000000 50%),
         linear-gradient(to bottom, #111111, #000000 55%, #121212 100%);
     }
 
@@ -187,10 +187,11 @@
       max-width: 780px;
       margin: 0 auto;
       border-radius: 6px;
-      border: 1px solid #2f2f2f;
+      border: 1px solid #3c3c3c;
       padding: 28px 20px 30px;
       background:
-        radial-gradient(circle at 0% 0%, #2b2b2b 0%, #050505 48%, #000000 100%);
+        radial-gradient(circle at 0% 0%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.04) 40%, transparent 60%),
+        linear-gradient(to bottom, #181818 0%, #050505 55%, #000000 100%);
       box-shadow:
         0 0 0 1px #050505,
         0 18px 40px rgba(0, 0, 0, 0.9);
@@ -203,8 +204,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 85% 0%, rgba(255, 255, 255, 0.12), transparent 60%);
-      opacity: 0.9;
+        radial-gradient(circle at 88% 0%, rgba(255,255,255,0.1), transparent 55%);
+      opacity: 0.7; /* still white, but not screaming */
       pointer-events: none;
       mix-blend-mode: screen;
     }
@@ -237,7 +238,7 @@
 
     .section-rule {
       width: 180px;
-      border-top: 1px solid rgba(255, 255, 255, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.6);
       margin: 14px auto 0;
     }
 
@@ -253,13 +254,15 @@
       text-align: justify;
     }
 
-    /* SIMPLE INNER PANELS (text-only refiners inside cards) */
+    /* SIMPLE INNER PANELS (sub-cards) */
     .panel {
       max-width: 720px;
       margin: 22px auto 0;
       padding: 0;
-      border: 0;
-      background: none;
+      border-radius: 4px;
+      background: #050505;            /* flat dark */
+      border: 1px solid #272727;      /* subtle edge, no glow */
+      padding: 14px 14px 12px;
     }
 
     .panel-title {
@@ -276,13 +279,13 @@
       color: var(--muted);
     }
 
-    /* Leaderboard tables */
+    /* Leaderboard tables (sub-cards) */
     .board {
       max-width: 720px;
       margin: 22px auto 0;
-      border: 1px solid var(--border);
+      border: 1px solid #272727;
       border-radius: 4px;
-      background: #080808;
+      background: #050505;
       padding: 18px 16px 14px;
     }
 
@@ -335,16 +338,16 @@
       text-align: center;
     }
 
-    /* ASCII-style bar chart */
+    /* ASCII-style bar chart (sub-card) */
     .chart {
       max-width: 720px;
       margin: 20px auto 0;
       font-family: "Courier New", monospace;
       font-size: 0.88rem;
       color: var(--muted);
-      background: #080808;
+      background: #050505;
       border-radius: 4px;
-      border: 1px solid var(--border);
+      border: 1px solid #272727;
       padding: 14px 14px 16px;
     }
 
