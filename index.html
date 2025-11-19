@@ -13,8 +13,13 @@
       --bg: #050505;
       --fg: #f5f5f5;
       --muted: #a7a7a7;
-      --gold: #e3bf72;
-      --border: #262626;
+
+      --accent-gold: #e3bf72;
+      --accent-gold-deep: #b78c3c;
+      --accent-red: #c6473a;
+      --accent-blue: #3a6fbf;
+
+      --border-dark: #262626;
 
       --font-lg: clamp(2.2rem, 6vw, 3.2rem);
       --font-md: clamp(1.2rem, 3.4vw, 1.45rem);
@@ -32,15 +37,16 @@
     body {
       margin: 0;
       background:
-        radial-gradient(circle at 50% -10%, rgba(255,255,255,0.08) 0, rgba(0,0,0,0.95) 50%),
-        radial-gradient(circle at 50% 70%, rgba(255,255,255,0.05) 0, rgba(0,0,0,0.98) 60%),
+        radial-gradient(circle at 0% 0%, rgba(198,71,58,0.35) 0, transparent 45%),
+        radial-gradient(circle at 100% 0%, rgba(58,111,191,0.35) 0, transparent 45%),
+        radial-gradient(circle at 50% 75%, rgba(227,191,114,0.20) 0, transparent 55%),
         var(--bg);
       color: var(--fg);
       font-family: "EB Garamond", Georgia, serif;
       line-height: 1.62;
     }
 
-    a { color: var(--gold); text-decoration: none; }
+    a { color: var(--accent-gold); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
     .page {
@@ -50,21 +56,121 @@
     }
 
     /* ------------------------------------------------------------
+       COMMON ELEMENTS
+    ------------------------------------------------------------- */
+
+    .rope-frame {
+      border: 2px solid transparent;
+      border-radius: 18px;
+      border-image: repeating-linear-gradient(
+        45deg,
+        var(--accent-gold) 0 6px,
+        var(--accent-gold-deep) 6px 12px
+      ) 8;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.8),
+        0 12px 30px rgba(0,0,0,0.7);
+    }
+
+    .section {
+      margin-top: var(--gap-lg);
+      padding-top: var(--gap-sm);
+      max-width: var(--text-width);
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        rgba(198,71,58,0.0),
+        rgba(198,71,58,0.85),
+        rgba(58,111,191,0.85),
+        rgba(58,111,191,0.0)
+      );
+      opacity: 0.8;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: var(--gap-sm);
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      font-size: var(--font-sm);
+      color: var(--muted);
+      letter-spacing: 0.22em;
+      margin-bottom: 10px;
+    }
+
+    .section-title-banner {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 18px;
+      text-transform: uppercase;
+      font-family: "Cormorant Garamond", serif;
+      letter-spacing: 0.18em;
+      font-size: var(--font-md);
+      background:
+        linear-gradient(to right, rgba(198,71,58,0.6), rgba(227,191,114,0.9), rgba(58,111,191,0.6));
+      color: #000;
+      border-radius: 28px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+    }
+
+    .section-text {
+      font-size: var(--font-sm);
+      color: var(--muted);
+      text-align: justify;
+      text-justify: inter-word;
+      margin-top: 16px;
+      margin-bottom: var(--gap-sm);
+    }
+
+    /* ------------------------------------------------------------
        POSTER HERO
     ------------------------------------------------------------- */
+
     .poster {
-      border: 1px solid var(--border);
-      padding: 38px 24px 44px;
+      padding: 40px 24px 44px;
       text-align: center;
       margin-bottom: var(--gap-lg);
       background:
-        linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(0,0,0,0.75)),
-        rgba(0,0,0,0.6);
+        radial-gradient(circle at 50% 0%, rgba(227,191,114,0.20) 0, rgba(0,0,0,0.8) 55%),
+        rgba(5,5,5,0.95);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        linear-gradient(120deg, rgba(198,71,58,0.18), transparent 40%, rgba(58,111,191,0.18)),
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .poster-inner {
+      position: relative;
+      z-index: 1;
     }
 
     .poster-kicker {
       text-transform: uppercase;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.26em;
       font-size: var(--font-sm);
       margin-bottom: 10px;
       color: var(--muted);
@@ -72,48 +178,52 @@
 
     .poster-rule {
       width: 100%;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid rgba(227,191,114,0.55);
       margin: 12px auto 22px;
     }
 
     .poster-title {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.26em;
+      letter-spacing: 0.32em;
       font-size: var(--font-lg);
-      margin: 0 0 14px;
+      margin: 0 0 8px;
     }
 
     .poster-sub {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       font-size: var(--font-sm);
       margin-bottom: 22px;
+      color: var(--fg);
     }
 
     .poster-tagline {
-      max-width: 560px;
+      max-width: 580px;
       margin: 0 auto;
       font-size: var(--font-sm);
-      letter-spacing: 0.07em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 22px;
     }
+
+    .poster-tagline span.red { color: var(--accent-red); }
+    .poster-tagline span.blue { color: var(--accent-blue); }
 
     .poster-cta {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     .btn {
-      padding: 10px 30px;
+      padding: 11px 30px;
       border-radius: 999px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-dark);
       font-size: var(--font-sm);
       text-transform: uppercase;
       letter-spacing: 0.14em;
@@ -125,111 +235,46 @@
     }
 
     .btn-primary {
-      background: var(--gold);
-      color: black;
-      border-color: var(--gold);
+      background: linear-gradient(
+        to right,
+        var(--accent-red),
+        var(--accent-gold),
+        var(--accent-blue)
+      );
+      color: #000;
+      border-color: rgba(0,0,0,0.9);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.7);
     }
 
     .btn-primary:hover {
-      background: #f4dca0;
+      filter: brightness(1.08);
     }
 
     .btn-outline {
       color: var(--muted);
-      background: transparent;
+      background: rgba(0,0,0,0.7);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.04);
+      color: var(--fg);
     }
 
     .poster-meta {
       font-size: var(--font-sm);
       color: var(--muted);
-      margin-top: 6px;
+      margin-top: 10px;
       letter-spacing: 0.12em;
     }
 
-    /* ------------------------------------------------------------
-       WORDMARK SECTION HEADINGS
-    ------------------------------------------------------------- */
-    .section-heading {
-      text-align: center;
-      margin-bottom: var(--gap-sm);
-      position: relative;
-    }
-
-    .section-heading .section-kicker {
-      text-transform: uppercase;
-      font-size: 0.72rem;
-      letter-spacing: 0.28em;
-      color: var(--gold);
-      margin-bottom: 8px;
-    }
-
-    .section-heading .section-title {
-      display: inline-block;
-      padding: 14px 26px;
-      text-transform: uppercase;
-      font-family: "Cormorant Garamond", serif;
-      letter-spacing: 0.22em;
-      font-size: 1.2rem;
-      background: linear-gradient(
-        90deg,
-        rgba(0,0,0,0.4),
-        rgba(31,38,55,0.45),
-        rgba(0,0,0,0.4)
-      );
-      border: 1px solid rgba(227,191,114,0.25);
-      border-radius: 4px;
-      color: var(--fg);
-      position: relative;
-    }
-
-    .section-heading .section-title::before,
-    .section-heading .section-title::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      width: 140%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-
-    .section-heading .section-title::before {
-      right: 100%;
-      margin-right: 14px;
-    }
-
-    .section-heading .section-title::after {
-      left: 100%;
-      margin-left: 14px;
-    }
-
-    @media (max-width: 650px) {
-      .section-heading .section-title::before,
-      .section-heading .section-title::after {
-        width: 80%;
-      }
-    }
+    .poster-meta span.red { color: var(--accent-red); }
+    .poster-meta span.blue { color: var(--accent-blue); }
 
     /* ------------------------------------------------------------
-       SECTIONS
+       SIGN-UP
     ------------------------------------------------------------- */
-    .section {
-      margin-top: var(--gap-lg);
-      border-top: 1px solid var(--border);
-      padding-top: var(--gap-sm);
-      max-width: var(--text-width);
-      margin-left: auto;
-      margin-right: auto;
-    }
 
-    .section-text {
-      font-size: var(--font-sm);
-      color: var(--muted);
-      text-align: justify;
-      text-justify: inter-word;
-      margin-bottom: var(--gap-sm);
-    }
-
-    /* Grids */
     .signup-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -237,17 +282,39 @@
     }
 
     .signup-card {
-      padding: 16px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.6);
+      padding: 18px 16px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border-dark);
+      position: relative;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(58,111,191,0.30), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(198,71,58,0.18), transparent 55%),
+        rgba(0,0,0,0.9);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.7);
+    }
+
+    .signup-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      border: 2px solid transparent;
+      border-image: repeating-linear-gradient(
+        45deg,
+        rgba(198,71,58,0.95) 0 5px,
+        rgba(227,191,114,0.95) 5px 10px,
+        rgba(58,111,191,0.95) 10px 15px
+      ) 8;
+      opacity: 0.6;
+      pointer-events: none;
     }
 
     .signup-card h3 {
       font-family: "Cormorant Garamond", serif;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin: 0 0 6px;
-      font-size: 1rem;
+      letter-spacing: 0.16em;
+      margin: 0 0 8px;
+      font-size: 1.02rem;
     }
 
     .signup-card p {
@@ -257,15 +324,23 @@
       text-align: justify;
     }
 
+    /* ------------------------------------------------------------
+       TABLES / LEADERBOARDS
+    ------------------------------------------------------------- */
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
+      margin-top: 16px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.7);
     }
 
     th, td {
       border-bottom: 1px solid #1a1a1a;
-      padding: 6px 4px;
+      padding: 8px 10px;
       font-size: var(--font-sm);
     }
 
@@ -274,11 +349,23 @@
       letter-spacing: 0.12em;
       color: var(--muted);
       font-size: 0.78rem;
+      background: linear-gradient(
+        to right,
+        rgba(198,71,58,0.5),
+        rgba(227,191,114,0.7),
+        rgba(58,111,191,0.5)
+      );
     }
 
+    tr:last-child td { border-bottom: none; }
+
     .highlight {
-      background: rgba(227,191,114,0.08);
+      background: radial-gradient(circle at 0 0, rgba(58,111,191,0.18), rgba(0,0,0,0.9));
     }
+
+    /* ------------------------------------------------------------
+       PRICING
+    ------------------------------------------------------------- */
 
     .pricing-grid {
       display: grid;
@@ -287,16 +374,65 @@
     }
 
     .pricing-card {
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.65);
-      padding: 14px;
+      position: relative;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(58,111,191,0.25), rgba(0,0,0,0.96)),
+        rgba(0,0,0,0.9);
+      padding: 16px 14px 14px;
       text-align: center;
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.7);
+      border: 1px solid rgba(227,191,114,0.6);
     }
 
+    .pricing-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 18%;
+      right: 18%;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(
+        to right,
+        var(--accent-red),
+        var(--accent-gold),
+        var(--accent-blue)
+      );
+      box-shadow: 0 0 8px rgba(0,0,0,0.7);
+    }
+
+    .pricing-label {
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .pricing-amount {
+      font-size: 1.2rem;
+      color: var(--fg);
+      margin-bottom: 4px;
+    }
+
+    .pricing-note {
+      font-size: var(--font-sm);
+      color: var(--muted);
+    }
+
+    /* ------------------------------------------------------------
+       FORMS / RESULTS
+    ------------------------------------------------------------- */
+
     .results-form {
-      border: 1px dashed var(--border);
-      background: rgba(0,0,0,0.5);
-      padding: 18px;
+      border-radius: 16px;
+      border: 1px dashed rgba(58,111,191,0.8);
+      background:
+        radial-gradient(circle at 100% 0, rgba(198,71,58,0.25), transparent 60%),
+        rgba(0,0,0,0.9);
+      padding: 18px 16px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
     }
 
     .results-form-row {
@@ -311,31 +447,97 @@
       font-size: 0.75rem;
       color: var(--muted);
       flex: 1 1 120px;
+      letter-spacing: 0.12em;
     }
 
     .results-form-row input {
       flex: 2 1 200px;
-      padding: 6px;
+      padding: 6px 8px;
       background: #000;
       border: 1px solid #333;
       color: var(--fg);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: var(--font-sm);
+    }
+
+    .results-form-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ------------------------------------------------------------
+       REGISTRY / CARDS
+    ------------------------------------------------------------- */
+
+    .registry-card {
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border-dark);
+      background:
+        linear-gradient(120deg,
+          rgba(198,71,58,0.22),
+          rgba(0,0,0,0.95),
+          rgba(58,111,191,0.22)
+        );
+      margin-bottom: 12px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
+    }
+
+    .registry-card h4 {
+      margin: 0 0 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1rem;
+    }
+
+    .registry-card p {
+      font-size: var(--font-sm);
+      margin: 0 0 4px;
+      color: var(--muted);
+    }
+
+    .arch-diagram {
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(58,111,191,0.7);
+      background:
+        linear-gradient(to right,
+          rgba(58,111,191,0.40),
+          rgba(0,0,0,0.96),
+          rgba(198,71,58,0.32)
+        );
+      margin-top: 18px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.7);
+      font-size: var(--font-sm);
+      color: var(--muted);
     }
 
     footer {
       text-align: center;
       margin-top: var(--gap-lg);
       padding-top: 20px;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--border-dark);
       font-size: var(--font-sm);
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.14em;
     }
 
+    footer span.red { color: var(--accent-red); }
+    footer span.blue { color: var(--accent-blue); }
+
     @media (max-width: 720px) {
       .signup-grid,
       .pricing-grid {
         grid-template-columns: 1fr;
+      }
+
+      .section-title-banner {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -344,28 +546,38 @@
 <div class="page">
 
   <!-- POSTER HERO -->
-  <section class="poster">
-    <div class="poster-kicker">UNITED STATES POLO PATRONS ASSOCIATION</div>
-    <div class="poster-rule"></div>
-    <h1 class="poster-title">COWBOY POLO CIRCUIT</h1>
-    <div class="poster-sub">AN AMERICAN DEVELOPMENT LEAGUE FOR ARENA & SMALL-FIELD POLO</div>
-    <p class="poster-tagline">Handicaps • Horses • Chapters • All Tracked Through the Patronium Ecosystem</p>
-    <div class="poster-cta">
-      <a href="#signup" class="btn btn-primary">Join the Circuit</a>
-      <a href="#leaderboards" class="btn btn-outline">View Leaderboards</a>
+  <section class="poster rope-frame">
+    <div class="poster-inner">
+      <div class="poster-kicker">UNITED STATES POLO PATRONS ASSOCIATION</div>
+      <div class="poster-rule"></div>
+      <h1 class="poster-title">COWBOY POLO CIRCUIT</h1>
+      <div class="poster-sub">AN AMERICAN DEVELOPMENT LEAGUE FOR ARENA & SMALL-FIELD POLO</div>
+      <p class="poster-tagline">
+        Handicaps • Horses • Chapters • All Tracked Through the
+        <span class="red">Patronium</span> &nbsp;Polo <span class="blue">Ecosystem</span>
+      </p>
+      <div class="poster-cta">
+        <a href="#signup" class="btn btn-primary">Join the Circuit</a>
+        <a href="#leaderboards" class="btn btn-outline">View Leaderboards</a>
+      </div>
+      <div class="poster-meta">
+        Inaugural Seasons Beginning with <span class="blue">Charleston Polo</span> &mdash;
+        Official Circuit of <span class="red">STRING 7̶7̶7̶ REMUDA</span>
+      </div>
     </div>
-    <div class="poster-meta">Inaugural Seasons Beginning with Charleston Polo • Official Circuit of STRING 7̶7̶7̶ REMUDA</div>
   </section>
 
   <!-- SIGN-UP -->
   <section class="section" id="signup">
     <div class="section-heading">
       <div class="section-kicker">Circuit Entry</div>
-      <h2 class="section-title">Sign Up for Cowboy Polo</h2>
+      <div class="section-title-banner">Sign Up for Cowboy Polo</div>
     </div>
 
-    <p class="section-text">The Cowboy Polo Circuit invites riders, horses, barns, and chapters to participate in a transparent,
-      American-made development pathway for small-field polo. Below is the mock-up of the entry system.</p>
+    <p class="section-text">
+      The Cowboy Polo Circuit invites riders, horses, barns, and chapters to participate in a transparent,
+      American-made development pathway for small-field polo. Below is the mock-up of the entry system.
+    </p>
 
     <div class="signup-grid">
       <div class="signup-card">
@@ -385,7 +597,7 @@
   <section class="section" id="leaderboards">
     <div class="section-heading">
       <div class="section-kicker">Rankings</div>
-      <h2 class="section-title">Player Handicap Leaderboard</h2>
+      <div class="section-title-banner">Player Handicap Leaderboard</div>
     </div>
 
     <table>
@@ -404,7 +616,7 @@
   <section class="section">
     <div class="section-heading">
       <div class="section-kicker">String 7̶7̶7̶ Remuda</div>
-      <h2 class="section-title">Horse Performance Leaderboard</h2>
+      <div class="section-title-banner">Horse Performance Leaderboard</div>
     </div>
 
     <table>
@@ -422,8 +634,8 @@
   <!-- PRICING HINTS -->
   <section class="section">
     <div class="section-heading">
-      <div class="section-kicker">Season Pricing</div>
-      <h2 class="section-title">Participation Costs</h2>
+      <div class="section-kicker">Season Awards & Entries</div>
+      <div class="section-title-banner">Participation Costs (Mock-Up)</div>
     </div>
 
     <div class="pricing-grid">
@@ -445,11 +657,11 @@
     </div>
   </section>
 
-  <!-- CHUKKER SUBMISSION -->
+  <!-- OFFICIAL CHUKKER SUBMISSIONS (MOCK-UP) -->
   <section class="section">
     <div class="section-heading">
       <div class="section-kicker">Match Reporting</div>
-      <h2 class="section-title">Official Sanctioned Chukker Submission</h2>
+      <div class="section-title-banner">Official Sanctioned Chukker Submission</div>
     </div>
 
     <div class="results-form">
@@ -460,7 +672,7 @@
         <label>Date</label><input placeholder="MM/DD/YYYY" />
       </div>
       <div class="results-form-row">
-        <label>Players & Scores</label><input placeholder="Rider A +2, Rider B 0 ..." />
+        <label>Players &amp; Scores</label><input placeholder="Rider A +2, Rider B 0 ..." />
       </div>
       <div class="results-form-row">
         <label>Horses Used</label><input placeholder="Maverick, Temple Bell ..." />
@@ -472,11 +684,11 @@
     </div>
   </section>
 
-  <!-- ON-CHAIN REGISTRY -->
+  <!-- SEASONAL ON-CHAIN REGISTRY (MOCK-UP) -->
   <section class="section">
     <div class="section-heading">
       <div class="section-kicker">On-Chain Registry</div>
-      <h2 class="section-title">Seasonal Results</h2>
+      <div class="section-title-banner">Seasonal Results (Mock-Up)</div>
     </div>
 
     <div class="registry-card">
@@ -492,16 +704,17 @@
     </div>
   </section>
 
-  <!-- DATA FLOW -->
+  <!-- DATA EXPLAINER (MOCK-UP) -->
   <section class="section">
     <div class="section-heading">
       <div class="section-kicker">Data Flow</div>
-      <h2 class="section-title">How Results Are Stored</h2>
+      <div class="section-title-banner">How Results Are Stored</div>
     </div>
-
-    <p class="section-text">The Cowboy Polo Circuit uses a hybrid storage model. Live match data is kept off-chain for
-      performance and rapid updating. End-of-season summaries are published to IPFS, and the IPFS hash is placed on-chain
-      on the Base Network for transparency and permanence.</p>
+    <p class="section-text">
+      The Cowboy Polo Circuit uses a hybrid storage model. Live match data is kept off-chain for
+      performance and rapid updating. End-of-season summaries are published to IPFS, and the IPFS
+      hash is placed on-chain on the Base Network for transparency and permanence.
+    </p>
 
     <div class="arch-diagram">
       <p><strong>Match →</strong> Supabase (off-chain detailed log)</p>
@@ -512,8 +725,30 @@
     </div>
   </section>
 
+  <!-- CHAPTER SUBMISSION UI (MOCK-UP) -->
+  <section class="section">
+    <div class="section-heading">
+      <div class="section-kicker">Chapter Tools</div>
+      <div class="section-title-banner">Publish Season Summary (Mock-Up)</div>
+    </div>
+
+    <div class="results-form">
+      <div class="results-form-row">
+        <label>Upload Season File</label><input type="file"/>
+      </div>
+      <div class="results-form-row">
+        <label>Season Number</label><input placeholder="2025"/>
+      </div>
+      <div class="results-form-row">
+        <label>Confirm Chapter</label><input placeholder="Charleston Polo (mock)"/>
+      </div>
+      <p class="results-form-note">Button placeholder: “Publish to Chain” (mock-up only)</p>
+    </div>
+  </section>
+
   <footer>
-    &copy; <span id="year"></span> USPPA — Cowboy Polo Circuit
+    &copy; <span id="year"></span> <span class="blue">USPPA</span> &mdash; Cowboy Polo Circuit
+    · <span class="red">STRING 7̶7̶7̶ REMUDA</span>
   </footer>
 </div>
 
