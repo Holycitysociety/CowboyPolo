@@ -198,6 +198,45 @@
       margin-bottom: 6px;
     }
 
+    /* Three Sevens wordmark */
+    .three-sevens-mark {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .three-sevens-numeral {
+      font-family: "Cormorant Garamond", serif;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+    }
+
+    .three-sevens-text {
+      font-family: "IM Fell English SC", serif;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+    }
+
+    /* Size tuning by context */
+    .hero-badges .three-sevens-numeral {
+      font-size: 1.3rem;
+    }
+
+    .hero-badges .three-sevens-text {
+      font-size: 0.72rem;
+      opacity: 0.9;
+    }
+
+    .section-kicker .three-sevens-numeral {
+      font-size: 1rem;
+    }
+
+    .section-kicker .three-sevens-text {
+      font-size: 0.7rem;
+      opacity: 0.9;
+    }
+
     /* WORDMARK-STYLE TITLES */
     .section-title {
       position: relative;
@@ -470,7 +509,10 @@
       <div class="hero-rule-2"></div>
 
       <div class="hero-badges">
-        <span>THREE 7̶7̶7̶ SEVENS REMUDA</span>
+        <div class="three-sevens-mark">
+          <div class="three-sevens-numeral">7̶7̶7̶</div>
+          <div class="three-sevens-text">THREE SEVENS REMUDA</div>
+        </div>
       </div>
 
       <div class="hero-cta-row">
@@ -581,11 +623,16 @@
       </div>
     </section>
 
-    <!-- HORSE & THREE SEVENS 7̶7̶7̶ REMUDA STATS -->
+    <!-- HORSE & THREE SEVENS 7̶7̶7̶ REMUDA -->
     <section id="horses">
       <div class="section-header">
-        <div class="section-kicker">THREE SEVENS 7̶7̶7̶ REMUDA</div>
-        <h2 class="section-title">HORSE PERFORMANCE &amp; REMUDA STATS</h2>
+        <div class="section-kicker">
+          <div class="three-sevens-mark">
+            <div class="three-sevens-numeral">7̶7̶7̶</div>
+            <div class="three-sevens-text">THREE SEVENS REMUDA</div>
+          </div>
+        </div>
+        <h2 class="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
         <div class="section-rule"></div>
       </div>
 
