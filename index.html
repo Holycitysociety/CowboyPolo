@@ -333,7 +333,21 @@
       text-align: center;
     }
 
-    /* ASCII-style bar chart */
+    /* Handicap formatting */
+    .handicap-value {
+      white-space: nowrap;
+    }
+
+    .handicap-value-main {
+      font-size: 0.9rem;
+    }
+
+    .handicap-value-decimal {
+      font-size: 0.75rem;
+      opacity: 0.9;
+    }
+
+    /* ASCII-style bar chart (kept in CSS in case we reuse later) */
     .chart {
       max-width: 720px;
       margin: 20px auto 0;
@@ -375,7 +389,7 @@
       opacity: 0.85;
     }
 
-    /* Prizes list (unused for now, kept for later expansion) */
+    /* Prizes list (for future use) */
     .prize-list {
       max-width: 720px;
       margin: 22px auto 0;
@@ -539,22 +553,30 @@
         <div class="board-row">
           <span>Ryder Mitchell</span>
           <span>Charleston</span>
-          <span>+2.15</span>
+          <span class="handicap-value">
+            <span class="handicap-value-main">2</span><span class="handicap-value-decimal">.15</span>
+          </span>
         </div>
         <div class="board-row">
           <span>Casey Navarro</span>
           <span>Three Sevens 7̶7̶7̶</span>
-          <span>+1.40</span>
+          <span class="handicap-value">
+            <span class="handicap-value-main">1</span><span class="handicap-value-decimal">.40</span>
+          </span>
         </div>
         <div class="board-row">
           <span>Jess Carter</span>
           <span>Independent</span>
-          <span>+1.25</span>
+          <span class="handicap-value">
+            <span class="handicap-value-main">1</span><span class="handicap-value-decimal">.25</span>
+          </span>
         </div>
         <div class="board-row">
           <span>Lane Douglas</span>
           <span>Charleston</span>
-          <span>+0.85</span>
+          <span class="handicap-value">
+            <span class="handicap-value-main">0</span><span class="handicap-value-decimal">.85</span>
+          </span>
         </div>
       </div>
     </section>
@@ -623,25 +645,7 @@
           <span>79</span>
         </div>
       </div>
-
-      <div class="chart">
-        <div class="chart-title">Chukkers Played — Three Sevens 7̶7̶7̶ Remuda</div>
-        <div class="chart-line">
-          <span class="chart-label">Thunderbird</span>
-          <span class="chart-bar">██████████████</span>
-          <span class="chart-value">18 chukkers</span>
-        </div>
-        <div class="chart-line">
-          <span class="chart-label">Sundance</span>
-          <span class="chart-bar">███████████</span>
-          <span class="chart-value">14 chukkers</span>
-        </div>
-        <div class="chart-line">
-          <span class="chart-label">River Scout</span>
-          <span class="chart-bar">████████</span>
-          <span class="chart-value">11 chukkers</span>
-        </div>
-      </div>
+      <!-- Chukkers Played chart removed for MVP -->
     </section>
 
     <!-- RESULTS / ON-CHAIN SNAPSHOT (MVP SHORT VERSION) -->
