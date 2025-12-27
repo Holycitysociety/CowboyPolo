@@ -386,7 +386,7 @@
       opacity: 0.9;
     }
 
-    /* ASCII-style bar chart (kept in CSS in case we reuse later) */
+    /* ASCII-style bar chart (kept in case reused later) */
     .chart {
       max-width: 720px;
       margin: 20px auto 0;
@@ -449,6 +449,57 @@
       text-transform: uppercase;
       display: inline-block;
       margin-bottom: 4px;
+    }
+
+    /* Results form */
+    .results-form {
+      max-width: 720px;
+      margin: 26px auto 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      row-gap: 14px;
+    }
+
+    .results-form-row-inline {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .results-form-row-inline > div {
+      flex: 1 1 160px;
+    }
+
+    .results-form label {
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+    }
+
+    .results-form input,
+    .results-form textarea,
+    .results-form select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: #050505;
+      color: var(--fg);
+      font-family: "EB Garamond", serif;
+      font-size: 0.95rem;
+    }
+
+    .results-form textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .results-form small {
+      font-size: 0.78rem;
+      color: var(--muted);
     }
 
     /* Footer */
@@ -691,10 +742,9 @@
           <span>79</span>
         </div>
       </div>
-      <!-- Chukkers Played chart removed for MVP -->
     </section>
 
-    <!-- RESULTS / ON-CHAIN SNAPSHOT (MVP SHORT VERSION) -->
+    <!-- RESULTS / ON-CHAIN SNAPSHOT WITH FUNCTIONAL FORM -->
     <section id="results">
       <div class="section-header">
         <div class="section-kicker">RESULTS &amp; RECORD</div>
@@ -716,9 +766,86 @@
         </p>
       </div>
 
-      <div class="hero-cta-row" style="margin-top: 24px;">
-        <a href="#results" class="btn btn-outline">SUBMIT CHUKKER RESULTS</a>
-      </div>
+      <!-- Netlify-powered form so people can send message + file -->
+      <form
+        class="results-form"
+        name="chukker-results"
+        method="POST"
+        data-netlify="true"
+        data-netlify-honeypot="bot-field"
+        enctype="multipart/form-data"
+      >
+        <!-- Netlify form name -->
+        <input type="hidden" name="form-name" value="chukker-results" />
+        <!-- Honeypot -->
+        <p style="display: none;">
+          <label>Don’t fill this out if you're human:
+            <input name="bot-field" />
+          </label>
+        </p>
+
+        <div class="results-form-row-inline">
+          <div>
+            <label for="name">Your Name</label>
+            <input id="name" name="name" type="text" required />
+          </div>
+          <div>
+            <label for="role">Role</label>
+            <select id="role" name="role" required>
+              <option value="">Select role</option>
+              <option>Coach / Instructor</option>
+              <option>Team Captain</option>
+              <option>Arena Steward</option>
+              <option>Chapter Officer</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="results-form-row-inline">
+          <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required />
+          </div>
+          <div>
+            <label for="chapter">Chapter / Arena</label>
+            <input id="chapter" name="chapter" type="text" />
+          </div>
+        </div>
+
+        <div class="results-form-row-inline">
+          <div>
+            <label for="match-date">Match Date</label>
+            <input id="match-date" name="match-date" type="date" />
+          </div>
+          <div>
+            <label for="location">Location</label>
+            <input id="location" name="location" type="text" />
+          </div>
+        </div>
+
+        <div>
+          <label for="details">Chukker Details</label>
+          <textarea
+            id="details"
+            name="details"
+            rows="4"
+            placeholder="Teams, riders, horses, scoreline, and any notes."
+          ></textarea>
+        </div>
+
+        <div>
+          <label for="file">Upload Chukker Sheet (optional)</label>
+          <input id="file" name="file" type="file" />
+          <small>PDF, image, or spreadsheet files are welcome.</small>
+        </div>
+
+        <div style="margin-top: 12px; text-align: right;">
+          <button type="submit" class="btn btn-outline">
+            SUBMIT CHUKKER RESULTS
+          </button>
+        </div>
+      </form>
     </section>
 
     <footer>
