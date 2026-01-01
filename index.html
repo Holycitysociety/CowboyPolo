@@ -13,6 +13,21 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Vite entry point -->
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- (Optional) hidden Netlify form definition for extra safety -->
+    <form
+      name="chukker-results"
+      netlify
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="details"></textarea>
+      <input type="file" name="file" />
+    </form>
   </body>
 </html>
