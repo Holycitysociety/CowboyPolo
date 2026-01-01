@@ -282,7 +282,7 @@ function App() {
             <div>
               <label htmlFor="role">Role</label>
               <select id="role" name="role" required>
-                <option value="">Select role</option>
+                <option value=">Select role</option>
                 <option>Coach / Instructor</option>
                 <option>Team Captain</option>
                 <option>Arena Steward</option>
