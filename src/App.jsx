@@ -1,17 +1,10 @@
+// src/App.jsx
 import React from "react";
-import { ConnectWallet } from "@thirdweb-dev/react";
+import "./App.css";
+import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
 
-function Handicap({ main, decimal }) {
-  return (
-    <span className="handicap-value">
-      <span className="handicap-value-main">{main}</span>
-      <span className="handicap-value-decimal">{decimal}</span>
-    </span>
-  );
-}
-
-const App = () => {
-  const year = new Date().getFullYear();
+function App() {
+  const address = useAddress();
 
   return (
     <div className="page">
@@ -22,7 +15,7 @@ const App = () => {
           <br />
           PATRONS ASSOCIATION
         </div>
-        <div className="hero-rule"></div>
+        <div className="hero-rule" />
         <div className="hero-presents">PRESENTS THE</div>
 
         <div className="hero-main">
@@ -35,7 +28,7 @@ const App = () => {
           A NATIONAL DEVELOPMENT LEAGUE FOR PLAYERS, PONIES &amp; PATRONS
         </div>
 
-        <div className="hero-rule-2"></div>
+        <div className="hero-rule-2" />
 
         <div className="hero-badges">
           <div className="hero-badge-intro">INTRODUCING</div>
@@ -46,14 +39,17 @@ const App = () => {
         </div>
 
         <div className="hero-cta-row">
-          {/* Thirdweb email wallet button */}
-          <ConnectWallet theme="dark" btnTitle="Sign up with email" />
+          <ConnectWallet
+            theme="dark"
+            modalTitle="Cowboy Polo Patron Wallet"
+            btnTitle={address ? "View Wallet" : "Sign up / Sign in"}
+          />
         </div>
 
         <p className="hero-wallet-copy">
-          Sign up with your email to create your Cowboy Polo Patron Wallet.
-          After you sign in, you’ll receive an email with the Cowboy Polo Circuit
-          signup details.
+          Sign up with your email to create your Cowboy Polo Patron Wallet. After
+          you sign in, you’ll receive an email with the Cowboy Polo Circuit signup
+          details.
         </p>
       </section>
 
@@ -62,7 +58,7 @@ const App = () => {
         <div className="section-header">
           <div className="section-kicker">THE FORMAT</div>
           <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
-          <div className="section-rule"></div>
+          <div className="section-rule" />
         </div>
 
         <div className="section-body">
@@ -88,9 +84,9 @@ const App = () => {
             are rated, and how their teams are performing.
           </p>
           <p>
-            Over the course of a Circuit season, those two tables are the
-            backbone of the standings: player handicaps and team records (wins,
-            losses, goal difference) together define how the season is read.
+            Over the course of a Circuit season, those two tables are the backbone
+            of the standings: player handicaps and team records (wins, losses,
+            goal difference) together define how the season is read.
           </p>
         </div>
       </section>
@@ -100,7 +96,7 @@ const App = () => {
         <div className="section-header">
           <div className="section-kicker">PLAYER STANDINGS</div>
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
-          <div className="section-rule"></div>
+          <div className="section-rule" />
         </div>
 
         <div className="section-body">
@@ -113,8 +109,8 @@ const App = () => {
           <p>
             Ratings move with performance over time: goals scored, assists,
             ride-offs won, and overall impact on the match all feed the same
-            underlying score. The table below shows how a leaderboard might
-            appear during mid-season.
+            underlying score. The table below shows how a leaderboard might appear
+            during mid-season.
           </p>
         </div>
 
@@ -132,22 +128,34 @@ const App = () => {
           <div className="board-row">
             <span>Ryder Mitchell</span>
             <span>Charleston</span>
-            <Handicap main="2" decimal=".15" />
+            <span className="handicap-value">
+              <span className="handicap-value-main">2</span>
+              <span className="handicap-value-decimal">.15</span>
+            </span>
           </div>
           <div className="board-row">
             <span>Casey Navarro</span>
             <span>Three Sevens 7̶7̶7̶</span>
-            <Handicap main="1" decimal=".40" />
+            <span className="handicap-value">
+              <span className="handicap-value-main">1</span>
+              <span className="handicap-value-decimal">.40</span>
+            </span>
           </div>
           <div className="board-row">
             <span>Jess Carter</span>
             <span>Independent</span>
-            <Handicap main="1" decimal=".25" />
+            <span className="handicap-value">
+              <span className="handicap-value-main">1</span>
+              <span className="handicap-value-decimal">.25</span>
+            </span>
           </div>
           <div className="board-row">
             <span>Lane Douglas</span>
             <span>Charleston</span>
-            <Handicap main="0" decimal=".85" />
+            <span className="handicap-value">
+              <span className="handicap-value-main">0</span>
+              <span className="handicap-value-decimal">.85</span>
+            </span>
           </div>
         </div>
       </section>
@@ -162,7 +170,7 @@ const App = () => {
             </div>
           </div>
           <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
-          <div className="section-rule"></div>
+          <div className="section-rule" />
         </div>
 
         <div className="section-body">
@@ -180,12 +188,12 @@ const App = () => {
           </p>
           <p>
             By keeping a single, living record for each Remuda horse, breeders,
-            trainers, players, and patrons can all see the full life of an
-            equine athlete — not just a single sale moment.
+            trainers, players, and patrons can all see the full life of an equine
+            athlete — not just a single sale moment.
           </p>
           <p>
-            Over time, those records can be linked into the Patronium ecosystem
-            so that the people who helped bring a horse along its path can
+            Over time, those records can be linked into the Patronium ecosystem so
+            that the people who helped bring a horse along its path can
             participate in its economic story, not only its final ownership.
           </p>
         </div>
@@ -225,12 +233,12 @@ const App = () => {
         </div>
       </section>
 
-      {/* RESULTS / ON-CHAIN SNAPSHOT WITH FUNCTIONAL FORM */}
+      {/* RESULTS / FORM */}
       <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
           <h2 className="section-title">SANCTIONED CHUKKERS &amp; SEASON RECORD</h2>
-          <div className="section-rule"></div>
+          <div className="section-rule" />
         </div>
 
         <div className="section-body">
@@ -248,7 +256,6 @@ const App = () => {
           </p>
         </div>
 
-        {/* Netlify-powered form so people can send message + file */}
         <form
           className="results-form"
           name="chukker-results"
@@ -312,9 +319,9 @@ const App = () => {
             <textarea
               id="details"
               name="details"
-              rows="4"
+              rows={4}
               placeholder="Teams, riders, horses, scoreline, and any notes."
-            ></textarea>
+            />
           </div>
 
           <div>
@@ -323,9 +330,7 @@ const App = () => {
             <small>PDF, image, or spreadsheet files are welcome.</small>
           </div>
 
-          <div
-            style={{ marginTop: "12px", textAlign: "right" }}
-          >
+          <div style={{ marginTop: "12px", textAlign: "right" }}>
             <button type="submit" className="btn btn-outline">
               SUBMIT CHUKKER RESULTS
             </button>
@@ -334,11 +339,11 @@ const App = () => {
       </section>
 
       <footer>
-        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
-        POLO CIRCUIT
+        © <span>{new Date().getFullYear()}</span> UNITED STATES POLO PATRONS
+        ASSOCIATION · COWBOY POLO CIRCUIT
       </footer>
     </div>
   );
-};
+}
 
 export default App;
