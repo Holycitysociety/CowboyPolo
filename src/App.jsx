@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from "react";
 import "./App.css";
 import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
@@ -48,8 +47,8 @@ function App() {
 
         <p className="hero-wallet-copy">
           Sign up with your email to create your Cowboy Polo Patron Wallet. After
-          you sign in, you’ll receive an email with the Cowboy Polo Circuit signup
-          details.
+          you sign in, you’ll receive an email with the Cowboy Polo Circuit
+          signup details.
         </p>
       </section>
 
@@ -84,9 +83,9 @@ function App() {
             are rated, and how their teams are performing.
           </p>
           <p>
-            Over the course of a Circuit season, those two tables are the backbone
-            of the standings: player handicaps and team records (wins, losses,
-            goal difference) together define how the season is read.
+            Over the course of a Circuit season, those two tables are the
+            backbone of the standings: player handicaps and team records (wins,
+            losses, goal difference) together define how the season is read.
           </p>
         </div>
       </section>
@@ -109,8 +108,8 @@ function App() {
           <p>
             Ratings move with performance over time: goals scored, assists,
             ride-offs won, and overall impact on the match all feed the same
-            underlying score. The table below shows how a leaderboard might appear
-            during mid-season.
+            underlying score. The table below shows how a leaderboard might
+            appear during mid-season.
           </p>
         </div>
 
@@ -192,8 +191,8 @@ function App() {
             athlete — not just a single sale moment.
           </p>
           <p>
-            Over time, those records can be linked into the Patronium ecosystem so
-            that the people who helped bring a horse along its path can
+            Over time, those records can be linked into the Patronium ecosystem
+            so that the people who helped bring a horse along its path can
             participate in its economic story, not only its final ownership.
           </p>
         </div>
@@ -282,7 +281,7 @@ function App() {
             <div>
               <label htmlFor="role">Role</label>
               <select id="role" name="role" required>
-                <option value=">Select role</option>
+                <option value="">Select role</option>
                 <option>Coach / Instructor</option>
                 <option>Team Captain</option>
                 <option>Arena Steward</option>
