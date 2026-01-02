@@ -1,6 +1,9 @@
 // src/App.jsx
 import React, { useEffect, useRef, useState } from "react";
+import "./App.css";
+
 import {
+  CheckoutWidget,
   ConnectEmbed,
   useActiveAccount,
   useActiveWallet,
@@ -11,16 +14,16 @@ import {
 import { createThirdwebClient, defineChain } from "thirdweb";
 import { inAppWallet } from "thirdweb/wallets";
 
-// ---------------------------------------------
-// Thirdweb client + chain (same as Patron site)
-// ---------------------------------------------
+// -----------------------------
+// Thirdweb client + chain
+// -----------------------------
 const client = createThirdwebClient({
-  clientId: "f58c0bfc6e6a2c00092cc3c35db1eed8",
+  clientId: "f58c0bfc6e6a2c00092cc3c35db1eed8", // same as Patron site
 });
 
 const BASE = defineChain(8453);
 
-// Embedded user wallets (EMAIL ONLY)
+// Email-only embedded wallet
 const wallets = [
   inAppWallet({
     auth: {
@@ -29,10 +32,18 @@ const wallets = [
   }),
 ];
 
-// ---------------------------------------------
-// Dark theme for wallet modal (matches Patron)
-// ---------------------------------------------
-const walletTheme = darkTheme({
+// PATRON token + USDC on Base
+const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+const PATRON = "0xD766a771887fFB6c528434d5710B406313CAe03A";
+const SELLER = "0xfee3c75691e8c10ed4246b10635b19bfff06ce16";
+
+const checkoutDescription =
+  "USPPA PATRONAGE UTILITY TOKEN · THREE SEVENS 7̶7̶7̶ REMUDA · COWBOY POLO CIRCUIT · THE POLO LIFE · CHARLESTON POLO CLUB";
+
+// -----------------------------
+// Themed checkout to match Patron site
+// -----------------------------
+const patronCheckoutTheme = darkTheme({
   fontFamily:
     '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
   colors: {
@@ -70,13 +81,40 @@ const walletTheme = darkTheme({
   },
 });
 
-// ---------------------------------------------
-// Main App – Cowboy Polo Circuit
-// ---------------------------------------------
+// -----------------------------
+// Simple error boundary
+// -----------------------------
+class CheckoutBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error, info) {
+    console.error("CheckoutWidget crashed:", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <p style={{ color: "#e3bf72", marginTop: "12px" }}>
+          Checkout temporarily unavailable. Please try again later.
+        </p>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// -----------------------------
+// Main App
+// -----------------------------
 export default function App() {
   const year = new Date().getFullYear();
 
   const [isWalletOpen, setIsWalletOpen] = useState(false);
+  const [usdAmount, setUsdAmount] = useState("1");
 
   const account = useActiveAccount();
   const activeWallet = useActiveWallet();
@@ -84,10 +122,10 @@ export default function App() {
   const isConnected = !!account;
 
   const walletScrollRef = useRef(null);
-  const playbookGateRef = useRef(null);
+  const resultsGateRef = useRef(null); // for scroll-based gating
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
 
-  // Balances (same as Patron)
+  // Balances
   const { data: baseBalance } = useWalletBalance({
     address: account?.address,
     chain: BASE,
@@ -98,14 +136,14 @@ export default function App() {
     address: account?.address,
     chain: BASE,
     client,
-    tokenAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    tokenAddress: USDC_BASE,
   });
 
   const { data: patronBalance } = useWalletBalance({
     address: account?.address,
     chain: BASE,
     client,
-    tokenAddress: "0xD766a771887fFB6c528434d5710B406313CAe03A",
+    tokenAddress: PATRON,
   });
 
   const openWallet = () => setIsWalletOpen(true);
@@ -134,7 +172,52 @@ export default function App() {
     }
   };
 
-  // Lock background scroll when modal open
+  const normalizedAmount =
+    usdAmount && Number(usdAmount) > 0 ? String(usdAmount) : "1";
+
+  const handleCheckoutSuccess = async (result) => {
+    try {
+      if (!account?.address) return;
+
+      const resp = await fetch("/.netlify/functions/mint-patron", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          address: account.address,
+          usdAmount: normalizedAmount,
+          checkout: {
+            id: result?.id,
+            amountPaid: result?.amountPaid ?? normalizedAmount,
+            currency: result?.currency ?? "USD",
+          },
+        }),
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        console.error("mint-patron error:", text);
+        alert(
+          "Payment succeeded, but we could not mint PATRON automatically.\n" +
+            "We’ll review your transaction and credit you manually if needed."
+        );
+        return;
+      }
+
+      await resp.json();
+      alert(
+        "Thank you — your patronage payment was received.\n\n" +
+          "PATRON is being credited to your wallet."
+      );
+    } catch (err) {
+      console.error("Error in handleCheckoutSuccess:", err);
+      alert(
+        "Payment completed, but there was an error minting PATRON.\n" +
+          "We’ll review and fix this on our side."
+      );
+    }
+  };
+
+  // Lock body scroll when wallet modal is open
   useEffect(() => {
     if (isWalletOpen) {
       document.documentElement.style.overflow = "hidden";
@@ -153,7 +236,7 @@ export default function App() {
     document.body.style.overflow = "";
   }, [isWalletOpen]);
 
-  // Escape closes modal
+  // ESC to close wallet modal
   useEffect(() => {
     if (!isWalletOpen) return;
     const onKeyDown = (e) => {
@@ -163,7 +246,7 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
-  // Scroll trigger: when Circuit Playbook hits a threshold, open wallet once
+  // Scroll trigger: when results section scrolls past a threshold, open wallet once
   useEffect(() => {
     if (isConnected) {
       setHasTriggeredGate(false);
@@ -172,11 +255,11 @@ export default function App() {
 
     const handleScroll = () => {
       if (hasTriggeredGate) return;
-      const el = playbookGateRef.current;
+      const el = resultsGateRef.current;
       if (!el) return;
 
       const rect = el.getBoundingClientRect();
-      const triggerY = 96;
+      const triggerY = 96; // px from top
 
       if (rect.bottom <= triggerY) {
         setHasTriggeredGate(true);
@@ -190,7 +273,7 @@ export default function App() {
 
   return (
     <div className="page">
-      {/* Top-right Patron Wallet button */}
+      {/* Top-right Patron Wallet button (same as Patron site) */}
       <header
         style={{
           display: "flex",
@@ -208,46 +291,384 @@ export default function App() {
         </button>
       </header>
 
-      {/* Masthead */}
-      <div className="masthead">
-        <div className="masthead-inner">
-          <div className="masthead-line-1">
-            <span>UNITED STATES POLO</span>
-            <span>PATRONS ASSOCIATION</span>
-          </div>
-          <div className="masthead-rule"></div>
-          <div className="masthead-line-2 masthead-presents">PRESENTS THE</div>
-          <div className="masthead-line-2 masthead-stewardship">
-            COWBOY POLO CIRCUIT
-          </div>
+      {/* HERO POSTER */}
+      <section className="hero">
+        <div className="hero-topline">
+          UNITED STATES POLO
+          <br />
+          PATRONS ASSOCIATION
         </div>
-      </div>
+        <div className="hero-rule" />
+        <div className="hero-presents">PRESENTS THE</div>
 
-      {/* Hero */}
-      <header>
-        <h1 className="hero-title">COWBOY POLO CIRCUIT</h1>
-
-        <div className="hero-symbol">
-          <div className="hero-symbol-main">
-            A DEVELOPMENT FIELD FOR AMERICAN POLO
-          </div>
-          <div className="hero-network">
-            FUELED BY POLO PATRONIUM ON BASE NETWORK
-          </div>
+        <div className="hero-main">
+          <span className="hero-word cowboy">COWBOY</span>
+          <span className="hero-word polo">POLO</span>
+          <span className="hero-word circuit">CIRCUIT</span>
         </div>
 
-        <div className="hero-actions">
-          <button className="btn btn-primary" onClick={openWallet}>
-            OPEN PATRON WALLET
+        <div className="hero-tagline">
+          A NATIONAL DEVELOPMENT LEAGUE FOR PLAYERS, PONIES &amp; PATRONS
+        </div>
+
+        <div className="hero-rule-2" />
+
+        <div className="hero-badges">
+          <div className="hero-badge-intro">INTRODUCING</div>
+          <div className="three-sevens-mark">
+            <div className="three-sevens-numeral">7̶7̶7̶</div>
+            <div className="three-sevens-text">THREE SEVENS REMUDA</div>
+          </div>
+        </div>
+
+        <div className="hero-cta-row">
+          <button
+            className="btn btn-primary"
+            onClick={openWallet}
+            type="button"
+          >
+            {isConnected ? "View Wallet" : "Sign up / Sign in"}
           </button>
-
-          <a className="btn btn-outline" href="#circuit-playbook">
-            VIEW CIRCUIT PLAYBOOK
-          </a>
         </div>
-      </header>
 
-      {/* Wallet modal – same UX as Patron site */}
+        <p className="hero-wallet-copy">
+          Sign up with your email to create your Cowboy Polo Patron Wallet. After
+          you sign in, you’ll receive an email with the Cowboy Polo Circuit
+          signup details.
+        </p>
+      </section>
+
+      {/* ABOUT / HOW IT FUNCTIONS */}
+      <section id="about">
+        <div className="section-header">
+          <div className="section-kicker">THE FORMAT</div>
+          <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
+          <div className="section-rule" />
+        </div>
+
+        <div className="section-body">
+          <p>
+            The Cowboy Polo Circuit is a national development league for players,
+            ponies, &amp; patrons built on sanctioned Cowboy Polo chukkers.
+          </p>
+          <p>
+            Games are played 3 on 3 in arenas or campitos. The key is that a
+            player does not need a full string to attract patrons: a rider can
+            progress by playing as little as one chukker, on one good horse, and
+            still build a real Circuit handicap.
+          </p>
+          <p>
+            Cowboy Polo chukkers can be hosted by any stable, arena, or program
+            that signs on to the Circuit. A local coach, instructor, or appointed
+            captains run the game, then submit the chukker sheet feeding two
+            tables: the individual handicap table for each rider, and the game
+            results table for teams.
+          </p>
+          <p>
+            Each sanctioned chukker updates both sides of the story: how riders
+            are rated, and how their teams are performing.
+          </p>
+          <p>
+            Over the course of a Circuit season, those two tables are the backbone
+            of the standings: player handicaps and team records (wins, losses,
+            goal difference) together define how the season is read.
+          </p>
+        </div>
+      </section>
+
+      {/* PLAYER LEADERBOARD */}
+      <section id="players">
+        <div className="section-header">
+          <div className="section-kicker">PLAYER STANDINGS</div>
+          <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
+          <div className="section-rule" />
+        </div>
+
+        <div className="section-body">
+          <p>
+            Player handicaps in the Cowboy Polo Circuit are not just static
+            numbers. Each rider’s Cowboy Polo handicap is a statistically
+            calculated, ELO-style rating, updated after every sanctioned chukker
+            and displayed to two decimal places.
+          </p>
+          <p>
+            Ratings move with performance over time: goals scored, assists,
+            ride-offs won, and overall impact on the match all feed the same
+            underlying score. The table below shows how a leaderboard might appear
+            during mid-season.
+          </p>
+        </div>
+
+        <div className="board">
+          <div className="board-title">Top Riders — Mid-Season Snapshot</div>
+          <div className="board-sub">
+            Handicaps update as sanctioned results are submitted.
+          </div>
+
+          <div className="board-header">
+            <span>Rider</span>
+            <span>Chapter</span>
+            <span>Handicap</span>
+          </div>
+          <div className="board-row">
+            <span>Ryder Mitchell</span>
+            <span>Charleston</span>
+            <span className="handicap-value">
+              <span className="handicap-value-main">2</span>
+              <span className="handicap-value-decimal">.15</span>
+            </span>
+          </div>
+          <div className="board-row">
+            <span>Casey Navarro</span>
+            <span>Three Sevens 7̶7̶7̶</span>
+            <span className="handicap-value">
+              <span className="handicap-value-main">1</span>
+              <span className="handicap-value-decimal">.40</span>
+            </span>
+          </div>
+          <div className="board-row">
+            <span>Jess Carter</span>
+            <span>Independent</span>
+            <span className="handicap-value">
+              <span className="handicap-value-main">1</span>
+              <span className="handicap-value-decimal">.25</span>
+            </span>
+          </div>
+          <div className="board-row">
+            <span>Lane Douglas</span>
+            <span>Charleston</span>
+            <span className="handicap-value">
+              <span className="handicap-value-main">0</span>
+              <span className="handicap-value-decimal">.85</span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* HORSE & THREE SEVENS REMUDA */}
+      <section id="horses">
+        <div className="section-header">
+          <div className="section-kicker">
+            <div className="three-sevens-mark">
+              <div className="three-sevens-numeral">7̶7̶7̶</div>
+              <div className="three-sevens-text">THREE SEVENS REMUDA</div>
+            </div>
+          </div>
+          <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
+          <div className="section-rule" />
+        </div>
+
+        <div className="section-body">
+          <p>
+            The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA horses —
+            tracked from their first Cowboy Polo chukker through their entire
+            competitive career.
+          </p>
+          <p>
+            Every sanctioned appearance adds to a horse’s trace: chukkers played,
+            riders carried, contribution to wins, and awards earned across
+            chapters and seasons. The same horse might be bred in one place,
+            started by another, developed by a pro, and later carry juniors and
+            patrons.
+          </p>
+          <p>
+            By keeping a single, living record for each Remuda horse, breeders,
+            trainers, players, and patrons can all see the full life of an equine
+            athlete — not just a single sale moment.
+          </p>
+          <p>
+            Over time, those records can be linked into the Patronium ecosystem so
+            that the people who helped bring a horse along its path can
+            participate in its economic story, not only its final ownership.
+          </p>
+        </div>
+
+        <div className="board">
+          <div className="board-title">Remuda Horses — Performance Snapshot</div>
+          <div className="board-sub">
+            Score blends chukker count, match impact, and rider feedback across
+            the season.
+          </div>
+
+          <div className="board-header">
+            <span>Horse</span>
+            <span>String</span>
+            <span>Score</span>
+          </div>
+          <div className="board-row">
+            <span>Thunderbird</span>
+            <span>7̶7̶7̶</span>
+            <span>92</span>
+          </div>
+          <div className="board-row">
+            <span>Sundance</span>
+            <span>7̶7̶7̶</span>
+            <span>88</span>
+          </div>
+          <div className="board-row">
+            <span>Cholla</span>
+            <span>Private</span>
+            <span>81</span>
+          </div>
+          <div className="board-row">
+            <span>River Scout</span>
+            <span>7̶7̶7̶</span>
+            <span>79</span>
+          </div>
+        </div>
+      </section>
+
+      {/* RESULTS / FORM with PATRON WALLET GATING */}
+      <section id="results" ref={resultsGateRef}>
+        <div className="section-header">
+          <div className="section-kicker">RESULTS &amp; RECORD</div>
+          <h2 className="section-title">SANCTIONED CHUKKERS &amp; SEASON RECORD</h2>
+          <div className="section-rule" />
+        </div>
+
+        <div className="section-body">
+          <p>
+            Match captains or appointed officials submit chukker sheets: teams,
+            scorelines, rider combinations, and notable horse usage. Those sheets
+            become the official record that updates handicaps and team standings
+            across the Circuit.
+          </p>
+          <p>
+            In the live system, this is where results will be uploaded and
+            confirmed before they touch the leaderboards — and where each
+            season’s record can be prepared for on-chain archival inside the
+            Patronium ecosystem.
+          </p>
+        </div>
+
+        <div style={{ position: "relative", marginTop: "16px" }}>
+          {!isConnected && (
+            <div
+              onClick={openWallet}
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "rgba(0,0,0,0.55)",
+                backdropFilter: "blur(6px)",
+                WebkitBackdropFilter: "blur(6px)",
+                zIndex: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "20px",
+                cursor: "pointer",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "0.78rem",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "#c7c7c7",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Patron Wallet Required
+                </div>
+                <div
+                  style={{
+                    fontSize: "0.9rem",
+                    color: "#ffffff",
+                  }}
+                >
+                  Sign in with your Patron Wallet to submit sanctioned Cowboy
+                  Polo chukker results.
+                </div>
+              </div>
+            </div>
+          )}
+
+          <form
+            className="results-form"
+            name="chukker-results"
+            method="POST"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            encType="multipart/form-data"
+          >
+            {/* Netlify form name */}
+            <input type="hidden" name="form-name" value="chukker-results" />
+            {/* Honeypot */}
+            <p style={{ display: "none" }}>
+              <label>
+                Don’t fill this out if you're human:
+                <input name="bot-field" />
+              </label>
+            </p>
+
+            <div className="results-form-row-inline">
+              <div>
+                <label htmlFor="name">Your Name</label>
+                <input id="name" name="name" type="text" required />
+              </div>
+              <div>
+                <label htmlFor="role">Role</label>
+                <select id="role" name="role" required>
+                  <option value=">Select role">Select role</option>
+                  <option>Coach / Instructor</option>
+                  <option>Team Captain</option>
+                  <option>Arena Steward</option>
+                  <option>Chapter Officer</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="results-form-row-inline">
+              <div>
+                <label htmlFor="email">Email</label>
+                <input id="email" name="email" type="email" required />
+              </div>
+              <div>
+                <label htmlFor="chapter">Chapter / Arena</label>
+                <input id="chapter" name="chapter" type="text" />
+              </div>
+            </div>
+
+            <div className="results-form-row-inline">
+              <div>
+                <label htmlFor="match-date">Match Date</label>
+                <input id="match-date" name="match-date" type="date" />
+              </div>
+              <div>
+                <label htmlFor="location">Location</label>
+                <input id="location" name="location" type="text" />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="details">Chukker Details</label>
+              <textarea
+                id="details"
+                name="details"
+                rows={4}
+                placeholder="Teams, riders, horses, scoreline, and any notes."
+              />
+            </div>
+
+            <div>
+              <label htmlFor="file">Upload Chukker Sheet (optional)</label>
+              <input id="file" name="file" type="file" />
+              <small>PDF, image, or spreadsheet files are welcome.</small>
+            </div>
+
+            <div style={{ marginTop: "12px", textAlign: "right" }}>
+              <button type="submit" className="btn btn-outline">
+                SUBMIT CHUKKER RESULTS
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {/* Wallet modal (identical experience to Patron site) */}
       {isWalletOpen && (
         <div
           className="wallet-modal-backdrop"
@@ -339,7 +760,7 @@ export default function App() {
                     client={client}
                     wallets={wallets}
                     chain={BASE}
-                    theme={walletTheme}
+                    theme={patronCheckoutTheme}
                   />
                 </div>
               ) : (
@@ -421,7 +842,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Patron balance */}
+                  {/* PATRON balance */}
                   <div style={{ marginBottom: "12px" }}>
                     <div
                       style={{
@@ -461,147 +882,96 @@ export default function App() {
                   </button>
                 </div>
               )}
+
+              {/* Amount + Checkout */}
+              <div style={{ position: "relative" }}>
+                {!isConnected && (
+                  <button
+                    type="button"
+                    onClick={closeWallet}
+                    aria-label="Close Patron Wallet"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "rgba(0,0,0,0.68)",
+                      zIndex: 10,
+                      borderRadius: "12px",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                    }}
+                  />
+                )}
+
+                <div
+                  style={{
+                    opacity: !isConnected ? 0.75 : 1,
+                    pointerEvents: isConnected ? "auto" : "none",
+                    transition: "opacity 160ms ease",
+                  }}
+                >
+                  <div style={{ marginBottom: "12px" }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: "10px",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      Choose Your Patronage (USD)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={usdAmount}
+                      onChange={(e) => setUsdAmount(e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: "10px 12px",
+                        borderRadius: "10px",
+                        border: "1px solid #3a2b16",
+                        background: "#050505",
+                        color: "#f5eedc",
+                        fontSize: "16px",
+                        outline: "none",
+                        boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
+                      }}
+                    />
+                  </div>
+
+                  <CheckoutBoundary>
+                    <CheckoutWidget
+                      client={client}
+                      name="POLO PATRONIUM"
+                      description={checkoutDescription}
+                      currency="USD"
+                      chain={BASE}
+                      amount={normalizedAmount}
+                      tokenAddress={USDC_BASE}
+                      seller={SELLER}
+                      buttonLabel="BUY PATRON (USDC on Base)"
+                      theme={patronCheckoutTheme}
+                      onSuccess={handleCheckoutSuccess}
+                      onError={(err) => {
+                        console.error("Checkout error:", err);
+                        alert(err?.message || String(err));
+                      }}
+                    />
+                  </CheckoutBoundary>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Main content */}
-      <main>
-        <section className="brand-row">
-          <div className="roadmap-title">
-            <div>THE COWBOY POLO CIRCUIT</div>
-          </div>
-
-          <div className="brand-grid">
-            <div className="logo-block">
-              <h3 style={{ textTransform: "uppercase", letterSpacing: "0.16em" }}>
-                String 7̶7̶7̶ Remuda
-              </h3>
-              <p className="initiative-text">
-                A travelling herd of USPPA horses — consigned or owned by the
-                Association — developed for Cowboy Polo, youth clinics, and
-                Chapter test matches.
-              </p>
-            </div>
-
-            <div className="logo-block">
-              <h3 style={{ textTransform: "uppercase", letterSpacing: "0.16em" }}>
-                Cowboy Polo Circuit
-              </h3>
-              <p className="initiative-text">
-                A standing development field for American riders: four-on-four,
-                open boards, simple rules, and an on-ramp from ranch work,
-                roping, and western riding into real polo.
-              </p>
-            </div>
-
-            <div className="logo-block">
-              <h3 style={{ textTransform: "uppercase", letterSpacing: "0.16em" }}>
-                The Polo Life
-              </h3>
-              <p className="initiative-text">
-                Live and recorded coverage of the Circuit: horses, patrons, and
-                players followed across seasons, so supporters can see exactly
-                what their patronage is building.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Circuit Playbook – gated just like the Patronium Framework */}
-        <section
-          className="copy-section"
-          id="circuit-playbook"
-          ref={playbookGateRef}
-        >
-          <div className="copy-section-title">CIRCUIT PLAYBOOK</div>
-
-          <div style={{ position: "relative", marginTop: "8px" }}>
-            {!isConnected && (
-              <div
-                onClick={openWallet}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "22px",
-                  textAlign: "center",
-                }}
-                aria-label="Sign in required to view Circuit Playbook"
-                role="button"
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.22em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    PATRON WALLET REQUIRED
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      lineHeight: 1.6,
-                      color: "#f5eedc",
-                    }}
-                  >
-                    Sign into your Patron Wallet to view the full Cowboy Polo
-                    Circuit Playbook for Chapters, stewards, and founding
-                    patrons.
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div aria-hidden={!isConnected && true}>
-              <div className="copy-block">
-                <h3>Chapter Test Fields</h3>
-                <p>
-                  Each Cowboy Polo field begins as a Chapter test model:
-                  gathering horses, land, and players under USPPA standards.
-                  When a site proves it can sustain itself and serve its
-                  community, it matures into a full Chapter.
-                </p>
-              </div>
-
-              <div className="copy-block">
-                <h3>Patron &amp; Player Pathways</h3>
-                <p>
-                  The Circuit defines clear lanes for riders, pros, and patrons:
-                  youth pipelines, scholarship strings, pro-am teams, and
-                  founding patron roles that are tracked on-chain via Patronium.
-                </p>
-              </div>
-
-              <div className="copy-block">
-                <h3>Tribute &amp; Stewardship</h3>
-                <p>
-                  Net revenue from Cowboy Polo operations is allocated under the
-                  same Patronium framework used by the Patron site: majority
-                  reinvestment into horses and land, with a defined portion
-                  streaming as tribute to qualifying Patronium holders.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
       <footer>
-        <div>© {year} US POLO PATRONS ASSOCIATION — COWBOY POLO CIRCUIT</div>
-        <div>POWERED BY POLO PATRONIUM · BUILT ON BASE</div>
+        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
+        POLO CIRCUIT
       </footer>
     </div>
   );
