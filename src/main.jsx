@@ -1,16 +1,14 @@
+// src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./App.css";
-
-// ---- Thirdweb wrapper ----
-// If your Patronium site uses a different setup (clientId, chain, etc),
-// copy that here instead of this simple example.
-import { ThirdwebProvider } from "@thirdweb-dev/react";
+import { ThirdwebProvider } from "thirdweb/react";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ThirdwebProvider activeChain="base">
+    {/* Same clientId + provider style as Patron site */}
+    <ThirdwebProvider clientId="f58c0bfc6e6a2c00092cc3c35db1eed8">
       <App />
     </ThirdwebProvider>
   </React.StrictMode>
