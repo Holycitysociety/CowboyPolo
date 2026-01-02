@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import {
-  CheckoutWidget,
   ConnectEmbed,
   useActiveAccount,
   useActiveWallet,
@@ -14,16 +13,16 @@ import {
 import { createThirdwebClient, defineChain } from "thirdweb";
 import { inAppWallet } from "thirdweb/wallets";
 
-// -----------------------------
-// Thirdweb client + chain
-// -----------------------------
+// ---------------------------------------------
+// Thirdweb client + chain (same as Patronium)
+// ---------------------------------------------
 const client = createThirdwebClient({
-  clientId: "f58c0bfc6e6a2c00092cc3c35db1eed8", // same as Patron site
+  clientId: "f58c0bfc6e6a2c00092cc3c35db1eed8",
 });
 
 const BASE = defineChain(8453);
 
-// Email-only embedded wallet
+// Embedded email wallets
 const wallets = [
   inAppWallet({
     auth: {
@@ -32,18 +31,8 @@ const wallets = [
   }),
 ];
 
-// PATRON token + USDC on Base
-const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
-const PATRON = "0xD766a771887fFB6c528434d5710B406313CAe03A";
-const SELLER = "0xfee3c75691e8c10ed4246b10635b19bfff06ce16";
-
-const checkoutDescription =
-  "USPPA PATRONAGE UTILITY TOKEN · THREE SEVENS 7̶7̶7̶ REMUDA · COWBOY POLO CIRCUIT · THE POLO LIFE · CHARLESTON POLO CLUB";
-
-// -----------------------------
-// Themed checkout to match Patron site
-// -----------------------------
-const patronCheckoutTheme = darkTheme({
+// Theme to match Patron wallet look
+const cowboyWalletTheme = darkTheme({
   fontFamily:
     '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
   colors: {
@@ -81,51 +70,27 @@ const patronCheckoutTheme = darkTheme({
   },
 });
 
-// -----------------------------
-// Simple error boundary
-// -----------------------------
-class CheckoutBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch(error, info) {
-    console.error("CheckoutWidget crashed:", error, info);
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <p style={{ color: "#e3bf72", marginTop: "12px" }}>
-          Checkout temporarily unavailable. Please try again later.
-        </p>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-// -----------------------------
+// ---------------------------------------------
 // Main App
-// -----------------------------
+// ---------------------------------------------
 export default function App() {
   const year = new Date().getFullYear();
 
+  // Wallet / modal state
   const [isWalletOpen, setIsWalletOpen] = useState(false);
-  const [usdAmount, setUsdAmount] = useState("1");
+  const walletScrollRef = useRef(null);
 
+  // Scroll-gating state
+  const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
+  const roadmapGateRef = useRef(null);
+
+  // Thirdweb hooks
   const account = useActiveAccount();
   const activeWallet = useActiveWallet();
   const { disconnect } = useDisconnect();
   const isConnected = !!account;
 
-  const walletScrollRef = useRef(null);
-  const resultsGateRef = useRef(null); // for scroll-based gating
-  const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
-
-  // Balances
+  // Balances (optional, but nice to show)
   const { data: baseBalance } = useWalletBalance({
     address: account?.address,
     chain: BASE,
@@ -136,18 +101,32 @@ export default function App() {
     address: account?.address,
     chain: BASE,
     client,
-    tokenAddress: USDC_BASE,
+    tokenAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC on Base
   });
 
   const { data: patronBalance } = useWalletBalance({
     address: account?.address,
     chain: BASE,
     client,
-    tokenAddress: PATRON,
+    tokenAddress: "0xD766a771887fFB6c528434d5710B406313CAe03A", // PATRON
   });
 
   const openWallet = () => setIsWalletOpen(true);
   const closeWallet = () => setIsWalletOpen(false);
+
+  const shortAddress = account?.address
+    ? `${account.address.slice(0, 6)}…${account.address.slice(-4)}`
+    : "";
+
+  const handleCopyAddress = async () => {
+    if (!account?.address) return;
+    try {
+      await navigator.clipboard.writeText(account.address);
+      alert("Wallet address copied.");
+    } catch (err) {
+      console.error("Clipboard error:", err);
+    }
+  };
 
   const handleSignOut = () => {
     if (!activeWallet || !disconnect) return;
@@ -158,66 +137,7 @@ export default function App() {
     }
   };
 
-  const shortAddress = account?.address
-    ? `${account.address.slice(0, 6)}…${account.address.slice(-4)}`
-    : "";
-
-  const handleCopyAddress = async () => {
-    if (!account?.address) return;
-    try {
-      await navigator.clipboard.writeText(account.address);
-      alert("Patron Wallet address copied.");
-    } catch (err) {
-      console.error("Clipboard error:", err);
-    }
-  };
-
-  const normalizedAmount =
-    usdAmount && Number(usdAmount) > 0 ? String(usdAmount) : "1";
-
-  const handleCheckoutSuccess = async (result) => {
-    try {
-      if (!account?.address) return;
-
-      const resp = await fetch("/.netlify/functions/mint-patron", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          address: account.address,
-          usdAmount: normalizedAmount,
-          checkout: {
-            id: result?.id,
-            amountPaid: result?.amountPaid ?? normalizedAmount,
-            currency: result?.currency ?? "USD",
-          },
-        }),
-      });
-
-      if (!resp.ok) {
-        const text = await resp.text();
-        console.error("mint-patron error:", text);
-        alert(
-          "Payment succeeded, but we could not mint PATRON automatically.\n" +
-            "We’ll review your transaction and credit you manually if needed."
-        );
-        return;
-      }
-
-      await resp.json();
-      alert(
-        "Thank you — your patronage payment was received.\n\n" +
-          "PATRON is being credited to your wallet."
-      );
-    } catch (err) {
-      console.error("Error in handleCheckoutSuccess:", err);
-      alert(
-        "Payment completed, but there was an error minting PATRON.\n" +
-          "We’ll review and fix this on our side."
-      );
-    }
-  };
-
-  // Lock body scroll when wallet modal is open
+  // Lock body scroll when modal open
   useEffect(() => {
     if (isWalletOpen) {
       document.documentElement.style.overflow = "hidden";
@@ -232,11 +152,12 @@ export default function App() {
         document.body.style.overflow = "";
       };
     }
+
     document.documentElement.style.overflow = "";
     document.body.style.overflow = "";
   }, [isWalletOpen]);
 
-  // ESC to close wallet modal
+  // ESC closes modal
   useEffect(() => {
     if (!isWalletOpen) return;
     const onKeyDown = (e) => {
@@ -246,7 +167,7 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
-  // Scroll trigger: when results section scrolls past a threshold, open wallet once
+  // Scroll gating: when ABOUT section bottom crosses near top, open wallet once
   useEffect(() => {
     if (isConnected) {
       setHasTriggeredGate(false);
@@ -255,11 +176,11 @@ export default function App() {
 
     const handleScroll = () => {
       if (hasTriggeredGate) return;
-      const el = resultsGateRef.current;
+      const el = roadmapGateRef.current;
       if (!el) return;
 
       const rect = el.getBoundingClientRect();
-      const triggerY = 96; // px from top
+      const triggerY = 96; // px from top of viewport
 
       if (rect.bottom <= triggerY) {
         setHasTriggeredGate(true);
@@ -273,13 +194,14 @@ export default function App() {
 
   return (
     <div className="page">
-      {/* Top-right Patron Wallet button (same as Patron site) */}
+      {/* Top-right wallet button */}
       <header
         style={{
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
-          padding: "8px 0",
+          padding: "8px 0 0",
+          marginBottom: "8px",
         }}
       >
         <button
@@ -287,7 +209,7 @@ export default function App() {
           style={{ minWidth: "auto", padding: "6px 16px" }}
           onClick={openWallet}
         >
-          PATRON WALLET
+          {isConnected ? "Patron Wallet" : "Sign In"}
         </button>
       </header>
 
@@ -322,24 +244,252 @@ export default function App() {
         </div>
 
         <div className="hero-cta-row">
-          <button
-            className="btn btn-primary"
-            onClick={openWallet}
-            type="button"
-          >
+          <button className="btn btn-primary" onClick={openWallet}>
             {isConnected ? "View Wallet" : "Sign up / Sign in"}
           </button>
         </div>
 
         <p className="hero-wallet-copy">
           Sign up with your email to create your Cowboy Polo Patron Wallet. After
-          you sign in, you’ll receive an email with the Cowboy Polo Circuit
+          you sign in, you&apos;ll receive an email with the Cowboy Polo Circuit
           signup details.
         </p>
       </section>
 
-      {/* ABOUT / HOW IT FUNCTIONS */}
-      <section id="about">
+      {/* WALLET MODAL */}
+      {isWalletOpen && (
+        <div
+          className="wallet-modal-backdrop"
+          onClick={closeWallet}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.86)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            padding: "14px",
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: "380px" }}>
+            <div
+              ref={walletScrollRef}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: "100%",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                border: "1px solid #3a2b16",
+                borderRadius: "14px",
+                padding: "16px",
+                paddingTop: "26px",
+                background: "#050505",
+                boxShadow: "0 18px 60px rgba(0,0,0,0.85)",
+                fontFamily:
+                  '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
+                color: "#f5eedc",
+                fontSize: "13px",
+                position: "relative",
+              }}
+            >
+              {/* Modal header */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "10px",
+                  position: "relative",
+                  paddingTop: "4px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "18px",
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  PATRON WALLET
+                </div>
+
+                <button
+                  onClick={closeWallet}
+                  aria-label="Close wallet"
+                  title="Close"
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: "56px",
+                    height: "56px",
+                    border: "none",
+                    background: "transparent",
+                    color: "#e3bf72",
+                    fontSize: "38px",
+                    lineHeight: 1,
+                    cursor: "pointer",
+                    padding: 0,
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* Connect or account view */}
+              {!account ? (
+                <div style={{ marginBottom: "14px" }}>
+                  <ConnectEmbed
+                    client={client}
+                    wallets={wallets}
+                    chain={BASE}
+                    theme={cowboyWalletTheme}
+                  />
+                </div>
+              ) : (
+                <div style={{ marginBottom: "14px", textAlign: "center" }}>
+                  {/* Address + copy */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: "10px",
+                      marginTop: "2px",
+                    }}
+                  >
+                    <div style={{ fontFamily: "monospace", fontSize: "13px" }}>
+                      {shortAddress}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCopyAddress}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        color: "#e3bf72",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                      }}
+                      aria-label="Copy wallet address"
+                    >
+                      📋
+                    </button>
+                  </div>
+
+                  {/* Balances */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "28px",
+                      marginBottom: "10px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "#9f8a64",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Gas
+                      </div>
+                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
+                        {baseBalance?.displayValue || "0"}{" "}
+                        {baseBalance?.symbol || "ETH"}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "#9f8a64",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        USDC
+                      </div>
+                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
+                        {usdcBalance?.displayValue || "0"}{" "}
+                        {usdcBalance?.symbol || "USDC"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "12px" }}>
+                    <div
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.18em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Patronium Balance
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "18px",
+                        letterSpacing: "0.02em",
+                        color: "#f5eedc",
+                      }}
+                    >
+                      {patronBalance?.displayValue || "0"}{" "}
+                      {patronBalance?.symbol || "PATRON"}
+                    </div>
+                  </div>
+
+                  <button
+                    className="btn btn-outline"
+                    style={{
+                      minWidth: "auto",
+                      padding: "6px 18px",
+                      fontSize: "11px",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                    }}
+                    onClick={handleSignOut}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+
+              {/* Small note */}
+              <p
+                style={{
+                  marginTop: "10px",
+                  fontSize: "11px",
+                  lineHeight: 1.5,
+                  color: "#c7b08a",
+                  textAlign: "center",
+                }}
+              >
+                This Patron Wallet works across the Cowboy Polo Circuit and the
+                Polo Patronium site on Base.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
+      <section id="about" ref={roadmapGateRef}>
         <div className="section-header">
           <div className="section-kicker">THE FORMAT</div>
           <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
@@ -394,8 +544,8 @@ export default function App() {
           <p>
             Ratings move with performance over time: goals scored, assists,
             ride-offs won, and overall impact on the match all feed the same
-            underlying score. The table below shows how a leaderboard might appear
-            during mid-season.
+            underlying score. The table below shows how a leaderboard might
+            appear during mid-season.
           </p>
         </div>
 
@@ -445,7 +595,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* HORSE & THREE SEVENS REMUDA */}
+      {/* HORSE & REMUDA SECTION */}
       <section id="horses">
         <div className="section-header">
           <div className="section-kicker">
@@ -518,8 +668,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* RESULTS / FORM with PATRON WALLET GATING */}
-      <section id="results" ref={resultsGateRef}>
+      {/* RESULTS / NETLIFY FORM */}
+      <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
           <h2 className="section-title">SANCTIONED CHUKKERS &amp; SEASON RECORD</h2>
@@ -541,433 +691,85 @@ export default function App() {
           </p>
         </div>
 
-        <div style={{ position: "relative", marginTop: "16px" }}>
-          {!isConnected && (
-            <div
-              onClick={openWallet}
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: "rgba(0,0,0,0.55)",
-                backdropFilter: "blur(6px)",
-                WebkitBackdropFilter: "blur(6px)",
-                zIndex: 10,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                padding: "20px",
-                cursor: "pointer",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "0.78rem",
-                    letterSpacing: "0.2em",
-                    textTransform: "uppercase",
-                    color: "#c7c7c7",
-                    marginBottom: "8px",
-                  }}
-                >
-                  Patron Wallet Required
-                </div>
-                <div
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "#ffffff",
-                  }}
-                >
-                  Sign in with your Patron Wallet to submit sanctioned Cowboy
-                  Polo chukker results.
-                </div>
-              </div>
-            </div>
-          )}
-
-          <form
-            className="results-form"
-            name="chukker-results"
-            method="POST"
-            data-netlify="true"
-            data-netlify-honeypot="bot-field"
-            encType="multipart/form-data"
-          >
-            {/* Netlify form name */}
-            <input type="hidden" name="form-name" value="chukker-results" />
-            {/* Honeypot */}
-            <p style={{ display: "none" }}>
-              <label>
-                Don’t fill this out if you're human:
-                <input name="bot-field" />
-              </label>
-            </p>
-
-            <div className="results-form-row-inline">
-              <div>
-                <label htmlFor="name">Your Name</label>
-                <input id="name" name="name" type="text" required />
-              </div>
-              <div>
-                <label htmlFor="role">Role</label>
-                <select id="role" name="role" required>
-                  <option value=">Select role">Select role</option>
-                  <option>Coach / Instructor</option>
-                  <option>Team Captain</option>
-                  <option>Arena Steward</option>
-                  <option>Chapter Officer</option>
-                  <option>Other</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="results-form-row-inline">
-              <div>
-                <label htmlFor="email">Email</label>
-                <input id="email" name="email" type="email" required />
-              </div>
-              <div>
-                <label htmlFor="chapter">Chapter / Arena</label>
-                <input id="chapter" name="chapter" type="text" />
-              </div>
-            </div>
-
-            <div className="results-form-row-inline">
-              <div>
-                <label htmlFor="match-date">Match Date</label>
-                <input id="match-date" name="match-date" type="date" />
-              </div>
-              <div>
-                <label htmlFor="location">Location</label>
-                <input id="location" name="location" type="text" />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="details">Chukker Details</label>
-              <textarea
-                id="details"
-                name="details"
-                rows={4}
-                placeholder="Teams, riders, horses, scoreline, and any notes."
-              />
-            </div>
-
-            <div>
-              <label htmlFor="file">Upload Chukker Sheet (optional)</label>
-              <input id="file" name="file" type="file" />
-              <small>PDF, image, or spreadsheet files are welcome.</small>
-            </div>
-
-            <div style={{ marginTop: "12px", textAlign: "right" }}>
-              <button type="submit" className="btn btn-outline">
-                SUBMIT CHUKKER RESULTS
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      {/* Wallet modal (identical experience to Patron site) */}
-      {isWalletOpen && (
-        <div
-          className="wallet-modal-backdrop"
-          onClick={closeWallet}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.86)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-            padding: "14px",
-          }}
+        <form
+          className="results-form"
+          name="chukker-results"
+          method="POST"
+          data-netlify="true"
+          data-netlify-honeypot="bot-field"
+          encType="multipart/form-data"
         >
-          <div style={{ width: "100%", maxWidth: "380px" }}>
-            <div
-              ref={walletScrollRef}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                width: "100%",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                border: "1px solid #3a2b16",
-                borderRadius: "14px",
-                padding: "16px",
-                paddingTop: "26px",
-                background: "#050505",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.85)",
-                fontFamily:
-                  '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-                color: "#f5eedc",
-                fontSize: "13px",
-                position: "relative",
-              }}
-            >
-              {/* Header */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "10px",
-                  position: "relative",
-                  paddingTop: "4px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "18px",
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    lineHeight: 1.1,
-                  }}
-                >
-                  PATRON WALLET
-                </div>
+          <input type="hidden" name="form-name" value="chukker-results" />
+          <p style={{ display: "none" }}>
+            <label>
+              Don’t fill this out if you're human:
+              <input name="bot-field" />
+            </label>
+          </p>
 
-                <button
-                  onClick={closeWallet}
-                  aria-label="Close wallet"
-                  title="Close"
-                  style={{
-                    position: "absolute",
-                    right: 0,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "56px",
-                    height: "56px",
-                    border: "none",
-                    background: "transparent",
-                    color: "#e3bf72",
-                    fontSize: "38px",
-                    lineHeight: 1,
-                    cursor: "pointer",
-                    padding: 0,
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-
-              {/* Connect / Account */}
-              {!account ? (
-                <div style={{ marginBottom: "14px" }}>
-                  <ConnectEmbed
-                    client={client}
-                    wallets={wallets}
-                    chain={BASE}
-                    theme={patronCheckoutTheme}
-                  />
-                </div>
-              ) : (
-                <div style={{ marginBottom: "14px", textAlign: "center" }}>
-                  {/* Address + copy */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 8,
-                      marginBottom: "10px",
-                      marginTop: "2px",
-                    }}
-                  >
-                    <div style={{ fontFamily: "monospace", fontSize: "13px" }}>
-                      {shortAddress}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleCopyAddress}
-                      style={{
-                        border: "none",
-                        background: "transparent",
-                        color: "#e3bf72",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                      }}
-                      aria-label="Copy Patron Wallet address"
-                    >
-                      📋
-                    </button>
-                  </div>
-
-                  {/* Gas + USDC */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "28px",
-                      marginBottom: "10px",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "#9f8a64",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        Gas
-                      </div>
-                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                        {baseBalance?.displayValue || "0"}{" "}
-                        {baseBalance?.symbol || "ETH"}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "#9f8a64",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        USDC
-                      </div>
-                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                        {usdcBalance?.displayValue || "0"}{" "}
-                        {usdcBalance?.symbol || "USDC"}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* PATRON balance */}
-                  <div style={{ marginBottom: "12px" }}>
-                    <div
-                      style={{
-                        fontSize: "10px",
-                        letterSpacing: "0.18em",
-                        textTransform: "uppercase",
-                        color: "#c7b08a",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      Patronium Balance
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "18px",
-                        letterSpacing: "0.02em",
-                        color: "#f5eedc",
-                      }}
-                    >
-                      {patronBalance?.displayValue || "0"}{" "}
-                      {patronBalance?.symbol || "PATRON"}
-                    </div>
-                  </div>
-
-                  <button
-                    className="btn btn-outline"
-                    style={{
-                      minWidth: "auto",
-                      padding: "6px 18px",
-                      fontSize: "11px",
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                    }}
-                    onClick={handleSignOut}
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              )}
-
-              {/* Amount + Checkout */}
-              <div style={{ position: "relative" }}>
-                {!isConnected && (
-                  <button
-                    type="button"
-                    onClick={closeWallet}
-                    aria-label="Close Patron Wallet"
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background: "rgba(0,0,0,0.68)",
-                      zIndex: 10,
-                      borderRadius: "12px",
-                      border: "none",
-                      padding: 0,
-                      cursor: "pointer",
-                    }}
-                  />
-                )}
-
-                <div
-                  style={{
-                    opacity: !isConnected ? 0.75 : 1,
-                    pointerEvents: isConnected ? "auto" : "none",
-                    transition: "opacity 160ms ease",
-                  }}
-                >
-                  <div style={{ marginBottom: "12px" }}>
-                    <label
-                      style={{
-                        display: "block",
-                        fontSize: "10px",
-                        letterSpacing: "0.12em",
-                        textTransform: "uppercase",
-                        color: "#c7b08a",
-                        marginBottom: "6px",
-                      }}
-                    >
-                      Choose Your Patronage (USD)
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      step="1"
-                      value={usdAmount}
-                      onChange={(e) => setUsdAmount(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "10px 12px",
-                        borderRadius: "10px",
-                        border: "1px solid #3a2b16",
-                        background: "#050505",
-                        color: "#f5eedc",
-                        fontSize: "16px",
-                        outline: "none",
-                        boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
-                      }}
-                    />
-                  </div>
-
-                  <CheckoutBoundary>
-                    <CheckoutWidget
-                      client={client}
-                      name="POLO PATRONIUM"
-                      description={checkoutDescription}
-                      currency="USD"
-                      chain={BASE}
-                      amount={normalizedAmount}
-                      tokenAddress={USDC_BASE}
-                      seller={SELLER}
-                      buttonLabel="BUY PATRON (USDC on Base)"
-                      theme={patronCheckoutTheme}
-                      onSuccess={handleCheckoutSuccess}
-                      onError={(err) => {
-                        console.error("Checkout error:", err);
-                        alert(err?.message || String(err));
-                      }}
-                    />
-                  </CheckoutBoundary>
-                </div>
-              </div>
+          <div className="results-form-row-inline">
+            <div>
+              <label htmlFor="name">Your Name</label>
+              <input id="name" name="name" type="text" required />
+            </div>
+            <div>
+              <label htmlFor="role">Role</label>
+              <select id="role" name="role" required>
+                <option value=">Select role">Select role</option>
+                <option>Coach / Instructor</option>
+                <option>Team Captain</option>
+                <option>Arena Steward</option>
+                <option>Chapter Officer</option>
+                <option>Other</option>
+              </select>
             </div>
           </div>
-        </div>
-      )}
+
+          <div className="results-form-row-inline">
+            <div>
+              <label htmlFor="email">Email</label>
+              <input id="email" name="email" type="email" required />
+            </div>
+            <div>
+              <label htmlFor="chapter">Chapter / Arena</label>
+              <input id="chapter" name="chapter" type="text" />
+            </div>
+          </div>
+
+          <div className="results-form-row-inline">
+            <div>
+              <label htmlFor="match-date">Match Date</label>
+              <input id="match-date" name="match-date" type="date" />
+            </div>
+            <div>
+              <label htmlFor="location">Location</label>
+              <input id="location" name="location" type="text" />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="details">Chukker Details</label>
+            <textarea
+              id="details"
+              name="details"
+              rows={4}
+              placeholder="Teams, riders, horses, scoreline, and any notes."
+            />
+          </div>
+
+          <div>
+            <label htmlFor="file">Upload Chukker Sheet (optional)</label>
+            <input id="file" name="file" type="file" />
+            <small>PDF, image, or spreadsheet files are welcome.</small>
+          </div>
+
+          <div style={{ marginTop: "12px", textAlign: "right" }}>
+            <button type="submit" className="btn btn-outline">
+              SUBMIT CHUKKER RESULTS
+            </button>
+          </div>
+        </form>
+      </section>
 
       <footer>
         © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
