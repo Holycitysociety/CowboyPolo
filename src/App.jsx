@@ -194,11 +194,11 @@ export default function App() {
 
   return (
     <div className="page">
-      {/* Top-right wallet button */}
+      {/* Top header with centered Patron Wallet button */}
       <header
         style={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "center",
           alignItems: "center",
           padding: "8px 0 0",
           marginBottom: "8px",
@@ -206,10 +206,10 @@ export default function App() {
       >
         <button
           className="btn btn-outline"
-          style={{ minWidth: "auto", padding: "6px 16px" }}
+          style={{ minWidth: "auto", padding: "6px 20px" }}
           onClick={openWallet}
         >
-          {isConnected ? "Patron Wallet" : "Sign In"}
+          PATRON WALLET
         </button>
       </header>
 
@@ -245,7 +245,7 @@ export default function App() {
 
         <div className="hero-cta-row">
           <button className="btn btn-primary" onClick={openWallet}>
-            {isConnected ? "View Wallet" : "Sign up / Sign in"}
+            Sign up / Sign in
           </button>
         </div>
 
