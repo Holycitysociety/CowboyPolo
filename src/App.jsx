@@ -243,9 +243,12 @@ export default function App() {
           </div>
         </div>
 
-        {/* NEW: Streaming on · The Polo Way */}
+        {/* New divider between Introducing and Streaming */}
+        <div className="hero-rule-2" />
+
+        {/* Streaming on · The Polo Way */}
         <div className="hero-streaming">
-          <div className="hero-streaming-label">STREAMING ON</div>
+          <div className="hero-badge-intro">STREAMING ON</div>
           <div className="hero-streaming-mark">THE&nbsp;POLO&nbsp;WAY</div>
         </div>
 
