@@ -557,6 +557,13 @@ export default function App() {
             backbone of the standings: player handicaps and team records (wins,
             losses, goal difference) together define how the season is read.
           </p>
+          <p>
+            Local chapters also feed into{" "}
+            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
+            and arenas can submit 360° VR footage from sanctioned Cowboy Polo
+            chukkers to thepoloway.com so patrons can follow and support the
+            Circuit from anywhere.
+          </p>
         </div>
       </section>
 
