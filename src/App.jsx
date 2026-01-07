@@ -235,15 +235,8 @@ export default function App() {
 
         <div className="hero-rule-2" />
 
-        <div className="hero-badges">
-          <div className="hero-badge-intro">INTRODUCING</div>
-          <div className="three-sevens-mark">
-            <div className="three-sevens-numeral">7̶7̶7̶</div>
-            <div className="three-sevens-text">THREE SEVENS REMUDA</div>
-          </div>
-        </div>
-
-        <div className="hero-badges" style={{ marginTop: "18px" }}>
+        {/* Streaming on THE POLO WAY first */}
+        <div className="hero-badges" style={{ marginTop: "0" }}>
           <div className="hero-badge-intro">STREAMING ON</div>
           <div
             style={{
@@ -257,12 +250,26 @@ export default function App() {
           </div>
         </div>
 
+        {/* Divider between Polo Way and Remuda */}
+        <div
+          className="hero-rule-2"
+          style={{ marginTop: "18px", marginBottom: "18px" }}
+        />
+
+        {/* Then Introducing THREE SEVENS REMUDA */}
+        <div className="hero-badges">
+          <div className="hero-badge-intro">INTRODUCING</div>
+          <div className="three-sevens-mark">
+            <div className="three-sevens-numeral">7̶7̶7̶</div>
+            <div className="three-sevens-text">THREE SEVENS REMUDA</div>
+          </div>
+        </div>
+
         <div className="hero-cta-row">
           <button className="btn btn-primary" onClick={openWallet}>
             Sign up / Sign in
           </button>
         </div>
-        {/* hero-wallet-copy removed per request */}
       </section>
 
       {/* WALLET MODAL */}
@@ -350,7 +357,7 @@ export default function App() {
                 </button>
               </div>
 
-              {/* New explanatory copy under title */}
+              {/* Explanatory copy under title */}
               <p
                 style={{
                   margin: "0 0 14px",
