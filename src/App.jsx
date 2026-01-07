@@ -243,6 +243,12 @@ export default function App() {
           </div>
         </div>
 
+        {/* NEW: Streaming on · The Polo Way */}
+        <div className="hero-streaming">
+          <div className="hero-streaming-label">STREAMING ON</div>
+          <div className="hero-streaming-mark">THE&nbsp;POLO&nbsp;WAY</div>
+        </div>
+
         <div className="hero-cta-row">
           <button className="btn btn-primary" onClick={openWallet}>
             Sign up / Sign in
@@ -250,9 +256,9 @@ export default function App() {
         </div>
 
         <p className="hero-wallet-copy">
-          Sign up with your email to create your Cowboy Polo Patron Wallet. After
-          you sign in, you&apos;ll receive an email with the Cowboy Polo Circuit
-          signup details.
+          Sign up with your email to create your Cowboy Polo Patron Wallet.
+          After you sign in, you&apos;ll receive an email with the Cowboy Polo
+          Circuit signup details.
         </p>
       </section>
 
@@ -395,13 +401,13 @@ export default function App() {
                   >
                     <div>
                       <div
-                        style={{
+                        style({
                           fontSize: "10px",
                           letterSpacing: "0.14em",
                           textTransform: "uppercase",
                           color: "#9f8a64",
                           marginBottom: "2px",
-                        }}
+                        })}
                       >
                         Gas
                       </div>
