@@ -401,13 +401,13 @@ export default function App() {
                   >
                     <div>
                       <div
-                        style({
+                        style={{
                           fontSize: "10px",
                           letterSpacing: "0.14em",
                           textTransform: "uppercase",
                           color: "#9f8a64",
                           marginBottom: "2px",
-                        })}
+                        }}
                       >
                         Gas
                       </div>
