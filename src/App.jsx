@@ -243,13 +243,18 @@ export default function App() {
           </div>
         </div>
 
-        {/* New divider between Introducing and Streaming */}
-        <div className="hero-rule-2" />
-
-        {/* Streaming on · The Polo Way */}
-        <div className="hero-streaming">
+        <div className="hero-badges" style={{ marginTop: "18px" }}>
           <div className="hero-badge-intro">STREAMING ON</div>
-          <div className="hero-streaming-mark">THE&nbsp;POLO&nbsp;WAY</div>
+          <div
+            style={{
+              fontFamily: '"IM Fell English SC", serif',
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              fontSize: "0.95rem",
+            }}
+          >
+            THE POLO WAY
+          </div>
         </div>
 
         <div className="hero-cta-row">
@@ -489,8 +494,11 @@ export default function App() {
                   textAlign: "center",
                 }}
               >
-                This Patron Wallet works across the Cowboy Polo Circuit and the
-                Polo Patronium site on Base.
+                Sign up with your email to create your Cowboy Polo Patron
+                Wallet. After you sign in, you&apos;ll receive an email with the
+                Cowboy Polo Circuit signup details. This Patron Wallet works
+                across the Cowboy Polo Circuit and the Polo Patronium site on
+                Base.
               </p>
             </div>
           </div>
@@ -523,18 +531,6 @@ export default function App() {
             appointed captains run the game, then submit the chukker sheet
             feeding two tables: the individual handicap table for each rider,
             and the game results table for teams.
-          </p>
-          <p>
-            Local riders and chapters will also be able to capture their Cowboy
-            Polo chukkers in 360° VR and submit footage through{" "}
-            <a
-              href="https://thepoloway.com"
-              target="_blank"
-              rel="noreferrer"
-            >
-              thepoloway.com
-            </a>
-            , where patrons can watch, scout, and get behind emerging players.
           </p>
           <p>
             Each sanctioned chukker updates both sides of the story: how riders
