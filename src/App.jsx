@@ -262,12 +262,7 @@ export default function App() {
             Sign up / Sign in
           </button>
         </div>
-
-        <p className="hero-wallet-copy">
-          Sign up with your email to create your Cowboy Polo Patron Wallet.
-          After you sign in, you&apos;ll receive an email with the Cowboy Polo
-          Circuit signup details.
-        </p>
+        {/* hero-wallet-copy removed per request */}
       </section>
 
       {/* WALLET MODAL */}
@@ -313,7 +308,7 @@ export default function App() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginBottom: "10px",
+                  marginBottom: "8px",
                   position: "relative",
                   paddingTop: "4px",
                 }}
@@ -354,6 +349,23 @@ export default function App() {
                   ×
                 </button>
               </div>
+
+              {/* New explanatory copy under title */}
+              <p
+                style={{
+                  margin: "0 0 14px",
+                  fontSize: "12px",
+                  lineHeight: 1.5,
+                  textAlign: "center",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "#dec89a",
+                }}
+              >
+                Sign up with your email to create your Cowboy Polo Patron
+                Wallet. After you sign in, you&apos;ll receive an email with the
+                Cowboy Polo Circuit signup details.
+              </p>
 
               {/* Connect or account view */}
               {!account ? (
@@ -494,11 +506,8 @@ export default function App() {
                   textAlign: "center",
                 }}
               >
-                Sign up with your email to create your Cowboy Polo Patron
-                Wallet. After you sign in, you&apos;ll receive an email with the
-                Cowboy Polo Circuit signup details. This Patron Wallet works
-                across the Cowboy Polo Circuit and the Polo Patronium site on
-                Base.
+                This Patron Wallet works across the Cowboy Polo Circuit and the
+                Polo Patronium site on Base.
               </p>
             </div>
           </div>
