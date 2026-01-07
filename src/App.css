@@ -133,6 +133,29 @@ body {
   opacity: 0.85;
 }
 
+/* NEW: Streaming on · The Polo Way */
+.hero-streaming {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.hero-streaming-label {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  opacity: 0.86;
+}
+
+.hero-streaming-mark {
+  margin-top: 6px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+/* CTA + wallet copy */
 .hero-cta-row {
   margin-top: 32px;
   display: flex;
