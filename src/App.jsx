@@ -525,6 +525,18 @@ export default function App() {
             and the game results table for teams.
           </p>
           <p>
+            Local riders and chapters will also be able to capture their Cowboy
+            Polo chukkers in 360° VR and submit footage through{" "}
+            <a
+              href="https://thepoloway.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              thepoloway.com
+            </a>
+            , where patrons can watch, scout, and get behind emerging players.
+          </p>
+          <p>
             Each sanctioned chukker updates both sides of the story: how riders
             are rated, and how their teams are performing.
           </p>
