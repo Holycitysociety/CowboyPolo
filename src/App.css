@@ -112,6 +112,7 @@ body {
   margin: 20px auto 22px;
 }
 
+/* INTRODUCING + THREE SEVENS */
 .hero-badges {
   font-size: 0.8rem;
   letter-spacing: 0.18em;
@@ -133,29 +134,22 @@ body {
   opacity: 0.85;
 }
 
-/* NEW: Streaming on · The Polo Way */
+/* STREAMING ON · THE POLO WAY */
 .hero-streaming {
-  margin-top: 20px;
+  margin-top: 14px;
   text-align: center;
 }
 
-.hero-streaming-label {
+.hero-streaming-mark {
+  margin-top: 4px;
   font-family: "IM Fell English SC", serif;
-  font-size: 0.72rem;
+  font-size: 0.95rem; /* increased size for THE POLO WAY */
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  opacity: 0.86;
+  opacity: 0.95;
 }
 
-.hero-streaming-mark {
-  margin-top: 6px;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-}
-
-/* CTA + wallet copy */
+/* little explanatory line under wallet button */
 .hero-cta-row {
   margin-top: 32px;
   display: flex;
