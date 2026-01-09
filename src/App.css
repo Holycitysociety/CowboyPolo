@@ -25,77 +25,85 @@ body {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 36px 18px 96px;
-
-  /* allow absolute background layer behind content */
-  position: relative;
-  isolation: isolate; /* keeps z-index:-1 children behind page content, not behind body */
-  z-index: 0;
 }
 
-/* ---------------------------------------------------
-   Full-bleed stacked background photos (NO CROP)
-   - photos are <img> width:100vw height:auto
-   - responsive gaps stretch to bottom on short pages
-   - feather edges to blend into black
---------------------------------------------------- */
-.bg-stack {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+/* Subtle shadow behind white text (helps over photos) */
+.hero-topline,
+.hero-presents,
+.hero-word,
+.hero-tagline,
+.hero-badges,
+.section-kicker,
+.section-title,
+.board-title,
+.board-header,
+footer,
+.btn {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
 
-  left: 50%;
-  transform: translateX(-50%);
+/* ------------------------------- */
+/* FULL-BLEED PHOTO STACK (NEW)    */
+/* ------------------------------- */
+
+/* Break out of the 900px layout to full viewport width */
+.full-bleed {
   width: 100vw;
-
-  z-index: -1;
-  pointer-events: none;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
 }
 
-.bg-stack-inner {
-  min-height: 100%;
-  height: 100%;
+/* Stack of background panels with responsive “black space” */
+.photo-stack {
+  margin-top: var(--section-gap);
   display: flex;
   flex-direction: column;
+
+  /* Baseline spacing */
+  padding-top: clamp(32px, 6vw, 120px);
+  padding-bottom: clamp(48px, 10vw, 200px);
+
+  /* If the page is short, this helps the stack “reach” downward */
+  min-height: 100vh;
+
   background: #000;
 }
 
-.bg-band {
+.photo-gap {
+  /* Responsive black space between images */
+  min-height: clamp(48px, 10vw, 220px);
+  flex: 1 1 auto;
+  background: #000;
+}
+
+/* Each panel keeps the image uncropped */
+.photo-panel {
   position: relative;
   width: 100%;
-  background: #000;
+  /* Your images are ~3:2 — prevents cropping while still filling screen width */
+  aspect-ratio: 3 / 2;
+
+  background-color: #000;
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  /* NO CROP */
+  background-size: contain;
 }
 
-.bg-photo {
-  display: block;
-  width: 100%;
-  height: auto; /* never crop */
-}
-
-/* feather top/bottom edges into black */
-.bg-band::after {
+/* Optional feather/vignette so edges melt into black */
+.photo-panel.feather::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0) 18%,
-    rgba(0, 0, 0, 0) 82%,
-    rgba(0, 0, 0, 0.95) 100%
-  );
-}
-
-.bg-gap {
-  flex: 1;
-  min-height: clamp(64px, 12vh, 320px); /* "large black space" that’s responsive */
-  background: #000;
-}
-
-.bg-tail {
-  flex: 1;
-  min-height: clamp(120px, 18vh, 520px); /* ensures background reaches bottom on short pages */
-  background: #000;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.92) 100%),
+    linear-gradient(to bottom,
+      rgba(0,0,0,0.95) 0%,
+      rgba(0,0,0,0) 18%,
+      rgba(0,0,0,0) 82%,
+      rgba(0,0,0,0.98) 100%);
 }
 
 /* HERO POSTER (Tall & Centered) */
@@ -214,7 +222,7 @@ body {
 .hero-streaming-mark {
   margin-top: 4px;
   font-family: "IM Fell English SC", serif;
-  font-size: 0.95rem; /* increased size for THE POLO WAY */
+  font-size: 0.95rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   opacity: 0.95;
@@ -623,5 +631,15 @@ footer {
 
   .gate-title {
     font-size: 1.6rem;
+  }
+
+  /* Slightly smaller gaps on small screens */
+  .photo-stack {
+    padding-top: clamp(24px, 6vw, 72px);
+    padding-bottom: clamp(36px, 10vw, 120px);
+  }
+
+  .photo-gap {
+    min-height: clamp(36px, 10vw, 140px);
   }
 }
