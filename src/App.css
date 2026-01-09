@@ -80,7 +80,7 @@ body {
 
 /* (unused now, safe to remove if you want) */
 .band-gap {
-  height: clamp(120px, 14vh, 280px);
+  height: 100vh;
   background: #000;
   margin-top: 0;
 }
