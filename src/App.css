@@ -27,99 +27,7 @@ body {
   padding: 36px 18px 96px;
 }
 
-/* Full-bleed helper for 100vw bands inside centered page */
-.full-bleed {
-  width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
-}
-
-/* -----------------------------
-   Parallax photo bands
-   ----------------------------- */
-
-.parallax-band {
-  position: relative;
-  overflow: hidden;
-  background: #000;
-  margin-top: var(--section-gap);
-}
-
-/* Give the first band a slightly tighter link on some devices */
-.parallax-band-first {
-  margin-top: 56px;
-}
-
-/* Image layer */
-.parallax-media {
-  position: absolute;
-  inset: 0;
-  background: #000;
-  z-index: 0;
-}
-
-/* No cropping — keep entire photo */
-.parallax-img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transform: translate3d(-50%, -50%, 0);
-  will-change: transform;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Feather edges into black; darker at bottom for the “gap” */
-.parallax-vignette {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.98) 0%,
-      rgba(0,0,0,0.10) 25%,
-      rgba(0,0,0,0.15) 55%,
-      rgba(0,0,0,0.96) 100%
-    );
-}
-
-/* Content in the band:
-   - big empty space at top (100vh) so photo is seen first on desktop
-   - then text rides over the darker lower part of the band */
-.parallax-content {
-  position: relative;
-  z-index: 2;
-  padding: 0 18px clamp(48px, 7vh, 96px);
-  padding-top: calc(100vh + clamp(24px, 4vh, 56px));
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-
-/* Inside parallax bands we don't want extra top section margin */
-.band-section {
-  margin-top: 0;
-}
-
-/* Strong text shadow on light text over photos */
-.parallax-band .section-title,
-.parallax-band .section-kicker,
-.parallax-band .board-title,
-.parallax-band .board-sub,
-.parallax-band .board-header,
-.parallax-band .board-row {
-  text-shadow:
-    0 2px 16px rgba(0,0,0,0.95),
-    0 0 4px rgba(0,0,0,0.95);
-}
-
-/* -----------------------------
-   HERO POSTER (Tall & Centered)
-   ----------------------------- */
-
+/* HERO POSTER (Tall & Centered) */
 .hero {
   text-align: center;
   padding: 56px 18px 64px;
@@ -226,21 +134,6 @@ body {
   opacity: 0.85;
 }
 
-/* STREAMING ON · THE POLO WAY */
-.hero-streaming {
-  margin-top: 14px;
-  text-align: center;
-}
-
-.hero-streaming-mark {
-  margin-top: 4px;
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  opacity: 0.95;
-}
-
 /* HERO CTA */
 .hero-cta-row {
   margin-top: 32px;
@@ -259,6 +152,7 @@ body {
   opacity: 0.8;
 }
 
+/* BUTTONS (unchanged) */
 .btn {
   display: inline-flex;
   justify-content: center;
@@ -292,9 +186,74 @@ body {
   border-color: #ffffff;
 }
 
+/* Gate overlay (nice reminder card) */
+.gate-zone {
+  position: relative;
+}
+
+.gate-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  text-align: center;
+}
+
+.gate-card {
+  width: min(560px, 100%);
+  border: 1px solid #3a2b16;
+  border-radius: 22px;
+  padding: 22px 18px;
+  background:
+    radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.08) 0, rgba(0, 0, 0, 0.92) 55%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.92));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.85);
+}
+
+.gate-kicker {
+  font-family: "IM Fell English SC", serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #c7b08a;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.gate-title {
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 2rem;
+  line-height: 1.05;
+  color: #f5eedc;
+  margin-bottom: 14px;
+}
+
+.gate-copy {
+  color: #c7c7c7;
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: 42ch;
+  margin: 0 auto;
+}
+
+.btn-gate {
+  border-color: rgba(227, 191, 114, 0.85);
+  color: #e3bf72;
+}
+
 /* SECTION SHARED */
 section {
   margin-top: var(--section-gap);
+  position: relative;
 }
 
 .section-header {
@@ -397,6 +356,32 @@ section {
 .section-body p {
   margin: 0 0 14px;
   text-align: justify;
+}
+
+/* DARK MODE CARDS */
+.panel {
+  max-width: 720px;
+  margin: 26px auto 0;
+  background: radial-gradient(circle at 10% 0%, #1b1b1b 0, #050505 65%);
+  color: var(--fg);
+  border-radius: 4px;
+  border: 1px solid #444;
+  padding: 20px 18px 22px;
+  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.8);
+}
+
+.panel-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.panel p {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: var(--muted);
 }
 
 /* Leaderboard tables */
@@ -536,9 +521,83 @@ footer {
   text-transform: uppercase;
 }
 
-/* -----------------------------
-   Mobile adjustments
-   ----------------------------- */
+/* ----------------------------------------
+   PARALLAX BACKGROUNDS FOR COWBOY PHOTOS
+   (desktop / tablet behaviour)
+-----------------------------------------*/
+
+#about,
+#players,
+#horses {
+  background-color: #000;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+#about {
+  background-image: url("/images/cowboy-1.jpeg");
+}
+
+#players {
+  background-image: url("/images/cowboy-2.jpeg");
+}
+
+#horses {
+  background-image: url("/images/cowboy-3.jpeg");
+}
+
+/* Dark vignette so text stays readable */
+#about::before,
+#players::before,
+#horses::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(0, 0, 0, 0.1) 0, rgba(0, 0, 0, 0.85) 55%, #000 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Lift the content above the vignette layer */
+#about .section-header,
+#about .section-body,
+#players .section-header,
+#players .section-body,
+#horses .section-header,
+#horses .section-body {
+  position: relative;
+  z-index: 1;
+}
+
+/* Give each section some vertical breathing room
+   so you get photo → black gap → next photo feeling. */
+#about {
+  padding-top: 18vh;
+  padding-bottom: 22vh;
+}
+
+#players,
+#horses {
+  padding-top: 22vh;
+  padding-bottom: 24vh;
+}
+
+/* Slight shadow under white headings / copy on photos */
+#about .section-title,
+#players .section-title,
+#horses .section-title,
+#about .section-body,
+#players .section-body,
+#horses .section-body {
+  text-shadow: 0 0 18px rgba(0, 0, 0, 0.95);
+}
+
+/* ----------------------------------------
+   RESPONSIVE
+-----------------------------------------*/
 
 @media (max-width: 640px) {
   .hero {
@@ -556,19 +615,32 @@ footer {
     width: 24px;
   }
 
-  /* On mobile, don't push text a full 100vh down; let it appear sooner */
-  .parallax-content {
-    padding-top: clamp(32px, 10vh, 72px);
+  .gate-title {
+    font-size: 1.6rem;
   }
 
-  /* First band: kill the feeling of a huge gap before the first photo */
-  .parallax-band-first {
-    margin-top: 32px;
+  /* Disable heavy parallax on mobile for performance */
+  #about,
+  #players,
+  #horses {
+    background-attachment: scroll;
+    background-position: center top;
   }
 
-  /* Anchor the first photo a bit higher on mobile so you see it sooner */
-  .parallax-band-first .parallax-img {
-    top: 40%;
-    transform: translate3d(-50%, -50%, 0);
+  /* MOBILE TUNING: first photo + text offset
+     - reduce the big gap between hero and first image
+     - delay the ABOUT heading so the image is seen first  */
+  #about {
+    margin-top: 16px;         /* was using the global section gap (72px) */
+    padding-top: 10vh;        /* tighter top padding on small screens */
+    padding-bottom: 20vh;
+  }
+
+  #about .section-header {
+    margin-top: 55vh;         /* push the title down so the photo shows first */
+  }
+
+  #about .section-body {
+    margin-top: 16px;
   }
 }
