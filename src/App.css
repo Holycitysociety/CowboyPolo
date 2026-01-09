@@ -27,7 +27,7 @@ body {
   padding: 36px 18px 96px;
 }
 
-/* Full-bleed helper for 100vw sections inside a centered container */
+/* Full-bleed helper for 100vw bands inside centered page */
 .full-bleed {
   width: 100vw;
   margin-left: 50%;
@@ -43,9 +43,9 @@ body {
   overflow: hidden;
   background: #000;
   margin-top: var(--section-gap);
-  min-height: 100vh;
 }
 
+/* Image layer */
 .parallax-media {
   position: absolute;
   inset: 0;
@@ -53,7 +53,7 @@ body {
   z-index: 0;
 }
 
-/* No cropping */
+/* No cropping — keep entire photo */
 .parallax-img {
   position: absolute;
   left: 50%;
@@ -67,7 +67,7 @@ body {
   user-select: none;
 }
 
-/* Feather the photo into black (top/bottom) */
+/* Feather edges into black; darker at bottom for the “gap” */
 .parallax-vignette {
   position: absolute;
   inset: 0;
@@ -75,45 +75,33 @@ body {
   background:
     linear-gradient(
       to bottom,
-      rgba(0,0,0,0.95) 0%,
-      rgba(0,0,0,0.10) 20%,
-      rgba(0,0,0,0.10) 80%,
-      rgba(0,0,0,0.98) 100%
+      rgba(0,0,0,0.98) 0%,
+      rgba(0,0,0,0.10) 25%,
+      rgba(0,0,0,0.15) 55%,
+      rgba(0,0,0,0.96) 100%
     );
 }
 
+/* Content in the band:
+   - big empty space at top (100vh) so photo is seen first
+   - then text rides over the darker lower part of the band */
 .parallax-content {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-bottom: clamp(48px, 7vh, 96px);
-}
-
-/* pure photo above text at load */
-.parallax-top-gap {
-  width: 100%;
-  height: clamp(160px, 40vh, 340px);
-}
-
-/* the actual text card on black */
-.band-section {
-  width: 100%;
+  padding: 0 18px clamp(48px, 7vh, 96px);
+  /* This pushes text down so the first view is photo-only.
+     Adjust the 100vh part if you want more / less gap. */
+  padding-top: calc(100vh + clamp(24px, 4vh, 56px));
   max-width: var(--max-width);
   margin: 0 auto;
-  background: #000000;
-  padding: clamp(48px, 7vh, 96px) 18px;
 }
 
-/* Big black space between photo bands */
-.band-gap {
-  height: clamp(120px, 14vh, 280px);
-  background: #000;
+/* Inside parallax bands we don't want extra top section margin */
+.band-section {
   margin-top: 0;
 }
 
-/* Dark shadow behind white letters over photos */
+/* Strong text shadow on light text over photos */
 .parallax-band .section-title,
 .parallax-band .section-kicker,
 .parallax-band .board-title,
@@ -121,8 +109,8 @@ body {
 .parallax-band .board-header,
 .parallax-band .board-row {
   text-shadow:
-    0 2px 14px rgba(0,0,0,0.9),
-    0 0 3px rgba(0,0,0,0.95);
+    0 2px 16px rgba(0,0,0,0.95),
+    0 0 4px rgba(0,0,0,0.95);
 }
 
 /* -----------------------------
@@ -235,6 +223,21 @@ body {
   opacity: 0.85;
 }
 
+/* STREAMING ON · THE POLO WAY */
+.hero-streaming {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.hero-streaming-mark {
+  margin-top: 4px;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+
 /* HERO CTA */
 .hero-cta-row {
   margin-top: 32px;
@@ -242,6 +245,48 @@ body {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+/* little explanatory line under wallet button */
+.hero-wallet-copy {
+  margin-top: 16px;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--fg);
+  color: #000;
+  border-color: var(--fg);
+}
+
+.btn-primary:hover {
+  background: #fefefe;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
 }
 
 /* SECTION SHARED */
