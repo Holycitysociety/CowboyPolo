@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import {
+  CheckoutWidget,
   ConnectEmbed,
   useActiveAccount,
   useActiveWallet,
@@ -14,7 +15,7 @@ import { createThirdwebClient, defineChain } from "thirdweb";
 import { inAppWallet } from "thirdweb/wallets";
 
 // ---------------------------------------------
-// Thirdweb client + chain (same as Patronium)
+// Thirdweb client + chain
 // ---------------------------------------------
 const client = createThirdwebClient({
   clientId: "f58c0bfc6e6a2c00092cc3c35db1eed8",
@@ -71,62 +72,29 @@ const cowboyWalletTheme = darkTheme({
 });
 
 // ---------------------------------------------
-// Parallax full-bleed photo band (no cropping)
+// Simple error boundary for CheckoutWidget
 // ---------------------------------------------
-function ParallaxBand({ src, children, speed = 2.0 }) {
-  const bandRef = useRef(null);
-  const imgRef = useRef(null);
-
-  useEffect(() => {
-    let raf = 0;
-
-    const update = () => {
-      if (!bandRef.current || !imgRef.current) return;
-
-      const rect = bandRef.current.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-
-      // Center-to-center delta (band center vs viewport center)
-      const bandCenter = rect.top + rect.height / 2;
-      const viewportCenter = vh / 2;
-      const delta = bandCenter - viewportCenter;
-
-      // Translate image opposite the delta for parallax feel
-      const translateY = -delta * speed;
-
-      imgRef.current.style.transform = `translate3d(-50%, calc(-50% + ${translateY}px), 0)`;
-    };
-
-    const onScrollOrResize = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
-    };
-  }, [speed]);
-
-  return (
-    <div ref={bandRef} className="parallax-band full-bleed">
-      <div className="parallax-media" aria-hidden="true">
-        <img ref={imgRef} className="parallax-img" src={src} alt="" />
-        <div className="parallax-vignette" />
-      </div>
-
-      <div className="parallax-content">{children}</div>
-    </div>
-  );
-}
-
-function BandGap() {
-  return <div className="band-gap full-bleed" aria-hidden="true" />;
+class CheckoutBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error, info) {
+    console.error("CheckoutWidget crashed:", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <p style={{ color: "#e3bf72", marginTop: "12px", textAlign: "center" }}>
+          Checkout temporarily unavailable. Please try again later.
+        </p>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 // ---------------------------------------------
@@ -135,9 +103,19 @@ function BandGap() {
 export default function App() {
   const year = new Date().getFullYear();
 
+  // ---- SET YOUR IMAGE PATHS HERE ----
+  // Put your .jpeg files in /public (recommended), then reference them like:
+  // "/your-file-name.jpeg"
+  const PHOTO_1 = "/photo-1.jpeg";
+  const PHOTO_2 = "/photo-2.jpeg";
+  const PHOTO_3 = "/photo-3.jpeg";
+
   // Wallet / modal state
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const walletScrollRef = useRef(null);
+
+  // Checkout amount
+  const [usdAmount, setUsdAmount] = useState("1");
 
   // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
@@ -196,6 +174,52 @@ export default function App() {
     }
   };
 
+  // ✅ CheckoutWidget amount expects a NUMBER (not a string)
+  const normalizedAmountNumber =
+    usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
+
+  const handleCheckoutSuccess = async (result) => {
+    try {
+      if (!account?.address) return;
+
+      const resp = await fetch("/.netlify/functions/mint-patron", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          address: account.address,
+          usdAmount: String(normalizedAmountNumber),
+          checkout: {
+            id: result?.id,
+            amountPaid: result?.amountPaid ?? String(normalizedAmountNumber),
+            currency: result?.currency ?? "USD",
+          },
+        }),
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        console.error("mint-patron error:", text);
+        alert(
+          "Payment succeeded, but we could not mint PATRON automatically.\n" +
+            "We’ll review your transaction and credit you manually if needed."
+        );
+        return;
+      }
+
+      await resp.json();
+      alert(
+        "Thank you — your patronage payment was received.\n\n" +
+          "PATRON is being credited to your wallet."
+      );
+    } catch (err) {
+      console.error("Error in handleCheckoutSuccess:", err);
+      alert(
+        "Payment completed, but there was an error minting PATRON.\n" +
+          "We’ll review and fix this on our side."
+      );
+    }
+  };
+
   // Lock body scroll when modal open
   useEffect(() => {
     if (isWalletOpen) {
@@ -250,6 +274,43 @@ export default function App() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isConnected, hasTriggeredGate]);
+
+  // Parallax best-practice (no cropping): update background offset slowly
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll(".parallax-band"));
+    if (!els.length) return;
+
+    let raf = 0;
+    const speed = 0.18; // smaller = slower background movement
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => {
+        const vh = window.innerHeight || 1;
+
+        for (const el of els) {
+          const rect = el.getBoundingClientRect();
+          const mid = rect.top + rect.height / 2;
+          const t = (mid - vh / 2) / vh; // -1..1-ish
+          const px = Math.round(t * 140 * speed); // tuned, subtle
+
+          el.style.setProperty("--parallax-offset", `${px}px`);
+        }
+
+        raf = 0;
+      });
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
     <div className="page">
@@ -331,192 +392,180 @@ export default function App() {
         </div>
       </section>
 
-      {/* Background photo band #1 */}
-      <ParallaxBand src="/images/cowboy-1.jpeg">
-        {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
-        <section id="about" ref={roadmapGateRef} className="band-section">
-          <div className="section-header">
-            <div className="section-kicker">THE FORMAT</div>
-            <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
-            <div className="section-rule" />
+      {/* Black gap below hero */}
+      <section className="photo-gap" aria-hidden="true" />
+
+      {/* ABOUT / HOW IT FUNCTIONS (photo band #1, scroll gate attaches here) */}
+      <section
+        id="about"
+        ref={roadmapGateRef}
+        className="parallax-band"
+        style={{ backgroundImage: `url(${PHOTO_1})` }}
+      >
+        <div className="section-header">
+          <div className="section-kicker">THE FORMAT</div>
+          <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
+          <div className="section-rule" />
+        </div>
+
+        <div className="section-body">
+          <p>
+            The Cowboy Polo Circuit is a national development league for
+            players, ponies, &amp; patrons built on sanctioned Cowboy Polo
+            chukkers.
+          </p>
+          <p>
+            Games are played 3 on 3 in arenas or campitos. The key is that a
+            player does not need a full string to attract patrons: a rider can
+            progress by playing as little as one chukker, on one good horse,
+            and still build a real Circuit handicap.
+          </p>
+          <p>
+            Cowboy Polo chukkers can be hosted by any stable, arena, or program
+            that signs on to the Circuit. A local coach, instructor, or
+            appointed captains run the game, then submit the chukker sheet
+            feeding two tables: the individual handicap table for each rider,
+            and the game results table for teams.
+          </p>
+          <p>
+            Each sanctioned chukker updates both sides of the story: how riders
+            are rated, and how their teams are performing.
+          </p>
+          <p>
+            Over the course of a Circuit season, those two tables are the
+            backbone of the standings: player handicaps and team records (wins,
+            losses, goal difference) together define how the season is read.
+          </p>
+          <p>
+            Local chapters also feed into{" "}
+            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
+            and arenas can submit 360° VR footage from sanctioned Cowboy Polo
+            chukkers to thepoloway.com so patrons can follow and support the
+            Circuit from anywhere.
+          </p>
+        </div>
+      </section>
+
+      {/* Black gap between photo bands */}
+      <section className="photo-gap" aria-hidden="true" />
+
+      {/* PLAYER LEADERBOARD (GATED, black background) */}
+      <section id="players" className="gate-zone">
+        {!isConnected && (
+          <div className="gate-overlay" onClick={openWallet} role="button">
+            <div className="gate-card">
+              <div className="gate-kicker">COWBOY POLO CIRCUIT</div>
+              <div className="gate-title">STANDINGS</div>
+              <div className="gate-copy">
+                Sign into your Patron Wallet to view live rider handicaps and
+                Circuit tables.
+              </div>
+              <div style={{ marginTop: "16px" }}>
+                <button className="btn btn-outline btn-gate" onClick={openWallet}>
+                  OPEN PATRON WALLET
+                </button>
+              </div>
+            </div>
           </div>
+        )}
 
-          <div className="section-body">
-            <p>
-              The Cowboy Polo Circuit is a national development league for
-              players, ponies, &amp; patrons built on sanctioned Cowboy Polo
-              chukkers.
-            </p>
-            <p>
-              Games are played 3 on 3 in arenas or campitos. The key is that a
-              player does not need a full string to attract patrons: a rider can
-              progress by playing as little as one chukker, on one good horse,
-              and still build a real Circuit handicap.
-            </p>
-            <p>
-              Cowboy Polo chukkers can be hosted by any stable, arena, or
-              program that signs on to the Circuit. A local coach, instructor,
-              or appointed captains run the game, then submit the chukker sheet
-              feeding two tables: the individual handicap table for each rider,
-              and the game results table for teams.
-            </p>
-            <p>
-              Each sanctioned chukker updates both sides of the story: how riders
-              are rated, and how their teams are performing.
-            </p>
-            <p>
-              Over the course of a Circuit season, those two tables are the
-              backbone of the standings: player handicaps and team records (wins,
-              losses, goal difference) together define how the season is read.
-            </p>
-            <p>
-              Local chapters also feed into{" "}
-              <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
-              and arenas can submit 360° VR footage from sanctioned Cowboy Polo
-              chukkers to thepoloway.com so patrons can follow and support the
-              Circuit from anywhere.
-            </p>
-          </div>
-        </section>
-      </ParallaxBand>
-
-      <BandGap />
-
-      {/* Background photo band #2 */}
-      <ParallaxBand src="/images/cowboy-2.jpeg">
-        {/* PLAYER LEADERBOARD (GATED) */}
-        <section id="players" className="band-section">
+        <div aria-hidden={!isConnected && true}>
           <div className="section-header">
             <div className="section-kicker">PLAYER STANDINGS</div>
             <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
             <div className="section-rule" />
           </div>
 
-          <div
-            style={{
-              position: "relative",
-              marginTop: "20px",
-            }}
-          >
-            {!isConnected && (
-              <div
-                onClick={openWallet}
-                aria-label="Sign in required to view rider standings"
-                role="button"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "22px",
-                  textAlign: "center",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.22em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    COWBOY POLO CIRCUIT STANDINGS
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      lineHeight: 1.6,
-                      color: "#f5eedc",
-                    }}
-                  >
-                    Sign into your Patron Wallet to view live rider handicaps and
-                    Circuit tables.
-                  </div>
-                </div>
+          <div className="section-body">
+            <p>
+              Player handicaps in the Cowboy Polo Circuit are not just static
+              numbers. Each rider’s Cowboy Polo handicap is a statistically
+              calculated, ELO-style rating, updated after every sanctioned
+              chukker and displayed to two decimal places.
+            </p>
+            <p>
+              Ratings move with performance over time: goals scored, assists,
+              ride-offs won, and overall impact on the match all feed the same
+              underlying score. The table below shows how a leaderboard might
+              appear during mid-season.
+            </p>
+          </div>
+
+          <div className="board">
+            <div className="board-title">Top Riders — Mid-Season Snapshot</div>
+            <div className="board-sub">
+              Handicaps update as sanctioned results are submitted.
+            </div>
+
+            <div className="board-header">
+              <span>Rider</span>
+              <span>Chapter</span>
+              <span>Handicap</span>
+            </div>
+            <div className="board-row">
+              <span>Ryder Mitchell</span>
+              <span>Charleston</span>
+              <span className="handicap-value">
+                <span className="handicap-value-main">2</span>
+                <span className="handicap-value-decimal">.15</span>
+              </span>
+            </div>
+            <div className="board-row">
+              <span>Casey Navarro</span>
+              <span>Three Sevens 7̶7̶7̶</span>
+              <span className="handicap-value">
+                <span className="handicap-value-main">1</span>
+                <span className="handicap-value-decimal">.40</span>
+              </span>
+            </div>
+            <div className="board-row">
+              <span>Jess Carter</span>
+              <span>Independent</span>
+              <span className="handicap-value">
+                <span className="handicap-value-main">1</span>
+                <span className="handicap-value-decimal">.25</span>
+              </span>
+            </div>
+            <div className="board-row">
+              <span>Lane Douglas</span>
+              <span>Charleston</span>
+              <span className="handicap-value">
+                <span className="handicap-value-main">0</span>
+                <span className="handicap-value-decimal">.85</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Black gap between photo bands */}
+      <section className="photo-gap" aria-hidden="true" />
+
+      {/* HORSE & REMUDA SECTION (photo band #2, gated) */}
+      <section
+        id="horses"
+        className="parallax-band gate-zone"
+        style={{ backgroundImage: `url(${PHOTO_2})` }}
+      >
+        {!isConnected && (
+          <div className="gate-overlay" onClick={openWallet} role="button">
+            <div className="gate-card">
+              <div className="gate-kicker">THREE SEVENS REMUDA</div>
+              <div className="gate-title">HORSES</div>
+              <div className="gate-copy">
+                Sign into your Patron Wallet to view tracked horses and Remuda
+                performance.
               </div>
-            )}
-
-            <div aria-hidden={!isConnected && true}>
-              <div className="section-body">
-                <p>
-                  Player handicaps in the Cowboy Polo Circuit are not just static
-                  numbers. Each rider’s Cowboy Polo handicap is a statistically
-                  calculated, ELO-style rating, updated after every sanctioned
-                  chukker and displayed to two decimal places.
-                </p>
-                <p>
-                  Ratings move with performance over time: goals scored, assists,
-                  ride-offs won, and overall impact on the match all feed the same
-                  underlying score. The table below shows how a leaderboard might
-                  appear during mid-season.
-                </p>
-              </div>
-
-              <div className="board">
-                <div className="board-title">
-                  Top Riders — Mid-Season Snapshot
-                </div>
-                <div className="board-sub">
-                  Handicaps update as sanctioned results are submitted.
-                </div>
-
-                <div className="board-header">
-                  <span>Rider</span>
-                  <span>Chapter</span>
-                  <span>Handicap</span>
-                </div>
-                <div className="board-row">
-                  <span>Ryder Mitchell</span>
-                  <span>Charleston</span>
-                  <span className="handicap-value">
-                    <span className="handicap-value-main">2</span>
-                    <span className="handicap-value-decimal">.15</span>
-                  </span>
-                </div>
-                <div className="board-row">
-                  <span>Casey Navarro</span>
-                  <span>Three Sevens 7̶7̶7̶</span>
-                  <span className="handicap-value">
-                    <span className="handicap-value-main">1</span>
-                    <span className="handicap-value-decimal">.40</span>
-                  </span>
-                </div>
-                <div className="board-row">
-                  <span>Jess Carter</span>
-                  <span>Independent</span>
-                  <span className="handicap-value">
-                    <span className="handicap-value-main">1</span>
-                    <span className="handicap-value-decimal">.25</span>
-                  </span>
-                </div>
-                <div className="board-row">
-                  <span>Lane Douglas</span>
-                  <span>Charleston</span>
-                  <span className="handicap-value">
-                    <span className="handicap-value-main">0</span>
-                    <span className="handicap-value-decimal">.85</span>
-                  </span>
-                </div>
+              <div style={{ marginTop: "16px" }}>
+                <button className="btn btn-outline btn-gate" onClick={openWallet}>
+                  OPEN PATRON WALLET
+                </button>
               </div>
             </div>
           </div>
-        </section>
-      </ParallaxBand>
+        )}
 
-      <BandGap />
-
-      {/* Background photo band #3 */}
-      <ParallaxBand src="/images/cowboy-3.jpeg">
-        {/* HORSE & REMUDA SECTION (GATED) */}
-        <section id="horses" className="band-section">
+        <div aria-hidden={!isConnected && true}>
           <div className="section-header">
             <div className="section-kicker">
               <div className="three-sevens-mark">
@@ -528,127 +577,204 @@ export default function App() {
             <div className="section-rule" />
           </div>
 
-          <div
-            style={{
-              position: "relative",
-              marginTop: "20px",
-            }}
-          >
-            {!isConnected && (
-              <div
-                onClick={openWallet}
-                aria-label="Sign in required to view Remuda tables"
-                role="button"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "22px",
-                  textAlign: "center",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.22em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    REMUDA &amp; HORSE PERFORMANCE
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      lineHeight: 1.6,
-                      color: "#f5eedc",
-                    }}
-                  >
-                    Sign into your Patron Wallet to view tracked horses and Remuda
-                    performance.
-                  </div>
-                </div>
+          <div className="section-body">
+            <p>
+              The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
+              horses — tracked from their first Cowboy Polo chukker through
+              their entire competitive career.
+            </p>
+            <p>
+              Every sanctioned appearance adds to a horse’s trace: chukkers
+              played, riders carried, contribution to wins, and awards earned
+              across chapters and seasons. The same horse might be bred in one
+              place, started by another, developed by a pro, and later carry
+              juniors and patrons.
+            </p>
+            <p>
+              By keeping a single, living record for each Remuda horse,
+              breeders, trainers, players, and patrons can all see the full
+              life of an equine athlete — not just a single sale moment.
+            </p>
+            <p>
+              Over time, those records can be linked into the Patronium
+              ecosystem so that the people who helped bring a horse along its
+              path can participate in its economic story, not only its final
+              ownership.
+            </p>
+          </div>
+
+          <div className="board">
+            <div className="board-title">Remuda Horses — Performance Snapshot</div>
+            <div className="board-sub">
+              Score blends chukker count, match impact, and rider feedback
+              across the season.
+            </div>
+
+            <div className="board-header">
+              <span>Horse</span>
+              <span>String</span>
+              <span>Score</span>
+            </div>
+            <div className="board-row">
+              <span>Thunderbird</span>
+              <span>7̶7̶7̶</span>
+              <span>92</span>
+            </div>
+            <div className="board-row">
+              <span>Sundance</span>
+              <span>7̶7̶7̶</span>
+              <span>88</span>
+            </div>
+            <div className="board-row">
+              <span>Cholla</span>
+              <span>Private</span>
+              <span>81</span>
+            </div>
+            <div className="board-row">
+              <span>River Scout</span>
+              <span>7̶7̶7̶</span>
+              <span>79</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Black gap between photo bands */}
+      <section className="photo-gap" aria-hidden="true" />
+
+      {/* RESULTS / NETLIFY FORM (photo band #3, gated) */}
+      <section
+        id="results"
+        className="parallax-band gate-zone"
+        style={{ backgroundImage: `url(${PHOTO_3})` }}
+      >
+        {!isConnected && (
+          <div className="gate-overlay" onClick={openWallet} role="button">
+            <div className="gate-card">
+              <div className="gate-kicker">CIRCUIT RESULTS</div>
+              <div className="gate-title">RECORD</div>
+              <div className="gate-copy">
+                Sign into your Patron Wallet to submit official chukker results
+                and season records.
               </div>
-            )}
-
-            <div aria-hidden={!isConnected && true}>
-              <div className="section-body">
-                <p>
-                  The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
-                  horses — tracked from their first Cowboy Polo chukker through
-
-                  their entire competitive career.
-                </p>
-                <p>
-                  Every sanctioned appearance adds to a horse’s trace: chukkers
-                  played, riders carried, contribution to wins, and awards earned
-                  across chapters and seasons. The same horse might be bred in one
-                  place, started by another, developed by a pro, and later carry
-                  juniors and patrons.
-                </p>
-                <p>
-                  By keeping a single, living record for each Remuda horse,
-                  breeders, trainers, players, and patrons can all see the full
-                  life of an equine athlete — not just a single sale moment.
-                </p>
-                <p>
-                  Over time, those records can be linked into the Patronium
-                  ecosystem so that the people who helped bring a horse along its
-                  path can participate in its economic story, not only its final
-                  ownership.
-                </p>
-              </div>
-
-              <div className="board">
-                <div className="board-title">
-                  Remuda Horses — Performance Snapshot
-                </div>
-                <div className="board-sub">
-                  Score blends chukker count, match impact, and rider feedback
-                  across the season.
-                </div>
-
-                <div className="board-header">
-                  <span>Horse</span>
-                  <span>String</span>
-                  <span>Score</span>
-                </div>
-                <div className="board-row">
-                  <span>Thunderbird</span>
-                  <span>7̶7̶7̶</span>
-                  <span>92</span>
-                </div>
-                <div className="board-row">
-                  <span>Sundance</span>
-                  <span>7̶7̶7̶</span>
-                  <span>88</span>
-                </div>
-                <div className="board-row">
-                  <span>Cholla</span>
-                  <span>Private</span>
-                  <span>81</span>
-                </div>
-                <div className="board-row">
-                  <span>River Scout</span>
-                  <span>7̶7̶7̶</span>
-                  <span>79</span>
-                </div>
+              <div style={{ marginTop: "16px" }}>
+                <button className="btn btn-outline btn-gate" onClick={openWallet}>
+                  OPEN PATRON WALLET
+                </button>
               </div>
             </div>
           </div>
-        </section>
-      </ParallaxBand>
+        )}
 
-      <BandGap />
+        <div aria-hidden={!isConnected && true}>
+          <div className="section-header">
+            <div className="section-kicker">RESULTS &amp; RECORD</div>
+            <h2 className="section-title">
+              SANCTIONED CHUKKERS &amp; SEASON RECORD
+            </h2>
+            <div className="section-rule" />
+          </div>
+
+          <div className="section-body">
+            <p>
+              Match captains or appointed officials submit chukker sheets:
+              teams, scorelines, rider combinations, and notable horse usage.
+              Those sheets become the official record that updates handicaps
+              and team standings across the Circuit.
+            </p>
+            <p>
+              In the live system, this is where results will be uploaded and
+              confirmed before they touch the leaderboards — and where each
+              season’s record can be prepared for on-chain archival inside the
+              Patronium ecosystem.
+            </p>
+          </div>
+
+          <form
+            className="results-form"
+            name="chukker-results"
+            method="POST"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            encType="multipart/form-data"
+          >
+            <input type="hidden" name="form-name" value="chukker-results" />
+            <p style={{ display: "none" }}>
+              <label>
+                Don’t fill this out if you're human:
+                <input name="bot-field" />
+              </label>
+            </p>
+
+            <div className="results-form-row-inline">
+              <div>
+                <label htmlFor="name">Your Name</label>
+                <input id="name" name="name" type="text" required />
+              </div>
+              <div>
+                <label htmlFor="role">Role</label>
+                <select id="role" name="role" required>
+                  <option value=">Select role">Select role</option>
+                  <option>Coach / Instructor</option>
+                  <option>Team Captain</option>
+                  <option>Arena Steward</option>
+                  <option>Chapter Officer</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="results-form-row-inline">
+              <div>
+                <label htmlFor="email">Email</label>
+                <input id="email" name="email" type="email" required />
+              </div>
+              <div>
+                <label htmlFor="chapter">Chapter / Arena</label>
+                <input id="chapter" name="chapter" type="text" />
+              </div>
+            </div>
+
+            <div className="results-form-row-inline">
+              <div>
+                <label htmlFor="match-date">Match Date</label>
+                <input id="match-date" name="match-date" type="date" />
+              </div>
+              <div>
+                <label htmlFor="location">Location</label>
+                <input id="location" name="location" type="text" />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="details">Chukker Details</label>
+              <textarea
+                id="details"
+                name="details"
+                rows={4}
+                placeholder="Teams, riders, horses, scoreline, and any notes."
+              />
+            </div>
+
+            <div>
+              <label htmlFor="file">Upload Chukker Sheet (optional)</label>
+              <input id="file" name="file" type="file" />
+              <small>PDF, image, or spreadsheet files are welcome.</small>
+            </div>
+
+            <div style={{ marginTop: "12px", textAlign: "right" }}>
+              <button type="submit" className="btn btn-outline">
+                SUBMIT CHUKKER RESULTS
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <footer>
+        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
+        POLO CIRCUIT
+      </footer>
 
       {/* WALLET MODAL */}
       {isWalletOpen && (
@@ -687,27 +813,57 @@ export default function App() {
                 position: "relative",
               }}
             >
-              {/* Modal header */}
+              {/* Header */}
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginBottom: "8px",
+                  marginBottom: "10px",
                   position: "relative",
                   paddingTop: "4px",
+                  textAlign: "center",
+                  flexDirection: "column",
+                  gap: 3,
                 }}
               >
+                {/* Line 1: USPPA (wide spaced) */}
                 <div
                   style={{
-                    fontSize: "18px",
+                    fontSize: "10px",
+                    letterSpacing: "0.24em",
+                    textTransform: "uppercase",
+                    color: "#9f8a64",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  U&nbsp;S&nbsp;P&nbsp;P&nbsp;A
+                </div>
+
+                {/* Line 2: Cowboy Polo Circuit */}
+                <div
+                  style={{
+                    fontSize: "14px",
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
                     color: "#c7b08a",
                     lineHeight: 1.1,
                   }}
                 >
-                  PATRON WALLET
+                  Cowboy Polo Circuit
+                </div>
+
+                {/* Line 3: Patron Wallet */}
+                <div
+                  style={{
+                    fontSize: "12px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    color: "#f5eedc",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  Patron Wallet
                 </div>
 
                 <button
@@ -754,7 +910,7 @@ export default function App() {
                 </p>
               )}
 
-              {/* Connect or account view */}
+              {/* Connect / Account */}
               {!account ? (
                 <div style={{ marginBottom: "14px" }}>
                   <ConnectEmbed
@@ -796,7 +952,7 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* Balances */}
+                  {/* Gas + USDC */}
                   <div
                     style={{
                       display: "flex",
@@ -843,6 +999,7 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* Patron balance */}
                   <div style={{ marginBottom: "12px" }}>
                     <div
                       style={{
@@ -883,10 +1040,73 @@ export default function App() {
                 </div>
               )}
 
+              {/* Checkout (only when connected) */}
+              {isConnected && (
+                <div style={{ marginTop: "14px" }}>
+                  <div style={{ marginBottom: "12px" }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: "10px",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        marginBottom: "6px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Choose Your Patronage (USD)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={usdAmount}
+                      onChange={(e) => setUsdAmount(e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: "10px 12px",
+                        borderRadius: "10px",
+                        border: "1px solid #3a2b16",
+                        background: "#050505",
+                        color: "#f5eedc",
+                        fontSize: "16px",
+                        outline: "none",
+                        boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
+                      }}
+                    />
+                  </div>
+
+                  <CheckoutBoundary>
+                    <CheckoutWidget
+                      client={client}
+                      name={"COWBOY POLO CIRCUIT"}
+                      description={
+                        "COWBOY POLO CIRCUIT · THREE SEVENS 7̶7̶7̶ REMUDA · THE POLO WAY · USPPA"
+                      }
+                      currency={"USD"}
+                      chain={BASE}
+                      amount={normalizedAmountNumber}
+                      tokenAddress={
+                        "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+                      }
+                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
+                      buttonLabel={"BUY PATRON (USDC on Base)"}
+                      theme={cowboyWalletTheme}
+                      onSuccess={handleCheckoutSuccess}
+                      onError={(err) => {
+                        console.error("Checkout error:", err);
+                        alert(err?.message || String(err));
+                      }}
+                    />
+                  </CheckoutBoundary>
+                </div>
+              )}
+
               {/* Small note */}
               <p
                 style={{
-                  marginTop: "10px",
+                  marginTop: "12px",
                   fontSize: "11px",
                   lineHeight: 1.5,
                   color: "#c7b08a",
@@ -900,171 +1120,6 @@ export default function App() {
           </div>
         </div>
       )}
-
-      {/* RESULTS / NETLIFY FORM (GATED) */}
-      <section id="results">
-        <div className="section-header">
-          <div className="section-kicker">RESULTS &amp; RECORD</div>
-          <h2 className="section-title">
-            SANCTIONED CHUKKERS &amp; SEASON RECORD
-          </h2>
-          <div className="section-rule" />
-        </div>
-
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
-          {!isConnected && (
-            <div
-              onClick={openWallet}
-              aria-label="Sign in required to submit or view results"
-              role="button"
-              style={{
-                position: "absolute",
-                inset: 0,
-                zIndex: 50,
-                background: "rgba(0,0,0,0.25)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "22px",
-                textAlign: "center",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    marginBottom: "8px",
-                  }}
-                >
-                  CIRCUIT RESULTS
-                </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
-                  Sign into your Patron Wallet to submit official chukker
-                  results and season records.
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div aria-hidden={!isConnected && true}>
-            <div className="section-body">
-              <p>
-                Match captains or appointed officials submit chukker sheets:
-                teams, scorelines, rider combinations, and notable horse usage.
-                Those sheets become the official record that updates handicaps
-                and team standings across the Circuit.
-              </p>
-              <p>
-                In the live system, this is where results will be uploaded and
-                confirmed before they touch the leaderboards — and where each
-                season’s record can be prepared for on-chain archival inside the
-                Patronium ecosystem.
-              </p>
-            </div>
-
-            <form
-              className="results-form"
-              name="chukker-results"
-              method="POST"
-              data-netlify="true"
-              data-netlify-honeypot="bot-field"
-              encType="multipart/form-data"
-            >
-              <input type="hidden" name="form-name" value="chukker-results" />
-              <p style={{ display: "none" }}>
-                <label>
-                  Don’t fill this out if you're human:
-                  <input name="bot-field" />
-                </label>
-              </p>
-
-              <div className="results-form-row-inline">
-                <div>
-                  <label htmlFor="name">Your Name</label>
-                  <input id="name" name="name" type="text" required />
-                </div>
-                <div>
-                  <label htmlFor="role">Role</label>
-                  <select id="role" name="role" required>
-                    <option value=">Select role">Select role</option>
-                    <option>Coach / Instructor</option>
-                    <option>Team Captain</option>
-                    <option>Arena Steward</option>
-                    <option>Chapter Officer</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="results-form-row-inline">
-                <div>
-                  <label htmlFor="email">Email</label>
-                  <input id="email" name="email" type="email" required />
-                </div>
-                <div>
-                  <label htmlFor="chapter">Chapter / Arena</label>
-                  <input id="chapter" name="chapter" type="text" />
-                </div>
-              </div>
-
-              <div className="results-form-row-inline">
-                <div>
-                  <label htmlFor="match-date">Match Date</label>
-                  <input id="match-date" name="match-date" type="date" />
-                </div>
-                <div>
-                  <label htmlFor="location">Location</label>
-                  <input id="location" name="location" type="text" />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="details">Chukker Details</label>
-                <textarea
-                  id="details"
-                  name="details"
-                  rows={4}
-                  placeholder="Teams, riders, horses, scoreline, and any notes."
-                />
-              </div>
-
-              <div>
-                <label htmlFor="file">Upload Chukker Sheet (optional)</label>
-                <input id="file" name="file" type="file" />
-                <small>PDF, image, or spreadsheet files are welcome.</small>
-              </div>
-
-              <div style={{ marginTop: "12px", textAlign: "right" }}>
-                <button type="submit" className="btn btn-outline">
-                  SUBMIT CHUKKER RESULTS
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      <footer>
-        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
-        POLO CIRCUIT
-      </footer>
     </div>
   );
 }
