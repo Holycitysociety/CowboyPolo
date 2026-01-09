@@ -309,16 +309,23 @@ export default function App() {
         {/* Streaming on THE POLO WAY first */}
         <div className="hero-badges" style={{ marginTop: "0" }}>
           <div className="hero-badge-intro">STREAMING ON</div>
-          <div
-            style={{
-              fontFamily: '"IM Fell English SC", serif",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              fontSize: "0.95rem",
-            }}
-          >
-            THE POLO WAY
-          </div>
+         
+          
+          
+           <div
+  style={{
+    fontFamily: "'IM Fell English SC', serif",
+    letterSpacing: "0.22em",
+    textTransform: "uppercase",
+    fontSize: "0.95rem",
+  }}
+>
+  THE POLO WAY
+</div>
+          
+          
+          
+          
         </div>
 
         {/* Divider between Polo Way and Remuda */}
