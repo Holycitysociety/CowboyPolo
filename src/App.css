@@ -83,15 +83,19 @@ body {
 }
 
 /* Content in the band:
-   - big empty space at top (100vh) so photo is seen first
+   - big empty space at top so photo is seen first
    - then text rides over the darker lower part of the band */
 .parallax-content {
   position: relative;
   z-index: 2;
   padding: 0 18px clamp(48px, 7vh, 96px);
-  /* This pushes text down so the first view is photo-only.
-     Adjust the 100vh part if you want more / less gap. */
-  padding-top: calc(100vh + clamp(24px, 4vh, 56px));
+  /* This controls where the text begins.
+     clamp(min, preferred, max):
+       min  = 320px (never less than this gap)
+       pref = 80vh (aim for ~80% viewport height)
+       max  = 560px (never more than this gap)
+  */
+  padding-top: clamp(320px, 80vh, 560px);
   max-width: var(--max-width);
   margin: 0 auto;
 }
@@ -533,6 +537,10 @@ footer {
   text-transform: uppercase;
 }
 
+/* -----------------------------
+   Responsive tweaks
+   ----------------------------- */
+
 @media (max-width: 640px) {
   .hero {
     padding-left: 12px;
@@ -547,5 +555,11 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
+  }
+
+  /* Give smaller screens a slightly deeper gap
+     so they see more pure photo before text appears */
+  .parallax-content {
+    padding-top: clamp(260px, 95vh, 520px);
   }
 }
