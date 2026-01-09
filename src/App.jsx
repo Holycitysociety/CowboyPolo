@@ -73,7 +73,7 @@ const cowboyWalletTheme = darkTheme({
 // ---------------------------------------------
 // Parallax full-bleed photo band (no cropping)
 // ---------------------------------------------
-function ParallaxBand({ src, children, speed = 0.5 }) {
+function ParallaxBand({ src, children, speed = 0.18 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -117,7 +117,7 @@ function ParallaxBand({ src, children, speed = 0.5 }) {
     <div ref={bandRef} className="parallax-band full-bleed">
       <div className="parallax-media" aria-hidden="true">
         <img ref={imgRef} className="parallax-img" src={src} alt="" />
-        <div className="parallax-vignette" />
+        {/* vignette overlay removed */}
       </div>
 
       <div className="parallax-content">{children}</div>
