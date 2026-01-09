@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import {
+  CheckoutWidget,
   ConnectEmbed,
   useActiveAccount,
   useActiveWallet,
@@ -31,17 +32,11 @@ const wallets = [
   }),
 ];
 
-// ---------------------------------------------
-// ✅ BACKGROUND PHOTO PATHS (Vite-safe)
-// Put these files in /public (NOT /src) for this style of referencing.
-// Example: /public/photo-1.jpeg -> `${BASE_URL}photo-1.jpeg`
-// ---------------------------------------------
-const BASE_URL = import.meta.env.BASE_URL || "/";
-
-// ✅ CHANGE THESE THREE FILENAMES to match your actual .jpeg names in /public
-const PHOTO_1 = `${BASE_URL}cowboy-1.jpeg`;
-const PHOTO_2 = `${BASE_URL}cowboy-2.jpeg`;
-const PHOTO_3 = `${BASE_URL}cowboy-3.jpeg`;
+// ✅ Put your .jpeg files in /public and name them like this,
+// or keep your names and just change these paths.
+const PHOTO_1 = "/cowboy-1.jpeg";
+const PHOTO_2 = "/cowboy-2.jpeg";
+const PHOTO_3 = "/cowboy-3.jpeg";
 
 // Theme to match Patron wallet look
 const cowboyWalletTheme = darkTheme({
@@ -83,10 +78,35 @@ const cowboyWalletTheme = darkTheme({
 });
 
 // ---------------------------------------------
-// Parallax band (slow background, no cropping)
-// Full-bleed background, centered inner content.
+// Simple error boundary for CheckoutWidget
 // ---------------------------------------------
-function ParallaxBand({ image, speed = 0.12, children }) {
+class CheckoutBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error, info) {
+    console.error("CheckoutWidget crashed:", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <p style={{ color: "#e3bf72", marginTop: "12px" }}>
+          Checkout temporarily unavailable. Please try again later.
+        </p>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// ---------------------------------------------
+// Parallax band (slow background, no cropping: background-size: contain)
+// ---------------------------------------------
+function ParallaxBand({ image, speed = 0.18, children }) {
   const bandRef = useRef(null);
 
   useEffect(() => {
@@ -98,7 +118,11 @@ function ParallaxBand({ image, speed = 0.12, children }) {
     const tick = () => {
       raf = 0;
       const rect = el.getBoundingClientRect();
+
+      // Move background slower than scroll:
+      // start with rect.top so it behaves consistently no matter page height
       const y = Math.round(-rect.top * speed);
+
       el.style.setProperty("--parallaxY", `${y}px`);
     };
 
@@ -107,7 +131,9 @@ function ParallaxBand({ image, speed = 0.12, children }) {
       raf = requestAnimationFrame(tick);
     };
 
+    // Initial position
     tick();
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
 
@@ -122,11 +148,11 @@ function ParallaxBand({ image, speed = 0.12, children }) {
     <section className="parallax-band" ref={bandRef}>
       <div
         className="parallax-bg"
-        style={{ backgroundImage: `url(${image})` }}
+        style={{ backgroundImage: `url("${image}")` }}
         aria-hidden="true"
       />
       <div className="parallax-vignette" aria-hidden="true" />
-      <div className="parallax-inner">{children}</div>
+      <div className="parallax-content">{children}</div>
     </section>
   );
 }
@@ -140,6 +166,9 @@ export default function App() {
   // Wallet / modal state
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const walletScrollRef = useRef(null);
+
+  // Checkout amount (same pattern as Patronium)
+  const [usdAmount, setUsdAmount] = useState("1");
 
   // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
@@ -198,6 +227,52 @@ export default function App() {
     }
   };
 
+  // ✅ CheckoutWidget amount expects a NUMBER
+  const normalizedAmountNumber =
+    usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
+
+  const handleCheckoutSuccess = async (result) => {
+    try {
+      if (!account?.address) return;
+
+      const resp = await fetch("/.netlify/functions/mint-patron", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          address: account.address,
+          usdAmount: String(normalizedAmountNumber),
+          checkout: {
+            id: result?.id,
+            amountPaid: result?.amountPaid ?? String(normalizedAmountNumber),
+            currency: result?.currency ?? "USD",
+          },
+        }),
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        console.error("mint-patron error:", text);
+        alert(
+          "Payment succeeded, but we could not mint PATRON automatically.\n" +
+            "We’ll review your transaction and credit you manually if needed."
+        );
+        return;
+      }
+
+      await resp.json();
+      alert(
+        "Thank you — your patronage payment was received.\n\n" +
+          "PATRON is being credited to your wallet."
+      );
+    } catch (err) {
+      console.error("Error in handleCheckoutSuccess:", err);
+      alert(
+        "Payment completed, but there was an error minting PATRON.\n" +
+          "We’ll review and fix this on our side."
+      );
+    }
+  };
+
   // Lock body scroll when modal open
   useEffect(() => {
     if (isWalletOpen) {
@@ -241,7 +316,7 @@ export default function App() {
       if (!el) return;
 
       const rect = el.getBoundingClientRect();
-      const triggerY = 96;
+      const triggerY = 96; // px from top of viewport
 
       if (rect.bottom <= triggerY) {
         setHasTriggeredGate(true);
@@ -296,6 +371,7 @@ export default function App() {
 
         <div className="hero-rule-2" />
 
+        {/* Streaming on THE POLO WAY first */}
         <div className="hero-badges" style={{ marginTop: "0" }}>
           <div className="hero-badge-intro">STREAMING ON</div>
           <div
@@ -310,11 +386,13 @@ export default function App() {
           </div>
         </div>
 
+        {/* Divider between Polo Way and Remuda */}
         <div
           className="hero-rule-2"
           style={{ marginTop: "18px", marginBottom: "18px" }}
         />
 
+        {/* Then Introducing THREE SEVENS REMUDA */}
         <div className="hero-badges">
           <div className="hero-badge-intro">INTRODUCING</div>
           <div className="three-sevens-mark">
@@ -330,10 +408,11 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 1 */}
+      {/* small responsive gap before first photo band */}
       <div className="photo-gap" />
-      <ParallaxBand image={PHOTO_1} speed={0.10}>
-        {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
+
+      {/* PHOTO BAND 1 (parallax background) + ABOUT content in front */}
+      <ParallaxBand image={PHOTO_1} speed={0.14}>
         <section id="about" ref={roadmapGateRef} className="section-reset">
           <div className="section-header">
             <div className="section-kicker">THE FORMAT</div>
@@ -354,20 +433,21 @@ export default function App() {
               and still build a real Circuit handicap.
             </p>
             <p>
-              Cowboy Polo chukkers can be hosted by any stable, arena, or program
-              that signs on to the Circuit. A local coach, instructor, or
-              appointed captains run the game, then submit the chukker sheet
+              Cowboy Polo chukkers can be hosted by any stable, arena, or
+              program that signs on to the Circuit. A local coach, instructor,
+              or appointed captains run the game, then submit the chukker sheet
               feeding two tables: the individual handicap table for each rider,
               and the game results table for teams.
             </p>
             <p>
-              Each sanctioned chukker updates both sides of the story: how riders
-              are rated, and how their teams are performing.
+              Each sanctioned chukker updates both sides of the story: how
+              riders are rated, and how their teams are performing.
             </p>
             <p>
               Over the course of a Circuit season, those two tables are the
-              backbone of the standings: player handicaps and team records (wins,
-              losses, goal difference) together define how the season is read.
+              backbone of the standings: player handicaps and team records
+              (wins, losses, goal difference) together define how the season is
+              read.
             </p>
             <p>
               Local chapters also feed into{" "}
@@ -380,8 +460,10 @@ export default function App() {
         </section>
       </ParallaxBand>
 
-      {/* PLAYER LEADERBOARD (GATED) */}
+      {/* black gap between photo bands */}
       <div className="photo-gap" />
+
+      {/* PLAYER LEADERBOARD (GATED) */}
       <section id="players">
         <div className="section-header">
           <div className="section-kicker">PLAYER STANDINGS</div>
@@ -389,48 +471,19 @@ export default function App() {
           <div className="section-rule" />
         </div>
 
-        <div style={{ position: "relative", marginTop: "20px" }}>
+        <div className="gate-zone" style={{ marginTop: "20px" }}>
           {!isConnected && (
-            <div
-              onClick={openWallet}
-              aria-label="Sign in required to view rider standings"
-              role="button"
-              style={{
-                position: "absolute",
-                inset: 0,
-                zIndex: 50,
-                background: "rgba(0,0,0,0.25)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "22px",
-                textAlign: "center",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    marginBottom: "8px",
-                  }}
-                >
-                  COWBOY POLO CIRCUIT STANDINGS
-                </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
+            <div className="gate-overlay" onClick={openWallet} role="button">
+              <div className="gate-card">
+                <div className="gate-kicker">COWBOY POLO CIRCUIT STANDINGS</div>
+                <div className="gate-copy">
                   Sign into your Patron Wallet to view live rider handicaps and
                   Circuit tables.
+                </div>
+                <div style={{ marginTop: "16px" }}>
+                  <button className="btn btn-outline btn-gate" type="button">
+                    OPEN PATRON WALLET
+                  </button>
                 </div>
               </div>
             </div>
@@ -453,9 +506,7 @@ export default function App() {
             </div>
 
             <div className="board">
-              <div className="board-title">
-                Top Riders — Mid-Season Snapshot
-              </div>
+              <div className="board-title">Top Riders — Mid-Season Snapshot</div>
               <div className="board-sub">
                 Handicaps update as sanctioned results are submitted.
               </div>
@@ -502,10 +553,11 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 2 */}
+      {/* black gap between photo bands */}
       <div className="photo-gap" />
-      <ParallaxBand image={PHOTO_2} speed={0.10}>
-        {/* HORSE & REMUDA SECTION (GATED) */}
+
+      {/* PHOTO BAND 2 (parallax background) + HORSES content in front */}
+      <ParallaxBand image={PHOTO_2} speed={0.14}>
         <section id="horses" className="section-reset">
           <div className="section-header">
             <div className="section-kicker">
@@ -518,48 +570,19 @@ export default function App() {
             <div className="section-rule" />
           </div>
 
-          <div style={{ position: "relative", marginTop: "20px" }}>
+          <div className="gate-zone" style={{ marginTop: "20px" }}>
             {!isConnected && (
-              <div
-                onClick={openWallet}
-                aria-label="Sign in required to view Remuda tables"
-                role="button"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "22px",
-                  textAlign: "center",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.22em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    REMUDA &amp; HORSE PERFORMANCE
+              <div className="gate-overlay" onClick={openWallet} role="button">
+                <div className="gate-card">
+                  <div className="gate-kicker">REMUDA &amp; HORSE PERFORMANCE</div>
+                  <div className="gate-copy">
+                    Sign into your Patron Wallet to view tracked horses and
+                    Remuda performance.
                   </div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      lineHeight: 1.6,
-                      color: "#f5eedc",
-                    }}
-                  >
-                    Sign into your Patron Wallet to view tracked horses and Remuda
-                    performance.
+                  <div style={{ marginTop: "16px" }}>
+                    <button className="btn btn-outline btn-gate" type="button">
+                      OPEN PATRON WALLET
+                    </button>
                   </div>
                 </div>
               </div>
@@ -574,10 +597,10 @@ export default function App() {
                 </p>
                 <p>
                   Every sanctioned appearance adds to a horse’s trace: chukkers
-                  played, riders carried, contribution to wins, and awards earned
-                  across chapters and seasons. The same horse might be bred in one
-                  place, started by another, developed by a pro, and later carry
-                  juniors and patrons.
+                  played, riders carried, contribution to wins, and awards
+                  earned across chapters and seasons. The same horse might be
+                  bred in one place, started by another, developed by a pro,
+                  and later carry juniors and patrons.
                 </p>
                 <p>
                   By keeping a single, living record for each Remuda horse,
@@ -586,9 +609,9 @@ export default function App() {
                 </p>
                 <p>
                   Over time, those records can be linked into the Patronium
-                  ecosystem so that the people who helped bring a horse along its
-                  path can participate in its economic story, not only its final
-                  ownership.
+                  ecosystem so that the people who helped bring a horse along
+                  its path can participate in its economic story, not only its
+                  final ownership.
                 </p>
               </div>
 
@@ -632,10 +655,11 @@ export default function App() {
         </section>
       </ParallaxBand>
 
-      {/* PHOTO BAND 3 */}
+      {/* black gap between photo bands */}
       <div className="photo-gap" />
-      <ParallaxBand image={PHOTO_3} speed={0.10}>
-        {/* RESULTS / NETLIFY FORM (GATED) */}
+
+      {/* PHOTO BAND 3 (parallax background) + RESULTS content in front */}
+      <ParallaxBand image={PHOTO_3} speed={0.14}>
         <section id="results" className="section-reset">
           <div className="section-header">
             <div className="section-kicker">RESULTS &amp; RECORD</div>
@@ -645,48 +669,19 @@ export default function App() {
             <div className="section-rule" />
           </div>
 
-          <div style={{ position: "relative", marginTop: "20px" }}>
+          <div className="gate-zone" style={{ marginTop: "20px" }}>
             {!isConnected && (
-              <div
-                onClick={openWallet}
-                aria-label="Sign in required to submit or view results"
-                role="button"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "22px",
-                  textAlign: "center",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.22em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    CIRCUIT RESULTS
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      lineHeight: 1.6,
-                      color: "#f5eedc",
-                    }}
-                  >
+              <div className="gate-overlay" onClick={openWallet} role="button">
+                <div className="gate-card">
+                  <div className="gate-kicker">CIRCUIT RESULTS</div>
+                  <div className="gate-copy">
                     Sign into your Patron Wallet to submit official chukker
                     results and season records.
+                  </div>
+                  <div style={{ marginTop: "16px" }}>
+                    <button className="btn btn-outline btn-gate" type="button">
+                      OPEN PATRON WALLET
+                    </button>
                   </div>
                 </div>
               </div>
@@ -696,15 +691,15 @@ export default function App() {
               <div className="section-body">
                 <p>
                   Match captains or appointed officials submit chukker sheets:
-                  teams, scorelines, rider combinations, and notable horse usage.
-                  Those sheets become the official record that updates handicaps
-                  and team standings across the Circuit.
+                  teams, scorelines, rider combinations, and notable horse
+                  usage. Those sheets become the official record that updates
+                  handicaps and team standings across the Circuit.
                 </p>
                 <p>
-                  In the live system, this is where results will be uploaded and
-                  confirmed before they touch the leaderboards — and where each
-                  season’s record can be prepared for on-chain archival inside the
-                  Patronium ecosystem.
+                  In the live system, this is where results will be uploaded
+                  and confirmed before they touch the leaderboards — and where
+                  each season’s record can be prepared for on-chain archival
+                  inside the Patronium ecosystem.
                 </p>
               </div>
 
@@ -833,27 +828,54 @@ export default function App() {
                 position: "relative",
               }}
             >
-              {/* Modal header */}
+              {/* Modal header (3-line wordmark) */}
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginBottom: "8px",
+                  marginBottom: "12px",
                   position: "relative",
                   paddingTop: "4px",
+                  textAlign: "center",
+                  flexDirection: "column",
+                  gap: 3,
                 }}
               >
                 <div
                   style={{
-                    fontSize: "18px",
+                    fontSize: "10px",
+                    letterSpacing: "0.24em",
+                    textTransform: "uppercase",
+                    color: "#9f8a64",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  U&nbsp;S&nbsp;P&nbsp;P&nbsp;A
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "15px",
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
                     color: "#c7b08a",
                     lineHeight: 1.1,
                   }}
                 >
-                  PATRON WALLET
+                  Cowboy Polo Circuit
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "12px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    color: "#f5eedc",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  Patron Wallet
                 </div>
 
                 <button
@@ -1028,6 +1050,51 @@ export default function App() {
                   </button>
                 </div>
               )}
+
+              {/* Checkout (same as Patronium) */}
+              <div style={{ marginTop: "12px" }}>
+                {!isConnected ? (
+                  <div />
+                ) : (
+                  <div className="wallet-checkout">
+                    <label className="wallet-label">
+                      Choose Your Patronage (USD)
+                    </label>
+                    <input
+                      className="wallet-input"
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={usdAmount}
+                      onChange={(e) => setUsdAmount(e.target.value)}
+                    />
+
+                    <CheckoutBoundary>
+                      <CheckoutWidget
+                        client={client}
+                        name={"COWBOY POLO CIRCUIT"}
+                        description={
+                          "USPPA · COWBOY POLO CIRCUIT · THREE SEVENS 7̶7̶7̶ REMUDA · THE POLO WAY"
+                        }
+                        currency={"USD"}
+                        chain={BASE}
+                        amount={normalizedAmountNumber}
+                        tokenAddress={
+                          "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+                        }
+                        seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
+                        buttonLabel={"BUY PATRON (USDC on Base)"}
+                        theme={cowboyWalletTheme}
+                        onSuccess={handleCheckoutSuccess}
+                        onError={(err) => {
+                          console.error("Checkout error:", err);
+                          alert(err?.message || String(err));
+                        }}
+                      />
+                    </CheckoutBoundary>
+                  </div>
+                )}
+              </div>
 
               {/* Small note */}
               <p
