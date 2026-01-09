@@ -98,7 +98,7 @@ body {
 
 /* Big black space between photo bands */
 .band-gap {
-  height: clamp(120px, 14vh, 280px);
+  height: clamp(40px, 6vh, 110px);
   background: #000;
   margin-top: 0;
 }
