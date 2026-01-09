@@ -1,9 +1,540 @@
+:root {
+  --bg: #000000;
+  --fg: #ffffff;
+  --muted: #c7c7c7;
+  --ink: #111111;
+  --border: #333333;
+  --accent: #ffffff;
+  --max-width: 900px;
+  --section-gap: 72px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "EB Garamond", serif;
+  line-height: 1.65;
+}
+
+.page {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 36px 18px 96px;
+}
+
+/* Full-bleed helper for 100vw sections inside a centered container */
+.full-bleed {
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* -----------------------------
+   Parallax photo bands
+   ----------------------------- */
+
+.parallax-band {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  margin-top: var(--section-gap);
+  min-height: 100vh;
+}
+
+.parallax-media {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 0;
+}
+
+/* No cropping */
+.parallax-img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+}
+
+.parallax-content {
+  position: relative;
+  z-index: 2;
+  padding: clamp(48px, 7vh, 96px) 18px;
+}
+
+/* Remove extra "section top margin" inside photo band */
+.band-section {
+  margin-top: 0;
+}
+
+/* Big black space between photo bands */
+.band-gap {
+  height: clamp(120px, 14vh, 280px);
+  background: #000;
+  margin-top: 0;
+}
+
+/* Add a dark shadow behind white letters on photo bands */
+.parallax-band .section-title,
+.parallax-band .section-kicker,
+.parallax-band .board-title,
+.parallax-band .board-sub,
+.parallax-band .board-header,
+.parallax-band .board-row,
+.parallax-band .hero-topline,
+.parallax-band .hero-word,
+.parallax-band .hero-tagline {
+  text-shadow:
+    0 2px 14px rgba(0, 0, 0, 0.9),
+    0 0 3px rgba(0, 0, 0, 0.95);
+}
+
+/* -----------------------------
+   HERO POSTER (Tall & Centered)
+   ----------------------------- */
+
+.hero {
+  text-align: center;
+  padding: 56px 18px 64px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 30% 10%, #333333 0, #000000 50%),
+    linear-gradient(to bottom, #111111, #000000 55%, #121212 100%);
+}
+
+.hero-topline {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.hero-rule {
+  width: 260px;
+  margin: 16px auto 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.hero-presents {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.hero-main {
+  margin-top: 24px;
+}
+
+.hero-main .the {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+
+.hero-word {
+  display: block;
+  text-transform: uppercase;
+  font-family: "Cormorant Garamond", serif;
+  line-height: 0.92;
+  letter-spacing: 0.2em;
+}
+
+.hero-word.cowboy {
+  font-size: clamp(2.6rem, 7vw, 3.4rem);
+  font-weight: 700;
+}
+
+.hero-word.polo {
+  font-size: clamp(2.1rem, 6vw, 2.8rem);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.hero-word.circuit {
+  font-size: clamp(1.7rem, 5vw, 2.2rem);
+  font-weight: 600;
+  margin-top: 6px;
+  letter-spacing: 0.28em;
+}
+
+.hero-tagline {
+  margin-top: 26px;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.hero-rule-2 {
+  width: 190px;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  margin: 20px auto 22px;
+}
+
+/* INTRODUCING + THREE SEVENS */
+.hero-badges {
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.hero-badges span {
+  display: inline-block;
+  margin: 0 8px;
+}
+
+.hero-badge-intro {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+
+/* STREAMING ON · THE POLO WAY */
+.hero-streaming {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.hero-streaming-mark {
+  margin-top: 4px;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+
+/* HERO CTA */
+.hero-cta-row {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* little explanatory line under wallet button */
+.hero-wallet-copy {
+  margin-top: 16px;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--fg);
+  color: #000;
+  border-color: var(--fg);
+}
+
+.btn-primary:hover {
+  background: #fefefe;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+}
+
+/* SECTION SHARED */
+section {
+  margin-top: var(--section-gap);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.section-kicker {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+/* Three Sevens wordmark */
+.three-sevens-mark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.three-sevens-numeral {
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.three-sevens-text {
+  font-family: "IM Fell English SC", serif;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+/* Size tuning by context */
+.hero-badges .three-sevens-numeral {
+  font-size: 1.3rem;
+}
+
+.hero-badges .three-sevens-text {
+  font-size: 0.72rem;
+  opacity: 0.9;
+}
+
+.section-kicker .three-sevens-numeral {
+  font-size: 1rem;
+}
+
+.section-kicker .three-sevens-text {
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+/* WORDMARK-STYLE TITLES */
+.section-title {
+  position: relative;
+  display: inline-block;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  padding: 6px 22px;
+}
+
+.section-title::before,
+.section-title::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.section-title::before {
+  right: 100%;
+  margin-right: 12px;
+}
+
+.section-title::after {
+  left: 100%;
+  margin-left: 12px;
+}
+
+.section-rule {
+  width: 180px;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  margin: 16px auto 0;
+  opacity: 0.6;
+}
+
+.section-body {
+  max-width: 720px;
+  margin: 20px auto 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.section-body p {
+  margin: 0 0 14px;
+  text-align: justify;
+}
+
+/* Leaderboard tables (transparent overlay cards now) */
 .board {
   max-width: 720px;
   margin: 22px auto 0;
-  border: 1px solid var(--border);
   border-radius: 4px;
-  background: #080808;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   padding: 18px 16px 14px;
-  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.4);
+}
+
+.board-title {
+  font-family: "Cormorant Garamond", serif;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.board-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.board-header,
+.board-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  column-gap: 12px;
+  font-size: 0.9rem;
+}
+
+.board-header {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  color: var(--muted);
+  border-bottom: 1px solid #262626;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+
+.board-row {
+  padding: 6px 0;
+  border-bottom: 1px dashed #202020;
+}
+
+.board-row:last-child {
+  border-bottom: 0;
+}
+
+.board-row span:last-child {
+  text-align: right;
+}
+
+.board-row span:nth-child(2) {
+  text-align: center;
+}
+
+/* Handicap formatting */
+.handicap-value {
+  white-space: nowrap;
+}
+
+.handicap-value-main {
+  font-size: 0.9rem;
+}
+
+.handicap-value-decimal {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+/* Results form */
+.results-form {
+  max-width: 720px;
+  margin: 26px auto 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 14px;
+}
+
+.results-form-row-inline {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.results-form-row-inline > div {
+  flex: 1 1 160px;
+}
+
+.results-form label {
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+}
+
+.results-form input,
+.results-form textarea,
+.results-form select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: #050505;
+  color: var(--fg);
+  font-family: "EB Garamond", serif;
+  font-size: 0.95rem;
+}
+
+.results-form textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.results-form small {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* Footer */
+footer {
+  margin-top: var(--section-gap);
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .board-header,
+  .board-row {
+    grid-template-columns: 1.8fr 1fr 1.1fr;
+  }
+
+  .section-title::before,
+  .section-title::after {
+    width: 24px;
+  }
 }
