@@ -1,5 +1,4 @@
 /* src/App.css */
-
 :root {
   --bg: #000000;
   --fg: #ffffff;
@@ -8,10 +7,10 @@
   --border: #333333;
   --accent: #ffffff;
   --max-width: 900px;
+  --section-gap: 72px;
 
-  /* photo band height + black gap (responsive, stable on mobile) */
-  --photo-band-h: clamp(520px, 74svh, 900px);
-  --photo-gap-h: clamp(80px, 14svh, 220px);
+  /* responsive gap between photo bands */
+  --photo-gap: clamp(18px, 5vh, 72px);
 }
 
 * {
@@ -32,15 +31,10 @@ body {
   padding: 36px 18px 96px;
 }
 
-/* subtle readability on photos without altering images */
-.hero-topline,
-.hero-presents,
-.hero-word,
-.hero-tagline,
-.section-kicker,
-.section-title,
-.section-body {
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+/* subtle shadow so white text reads over photos */
+.page,
+.page * {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
 }
 
 /* HERO POSTER (Tall & Centered) */
@@ -178,47 +172,68 @@ body {
   border-color: #ffffff;
 }
 
-/* Black spacer between bands */
+/* responsive black gap between photo bands */
 .photo-gap {
-  margin: 0;
-  min-height: var(--photo-gap-h);
+  height: var(--photo-gap);
   background: #000;
 }
 
-/* Parallax photo band (no cropping: background-size: contain) */
+/* Parallax photo band
+   - no cropping: background-size: contain
+   - very slow: translateY uses --parallaxY from JS
+   - vignette is INSIDE the band (not a separate overlay layer) */
 .parallax-band {
-  margin: 0;
-  min-height: var(--photo-band-h);
-  padding: 56px 18px 64px;
+  position: relative;
   border: 1px solid var(--border);
-
-  background-color: #000;
-  background-repeat: no-repeat;
-  background-size: contain; /* ✅ no cropping */
-  background-position: center calc(50% + var(--parallax-offset, 0px));
+  overflow: hidden;
+  background: #000;
+  padding: var(--section-gap) 0;
 }
 
-/* vignette ON the photo band itself (not a separate black layer) */
-.parallax-band::after {
-  content: "";
+.parallax-bg {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain; /* ✅ no crop */
+  transform: translate3d(0, var(--parallaxY, 0px), 0) scale(1.02);
+  will-change: transform;
+  opacity: 0.98;
+}
+
+/* Vignette fades photo edges into black so it "blends" into the black page */
+.parallax-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.55) 100%),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0) 28%, rgba(0, 0, 0, 0.62) 100%);
+    radial-gradient(circle at 50% 35%,
+      rgba(0, 0, 0, 0.00) 0%,
+      rgba(0, 0, 0, 0.35) 55%,
+      rgba(0, 0, 0, 0.92) 100%),
+    linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.88) 0%,
+      rgba(0, 0, 0, 0.10) 22%,
+      rgba(0, 0, 0, 0.10) 78%,
+      rgba(0, 0, 0, 0.92) 100%);
 }
 
-/* ensure content is above vignette */
-.parallax-band {
-  position: relative;
-}
-.parallax-band > * {
+.parallax-content {
   position: relative;
   z-index: 2;
+  padding: 0 18px;
+}
+
+/* remove extra top margin for sections inside a parallax band */
+.section-reset {
+  margin-top: 0 !important;
 }
 
 /* SECTION SHARED */
+section {
+  margin-top: var(--section-gap);
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 26px;
@@ -362,16 +377,6 @@ body {
   margin-bottom: 10px;
 }
 
-.gate-title {
-  font-family: "Cormorant Garamond", serif;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 2rem;
-  line-height: 1.05;
-  color: #f5eedc;
-  margin-bottom: 14px;
-}
-
 .gate-copy {
   color: #c7c7c7;
   font-size: 1rem;
@@ -510,9 +515,36 @@ body {
   color: var(--muted);
 }
 
+/* Wallet checkout (modal) */
+.wallet-checkout {
+  margin-top: 10px;
+}
+
+.wallet-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c7b08a;
+  margin-bottom: 6px;
+}
+
+.wallet-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #3a2b16;
+  background: #050505;
+  color: #f5eedc;
+  font-size: 16px;
+  outline: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  margin-bottom: 12px;
+}
+
 /* Footer */
 footer {
-  margin-top: var(--photo-gap-h);
+  margin-top: var(--section-gap);
   padding-top: 18px;
   border-top: 1px solid var(--border);
   text-align: center;
@@ -536,9 +568,5 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
-  }
-
-  .gate-title {
-    font-size: 1.6rem;
   }
 }
