@@ -536,15 +536,13 @@ footer {
    Mobile portrait tweaks (phones)
    --------------------------------- */
 @media (max-width: 640px) {
-  /* Show the photo sooner and accept some cropping on phones */
+  /* Show the photo sooner than desktop, but still with a substantial gap */
   .parallax-content {
-    /* much smaller top offset so you don't scroll through a long black void */
-    padding-top: clamp(32px, 14vh, 72px);
+    padding-top: clamp(120px, 48vh, 280px);
   }
 
   .parallax-img {
-    /* fill the band on tall/narrow screens;
-       you already cropped the assets, so this is safe */
+    /* fill the band on tall/narrow screens; you’ve already cropped the assets */
     object-fit: cover;
   }
 
