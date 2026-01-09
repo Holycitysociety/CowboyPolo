@@ -73,7 +73,7 @@ const cowboyWalletTheme = darkTheme({
 // ---------------------------------------------
 // Parallax full-bleed photo band (no cropping)
 // ---------------------------------------------
-function ParallaxBand({ src, children, speed = 0.77 }) {
+function ParallaxBand({ src, children, speed = 0.33 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -124,10 +124,6 @@ function ParallaxBand({ src, children, speed = 0.77 }) {
   );
 }
 
-function BandGap() {
-  return <div className="band-gap full-bleed" aria-hidden="true" />;
-}
-
 // ---------------------------------------------
 // Main App
 // ---------------------------------------------
@@ -138,9 +134,7 @@ export default function App() {
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const walletScrollRef = useRef(null);
 
-  // Scroll-gating state
-  const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
-  const [allowScrollGate, setAllowScrollGate] = useState(false);
+  // We still keep this ref for the ABOUT section (no more scroll popup)
   const roadmapGateRef = useRef(null);
 
   // Thirdweb hooks
@@ -196,32 +190,6 @@ export default function App() {
     }
   };
 
-  // Track that this browser has ever connected a wallet
-  useEffect(() => {
-    if (!account) return;
-    try {
-      window.localStorage.setItem("cpc_has_connected_wallet", "1");
-    } catch (err) {
-      // ignore storage failures
-    }
-  }, [account]);
-
-  // On first mount, decide whether to enable scroll gating at all
-  useEffect(() => {
-    try {
-      const hasConnected = window.localStorage.getItem(
-        "cpc_has_connected_wallet"
-      );
-      // Only allow scroll gate for browsers that have never connected a wallet
-      if (!hasConnected) {
-        setAllowScrollGate(true);
-      }
-    } catch (err) {
-      // If storage isn't available, fall back to allowing gate
-      setAllowScrollGate(true);
-    }
-  }, []);
-
   // Lock body scroll when modal open
   useEffect(() => {
     if (isWalletOpen) {
@@ -252,35 +220,8 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
-  // Scroll gating: when ABOUT section bottom crosses near top, open wallet once
-  // Now fully disabled for any browser that has *ever* connected a wallet.
-  useEffect(() => {
-    if (!allowScrollGate) return;
-
-    // If user is connected, never attach the scroll gate or open the wallet.
-    if (isConnected) {
-      setHasTriggeredGate(true);
-      setIsWalletOpen(false);
-      return;
-    }
-
-    const handleScroll = () => {
-      if (hasTriggeredGate) return;
-      const el = roadmapGateRef.current;
-      if (!el) return;
-
-      const rect = el.getBoundingClientRect();
-      const triggerY = 96; // px from top of viewport
-
-      if (rect.bottom <= triggerY) {
-        setHasTriggeredGate(true);
-        setIsWalletOpen(true);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [allowScrollGate, isConnected, hasTriggeredGate]);
+  // NOTE: scroll pop-up effect has been completely removed
+  // so being signed in never triggers an auto wallet open.
 
   return (
     <div className="page">
@@ -364,7 +305,7 @@ export default function App() {
 
       {/* Background photo band #1 */}
       <ParallaxBand src="/images/cowboy-1.jpeg">
-        {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
+        {/* ABOUT / HOW IT FUNCTIONS (scroll gate anchor only) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
             <div className="section-kicker">THE FORMAT</div>
@@ -392,14 +333,13 @@ export default function App() {
               and the game results table for teams.
             </p>
             <p>
-              Each sanctioned chukker updates both sides of the story: how
-              riders are rated, and how their teams are performing.
+              Each sanctioned chukker updates both sides of the story: how riders
+              are rated, and how their teams are performing.
             </p>
             <p>
               Over the course of a Circuit season, those two tables are the
-              backbone of the standings: player handicaps and team records
-              (wins, losses, goal difference) together define how the season is
-              read.
+              backbone of the standings: player handicaps and team records (wins,
+              losses, goal difference) together define how the season is read.
             </p>
             <p>
               Local chapters also feed into{" "}
@@ -411,8 +351,6 @@ export default function App() {
           </div>
         </section>
       </ParallaxBand>
-
-      <BandGap />
 
       {/* Background photo band #2 */}
       <ParallaxBand src="/images/cowboy-2.jpeg">
@@ -469,8 +407,8 @@ export default function App() {
                       color: "#f5eedc",
                     }}
                   >
-                    Sign into your Patron Wallet to view live rider handicaps
-                    and Circuit tables.
+                    Sign into your Patron Wallet to view live rider handicaps and
+                    Circuit tables.
                   </div>
                 </div>
               </div>
@@ -479,16 +417,16 @@ export default function App() {
             <div aria-hidden={!isConnected && true}>
               <div className="section-body">
                 <p>
-                  Player handicaps in the Cowboy Polo Circuit are not just
-                  static numbers. Each rider’s Cowboy Polo handicap is a
-                  statistically calculated, ELO-style rating, updated after
-                  every sanctioned chukker and displayed to two decimal places.
+                  Player handicaps in the Cowboy Polo Circuit are not just static
+                  numbers. Each rider’s Cowboy Polo handicap is a statistically
+                  calculated, ELO-style rating, updated after every sanctioned
+                  chukker and displayed to two decimal places.
                 </p>
                 <p>
-                  Ratings move with performance over time: goals scored,
-                  assists, ride-offs won, and overall impact on the match all
-                  feed the same underlying score. The table below shows how a
-                  leaderboard might appear during mid-season.
+                  Ratings move with performance over time: goals scored, assists,
+                  ride-offs won, and overall impact on the match all feed the same
+                  underlying score. The table below shows how a leaderboard might
+                  appear during mid-season.
                 </p>
               </div>
 
@@ -542,8 +480,6 @@ export default function App() {
           </div>
         </section>
       </ParallaxBand>
-
-      <BandGap />
 
       {/* Background photo band #3 */}
       <ParallaxBand src="/images/cowboy-3.jpeg">
@@ -605,8 +541,8 @@ export default function App() {
                       color: "#f5eedc",
                     }}
                   >
-                    Sign into your Patron Wallet to view tracked horses and
-                    Remuda performance.
+                    Sign into your Patron Wallet to view tracked horses and Remuda
+                    performance.
                   </div>
                 </div>
               </div>
@@ -621,10 +557,10 @@ export default function App() {
                 </p>
                 <p>
                   Every sanctioned appearance adds to a horse’s trace: chukkers
-                  played, riders carried, contribution to wins, and awards
-                  earned across chapters and seasons. The same horse might be
-                  bred in one place, started by another, developed by a pro, and
-                  later carry juniors and patrons.
+                  played, riders carried, contribution to wins, and awards earned
+                  across chapters and seasons. The same horse might be bred in one
+                  place, started by another, developed by a pro, and later carry
+                  juniors and patrons.
                 </p>
                 <p>
                   By keeping a single, living record for each Remuda horse,
@@ -633,9 +569,9 @@ export default function App() {
                 </p>
                 <p>
                   Over time, those records can be linked into the Patronium
-                  ecosystem so that the people who helped bring a horse along
-                  its path can participate in its economic story, not only its
-                  final ownership.
+                  ecosystem so that the people who helped bring a horse along its
+                  path can participate in its economic story, not only its final
+                  ownership.
                 </p>
               </div>
 
@@ -678,8 +614,6 @@ export default function App() {
           </div>
         </section>
       </ParallaxBand>
-
-      <BandGap />
 
       {/* WALLET MODAL */}
       {isWalletOpen && (
