@@ -93,9 +93,9 @@ export default function App() {
   // ✅ PHOTO STACK (put images in: public/images/)
   // Then reference as: /images/<filename>
   const photoStack = [
-    { src: "/images/cowboy-1.jpg", alt: "Cowboy Polo under lights" },
-    { src: "/images/cowboy-2.jpg", alt: "Cowboy Polo riders" },
-    { src: "/images/cowboy-3.jpg", alt: "Cowboy Polo — arena portrait" },
+    { src: "/images/cowboy-1.jpeg", alt: "Cowboy Polo under lights" },
+    { src: "/images/cowboy-2.jpeg", alt: "Cowboy Polo riders" },
+    { src: "/images/cowboy-3.jpeg", alt: "Cowboy Polo — arena portrait" },
   ];
 
   // Balances
