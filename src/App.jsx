@@ -73,7 +73,7 @@ const cowboyWalletTheme = darkTheme({
 // ---------------------------------------------
 // Parallax full-bleed photo band
 // ---------------------------------------------
-function ParallaxBand({ src, children, speed = 0.18 }) {
+function ParallaxBand({ src, children, speed = 0.18, first = false }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -112,14 +112,17 @@ function ParallaxBand({ src, children, speed = 0.18 }) {
   }, [speed]);
 
   return (
-    <div ref={bandRef} className="parallax-band full-bleed">
+    <div
+      ref={bandRef}
+      className={`parallax-band full-bleed ${
+        first ? "parallax-band-first" : ""
+      }`}
+    >
       <div className="parallax-media" aria-hidden="true">
         <img ref={imgRef} className="parallax-img" src={src} alt="" />
         <div className="parallax-vignette" />
       </div>
 
-      {/* Text sits in the same band but starts after a black gap,
-          so the photo is clean at first and the copy scrolls up over it. */}
       <div className="parallax-content">{children}</div>
     </div>
   );
@@ -328,7 +331,7 @@ export default function App() {
       </section>
 
       {/* PHOTO BAND 1 + ABOUT TEXT */}
-      <ParallaxBand src="/images/cowboy-1.jpeg">
+      <ParallaxBand src="/images/cowboy-1.jpeg" first>
         {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
