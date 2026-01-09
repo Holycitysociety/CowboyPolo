@@ -272,6 +272,24 @@ export default function App() {
         </div>
       </section>
 
+      {/* PHOTO STACK (full-bleed, no-crop, responsive gaps, feather-to-black) */}
+      <div className="photo-stack" aria-hidden="true">
+        <div
+          className="photo-band feather"
+          style={{ "--photo": 'url("/photo-1.jpeg")' }}
+        />
+        <div className="photo-gap" />
+        <div
+          className="photo-band feather"
+          style={{ "--photo": 'url("/photo-2.jpeg")' }}
+        />
+        <div className="photo-gap" />
+        <div
+          className="photo-band feather"
+          style={{ "--photo": 'url("/photo-3.jpeg")' }}
+        />
+      </div>
+
       {/* WALLET MODAL */}
       {isWalletOpen && (
         <div
@@ -524,7 +542,7 @@ export default function App() {
       )}
 
       {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
-      <section id="about" ref={roadmapGateRef} className="bg-photo bg-photo-1">
+      <section id="about" ref={roadmapGateRef}>
         <div className="section-header">
           <div className="section-kicker">THE FORMAT</div>
           <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
@@ -570,19 +588,14 @@ export default function App() {
       </section>
 
       {/* PLAYER LEADERBOARD (GATED) */}
-      <section id="players" className="bg-photo bg-photo-2">
+      <section id="players">
         <div className="section-header">
           <div className="section-kicker">PLAYER STANDINGS</div>
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
           <div className="section-rule" />
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
@@ -646,9 +659,7 @@ export default function App() {
             </div>
 
             <div className="board">
-              <div className="board-title">
-                Top Riders — Mid-Season Snapshot
-              </div>
+              <div className="board-title">Top Riders — Mid-Season Snapshot</div>
               <div className="board-sub">
                 Handicaps update as sanctioned results are submitted.
               </div>
@@ -696,7 +707,7 @@ export default function App() {
       </section>
 
       {/* HORSE & REMUDA SECTION (GATED) */}
-      <section id="horses" className="bg-photo bg-photo-3">
+      <section id="horses">
         <div className="section-header">
           <div className="section-kicker">
             <div className="three-sevens-mark">
@@ -708,12 +719,7 @@ export default function App() {
           <div className="section-rule" />
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
@@ -788,9 +794,7 @@ export default function App() {
             </div>
 
             <div className="board">
-              <div className="board-title">
-                Remuda Horses — Performance Snapshot
-              </div>
+              <div className="board-title">Remuda Horses — Performance Snapshot</div>
               <div className="board-sub">
                 Score blends chukker count, match impact, and rider feedback
                 across the season.
@@ -830,18 +834,11 @@ export default function App() {
       <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
-          <h2 className="section-title">
-            SANCTIONED CHUKKERS &amp; SEASON RECORD
-          </h2>
+          <h2 className="section-title">SANCTIONED CHUKKERS &amp; SEASON RECORD</h2>
           <div className="section-rule" />
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
