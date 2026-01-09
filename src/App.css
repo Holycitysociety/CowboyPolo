@@ -78,23 +78,13 @@ body {
   margin-top: 0;
 }
 
-/* Big black space between photo bands */
-.band-gap {
-  height: clamp(120px, 14vh, 280px);
-  background: #000;
-  margin-top: 0;
-}
-
-/* Add a dark shadow behind white letters on photo bands */
+/* Text shadow over photos for legibility */
 .parallax-band .section-title,
 .parallax-band .section-kicker,
 .parallax-band .board-title,
 .parallax-band .board-sub,
 .parallax-band .board-header,
-.parallax-band .board-row,
-.parallax-band .hero-topline,
-.parallax-band .hero-word,
-.parallax-band .hero-tagline {
+.parallax-band .board-row {
   text-shadow:
     0 2px 14px rgba(0, 0, 0, 0.9),
     0 0 3px rgba(0, 0, 0, 0.95);
@@ -210,21 +200,6 @@ body {
   opacity: 0.85;
 }
 
-/* STREAMING ON · THE POLO WAY */
-.hero-streaming {
-  margin-top: 14px;
-  text-align: center;
-}
-
-.hero-streaming-mark {
-  margin-top: 4px;
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  opacity: 0.95;
-}
-
 /* HERO CTA */
 .hero-cta-row {
   margin-top: 32px;
@@ -234,7 +209,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* little explanatory line under wallet button */
 .hero-wallet-copy {
   margin-top: 16px;
   font-size: 0.82rem;
@@ -383,17 +357,15 @@ section {
   text-align: justify;
 }
 
-/* Leaderboard tables (transparent overlay cards now) */
+/* Leaderboard tables */
 .board {
   max-width: 720px;
   margin: 22px auto 0;
+  border: 1px solid var(--border);
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
+  background: #080808;
   padding: 18px 16px 14px;
-  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.7);
 }
 
 .board-title {
