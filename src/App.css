@@ -1,3 +1,4 @@
+/* src/App.css */
 :root {
   --bg: #000000;
   --fg: #ffffff;
@@ -8,8 +9,8 @@
   --max-width: 900px;
   --section-gap: 72px;
 
-  /* responsive gap between photo areas */
-  --photo-gap: clamp(18px, 4.5vh, 56px);
+  /* responsive gap between photo bands */
+  --photo-gap: clamp(18px, 5vh, 72px);
 }
 
 * {
@@ -30,6 +31,12 @@ body {
   padding: 36px 18px 96px;
 }
 
+/* subtle shadow so white text reads over photos */
+.page,
+.page * {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+
 /* HERO POSTER (Tall & Centered) */
 .hero {
   text-align: center;
@@ -46,7 +53,6 @@ body {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   opacity: 0.85;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.85);
 }
 
 .hero-rule {
@@ -61,7 +67,6 @@ body {
   letter-spacing: 0.24em;
   text-transform: uppercase;
   opacity: 0.9;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.85);
 }
 
 .hero-main {
@@ -74,7 +79,6 @@ body {
   font-family: "Cormorant Garamond", serif;
   line-height: 0.92;
   letter-spacing: 0.2em;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.92);
 }
 
 .hero-word.cowboy {
@@ -101,7 +105,6 @@ body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0.78;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.85);
 }
 
 .hero-rule-2 {
@@ -116,7 +119,6 @@ body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   opacity: 0.8;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.85);
 }
 
 .hero-badge-intro {
@@ -170,27 +172,21 @@ body {
   border-color: #ffffff;
 }
 
-/* responsive black gaps between areas */
+/* responsive black gap between photo bands */
 .photo-gap {
   height: var(--photo-gap);
   background: #000;
 }
 
-/* -------------------------------------------
-   PARALLAX FULL-BLEED BAND
-   - Full width background (100vw)
-   - Centered inner content (max-width)
-   - No crop: background-size: contain
-   - Vignette on the same band, not a separate obscuring layer
-------------------------------------------- */
+/* Parallax photo band
+   - no cropping: background-size: contain
+   - very slow: translateY uses --parallaxY from JS
+   - vignette is INSIDE the band (not a separate overlay layer) */
 .parallax-band {
   position: relative;
-  width: 100vw;
-  margin-left: calc(50% - 50vw); /* full-bleed outside the 900px page */
+  border: 1px solid var(--border);
   overflow: hidden;
   background: #000;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
   padding: var(--section-gap) 0;
 }
 
@@ -199,38 +195,36 @@ body {
   inset: 0;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain; /* ✅ no cropping */
+  background-size: contain; /* ✅ no crop */
   transform: translate3d(0, var(--parallaxY, 0px), 0) scale(1.02);
   will-change: transform;
-  opacity: 1;
+  opacity: 0.98;
 }
 
-/* fades photo edges into black so it blends without “black bars overlaying the photo” */
+/* Vignette fades photo edges into black so it "blends" into the black page */
 .parallax-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 40%,
+    radial-gradient(circle at 50% 35%,
       rgba(0, 0, 0, 0.00) 0%,
       rgba(0, 0, 0, 0.35) 55%,
       rgba(0, 0, 0, 0.92) 100%),
     linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.90) 0%,
-      rgba(0, 0, 0, 0.10) 24%,
-      rgba(0, 0, 0, 0.10) 76%,
-      rgba(0, 0, 0, 0.90) 100%);
+      rgba(0, 0, 0, 0.88) 0%,
+      rgba(0, 0, 0, 0.10) 22%,
+      rgba(0, 0, 0, 0.10) 78%,
+      rgba(0, 0, 0, 0.92) 100%);
 }
 
-.parallax-inner {
+.parallax-content {
   position: relative;
   z-index: 2;
-  max-width: var(--max-width);
-  margin: 0 auto;
   padding: 0 18px;
 }
 
-/* remove default top margin for sections placed inside photo bands */
+/* remove extra top margin for sections inside a parallax band */
 .section-reset {
   margin-top: 0 !important;
 }
@@ -243,7 +237,6 @@ section {
 .section-header {
   text-align: center;
   margin-bottom: 26px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.92);
 }
 
 .section-kicker {
@@ -279,13 +272,16 @@ section {
 .hero-badges .three-sevens-numeral {
   font-size: 1.3rem;
 }
+
 .hero-badges .three-sevens-text {
   font-size: 0.72rem;
   opacity: 0.9;
 }
+
 .section-kicker .three-sevens-numeral {
   font-size: 1rem;
 }
+
 .section-kicker .three-sevens-text {
   font-size: 0.7rem;
   opacity: 0.9;
@@ -315,6 +311,7 @@ section {
   right: 100%;
   margin-right: 12px;
 }
+
 .section-title::after {
   left: 100%;
   margin-left: 12px;
@@ -332,12 +329,65 @@ section {
   margin: 20px auto 0;
   color: var(--muted);
   font-size: 0.98rem;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.92);
 }
 
 .section-body p {
   margin: 0 0 14px;
   text-align: justify;
+}
+
+/* Gate overlay (nice reminder card) */
+.gate-zone {
+  position: relative;
+}
+
+.gate-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  text-align: center;
+}
+
+.gate-card {
+  width: min(560px, 100%);
+  border: 1px solid #3a2b16;
+  border-radius: 22px;
+  padding: 22px 18px;
+  background:
+    radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.08) 0, rgba(0, 0, 0, 0.92) 55%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.92));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.85);
+}
+
+.gate-kicker {
+  font-family: "IM Fell English SC", serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #c7b08a;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.gate-copy {
+  color: #c7c7c7;
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: 42ch;
+  margin: 0 auto;
+}
+
+.btn-gate {
+  border-color: rgba(227, 191, 114, 0.85);
+  color: #e3bf72;
 }
 
 /* Leaderboard tables */
@@ -463,6 +513,33 @@ section {
 .results-form small {
   font-size: 0.78rem;
   color: var(--muted);
+}
+
+/* Wallet checkout (modal) */
+.wallet-checkout {
+  margin-top: 10px;
+}
+
+.wallet-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c7b08a;
+  margin-bottom: 6px;
+}
+
+.wallet-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #3a2b16;
+  background: #050505;
+  color: #f5eedc;
+  font-size: 16px;
+  outline: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  margin-bottom: 12px;
 }
 
 /* Footer */
