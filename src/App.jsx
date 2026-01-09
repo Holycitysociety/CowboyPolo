@@ -226,30 +226,42 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
-  // Scroll gating: when ABOUT section bottom crosses near top, open wallet once
-  useEffect(() => {
-    if (isConnected) {
-      setHasTriggeredGate(false);
-      return;
+
+
+// Scroll gating: open wallet once when scrolling past ABOUT -- disabled if signed in
+useEffect(() => {
+  // If user is connected, disable all scroll gating entirely
+  if (isConnected) {
+    setHasTriggeredGate(true);        // mark gate as already used
+    setIsWalletOpen(false);           // ensure modal never auto-opens
+    return;                           // DO NOT attach scroll listener
+  }
+
+  const handleScroll = () => {
+    if (hasTriggeredGate) return;
+
+    const el = roadmapGateRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const triggerY = 96; // px from top of viewport
+
+    if (rect.bottom <= triggerY) {
+      setHasTriggeredGate(true);
+      setIsWalletOpen(true);
     }
+  };
 
-    const handleScroll = () => {
-      if (hasTriggeredGate) return;
-      const el = roadmapGateRef.current;
-      if (!el) return;
+  window.addEventListener("scroll", handleScroll, { passive: true });
 
-      const rect = el.getBoundingClientRect();
-      const triggerY = 96; // px from top of viewport
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, [isConnected, hasTriggeredGate]);
 
-      if (rect.bottom <= triggerY) {
-        setHasTriggeredGate(true);
-        setIsWalletOpen(true);
-      }
-    };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isConnected, hasTriggeredGate]);
+
+
 
   return (
     <div className="page">
