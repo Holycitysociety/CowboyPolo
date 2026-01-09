@@ -272,21 +272,21 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO STACK (full-bleed, no-crop, responsive gaps, feather-to-black) */}
+      {/* PHOTO STACK (background images full width, not cropped) */}
       <div className="photo-stack" aria-hidden="true">
         <div
           className="photo-band feather"
-          style={{ "--photo": 'url("/photo-1.jpeg")' }}
+          style={{ "--photo": 'url("/images/cowboy-1.jpeg")' }}
         />
         <div className="photo-gap" />
         <div
           className="photo-band feather"
-          style={{ "--photo": 'url("/photo-2.jpeg")' }}
+          style={{ "--photo": 'url("/images/cowboy-2.jpeg")' }}
         />
         <div className="photo-gap" />
         <div
           className="photo-band feather"
-          style={{ "--photo": 'url("/photo-3.jpeg")' }}
+          style={{ "--photo": 'url("/images/cowboy-3.jpeg")' }}
         />
       </div>
 
@@ -558,8 +558,8 @@ export default function App() {
           <p>
             Games are played 3 on 3 in arenas or campitos. The key is that a
             player does not need a full string to attract patrons: a rider can
-            progress by playing as little as one chukker, on one good horse,
-            and still build a real Circuit handicap.
+            progress by playing as little as one chukker, on one good horse, and
+            still build a real Circuit handicap.
           </p>
           <p>
             Cowboy Polo chukkers can be hosted by any stable, arena, or program
@@ -579,8 +579,8 @@ export default function App() {
           </p>
           <p>
             Local chapters also feed into{" "}
-            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
-            and arenas can submit 360° VR footage from sanctioned Cowboy Polo
+            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders and
+            arenas can submit 360° VR footage from sanctioned Cowboy Polo
             chukkers to thepoloway.com so patrons can follow and support the
             Circuit from anywhere.
           </p>
@@ -628,13 +628,7 @@ export default function App() {
                 >
                   COWBOY POLO CIRCUIT STANDINGS
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
                   Sign into your Patron Wallet to view live rider handicaps and
                   Circuit tables.
                 </div>
@@ -752,13 +746,7 @@ export default function App() {
                 >
                   REMUDA &amp; HORSE PERFORMANCE
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
                   Sign into your Patron Wallet to view tracked horses and Remuda
                   performance.
                 </div>
@@ -871,13 +859,7 @@ export default function App() {
                 >
                   CIRCUIT RESULTS
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
                   Sign into your Patron Wallet to submit official chukker
                   results and season records.
                 </div>
@@ -984,8 +966,8 @@ export default function App() {
       </section>
 
       <footer>
-        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
-        POLO CIRCUIT
+        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY POLO
+        CIRCUIT
       </footer>
     </div>
   );
