@@ -69,9 +69,6 @@ const cowboyWalletTheme = darkTheme({
   },
 });
 
-// ---------------------------------------------
-// Main App
-// ---------------------------------------------
 export default function App() {
   const year = new Date().getFullYear();
 
@@ -191,12 +188,102 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isConnected, hasTriggeredGate]);
 
-  // Full-bleed photo panels (put your real filenames here)
-  const photoStack = [
-    { src: "/images/cowboy-1.jpeg", alt: "Cowboy Polo under lights" },
-    { src: "/images/cowboy-2.jpeg", alt: "Cowboy Polo riders" },
-    { src: "/images/cowboy-3.jpeg", alt: "Cowboy Polo — arena portrait" },
+  // ---------------------------------------------------------
+  // PHOTO CHAPTERS (full-bleed background panels w/ overlay text)
+  // Put images in: /public/images/
+  // Then set these filenames exactly (case-sensitive).
+  // ---------------------------------------------------------
+  const photoChapters = [
+    {
+      src: "/images/cowboy-1.jpeg",
+      kicker: "THE VIBE",
+      title: "COWBOY POLO AT FULL SPEED",
+      copy:
+        "Fast, physical, and watchable — built for arenas, campitos, and real crowds.",
+      align: "left",
+    },
+    {
+      src: "/images/cowboy-2.jpeg",
+      kicker: "THE FORMAT",
+      title: "3 ON 3 · SANCTIONED CHUKKERS",
+      copy:
+        "Play a chukker. Post the sheet. Update the tables. Build a real Circuit handicap.",
+      align: "right",
+    },
+    {
+      src: "/images/cowboy-3.jpeg",
+      kicker: "THE REMUDA",
+      title: "THREE SEVENS 7̶7̶7̶",
+      copy:
+        "A managed string with a living performance record — horses tracked across their whole career.",
+      align: "left",
+    },
   ];
+
+  // ---------------------------------------------------------
+  // Parallax:
+  // - Desktop: CSS background-attachment: fixed (nice + cheap)
+  // - Mobile/iOS: fixed is buggy -> JS adjusts backgroundPositionY
+  // ---------------------------------------------------------
+  const chapterRefs = useRef([]);
+  const prefersReducedMotionRef = useRef(false);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    prefersReducedMotionRef.current =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotionRef.current) return;
+
+    const isLikelyMobile =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(max-width: 900px)").matches ||
+        /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+
+    // Only run JS parallax on mobile-ish devices (where fixed bg is unreliable)
+    if (!isLikelyMobile) return;
+
+    const tick = () => {
+      rafRef.current = null;
+
+      const vh = window.innerHeight || 800;
+
+      chapterRefs.current.forEach((el) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+
+        // If far offscreen, skip work
+        if (rect.bottom < -200 || rect.top > vh + 200) return;
+
+        // Normalize: -1 (above) to +1 (below)
+        const mid = rect.top + rect.height * 0.5;
+        const t = (mid - vh * 0.5) / (vh * 0.5);
+
+        // Subtle parallax range: 40%..60%
+        const pos = 50 + t * 8; // adjust intensity here
+        el.style.backgroundPosition = `center ${pos}%`;
+      });
+    };
+
+    const onScroll = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    tick();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [photoChapters.length]);
 
   return (
     <div className="page">
@@ -278,20 +365,31 @@ export default function App() {
         </div>
       </section>
 
-      {/* FULL-BLEED PHOTO STACK (background images + black gaps) */}
-      <section
-        className="photo-stack full-bleed"
-        aria-label="Cowboy Polo photo gallery"
-      >
-        {photoStack.map((p, idx) => (
-          <React.Fragment key={p.src}>
+      {/* PHOTO CHAPTERS (full-bleed BGs + overlaid text) */}
+      <section className="photo-chapters full-bleed" aria-label="Cowboy Polo photos">
+        {photoChapters.map((c, idx) => (
+          <React.Fragment key={c.src}>
             <div
-              className="photo-panel"
-              style={{ backgroundImage: `url(${p.src})` }}
+              className={`photo-chapter ${c.align === "right" ? "align-right" : "align-left"}`}
+              style={{ backgroundImage: `url(${c.src})` }}
+              ref={(el) => (chapterRefs.current[idx] = el)}
               role="img"
-              aria-label={p.alt}
-            />
-            {idx !== photoStack.length - 1 && (
+              aria-label={c.title}
+            >
+              <div className="photo-chapter-inner">
+                <div className="photo-kicker">{c.kicker}</div>
+                <div className="photo-title">{c.title}</div>
+                <div className="photo-copy">{c.copy}</div>
+
+                <div className="photo-actions">
+                  <button className="btn btn-outline" onClick={openWallet}>
+                    Patron Wallet
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {idx !== photoChapters.length - 1 && (
               <div className="photo-gap" aria-hidden="true" />
             )}
           </React.Fragment>
@@ -559,9 +657,8 @@ export default function App() {
 
         <div className="section-body">
           <p>
-            The Cowboy Polo Circuit is a national development league for
-            players, ponies, &amp; patrons built on sanctioned Cowboy Polo
-            chukkers.
+            The Cowboy Polo Circuit is a national development league for players,
+            ponies, &amp; patrons built on sanctioned Cowboy Polo chukkers.
           </p>
           <p>
             Games are played 3 on 3 in arenas or campitos. The key is that a
@@ -571,10 +668,10 @@ export default function App() {
           </p>
           <p>
             Cowboy Polo chukkers can be hosted by any stable, arena, or program
-            that signs on to the Circuit. A local coach, instructor, or
-            appointed captains run the game, then submit the chukker sheet
-            feeding two tables: the individual handicap table for each rider,
-            and the game results table for teams.
+            that signs on to the Circuit. A local coach, instructor, or appointed
+            captains run the game, then submit the chukker sheet feeding two
+            tables: the individual handicap table for each rider, and the game
+            results table for teams.
           </p>
           <p>
             Each sanctioned chukker updates both sides of the story: how riders
@@ -588,9 +685,9 @@ export default function App() {
           <p>
             Local chapters also feed into{" "}
             <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders and
-            arenas can submit 360° VR footage from sanctioned Cowboy Polo
-            chukkers to thepoloway.com so patrons can follow and support the
-            Circuit from anywhere.
+            arenas can submit 360° VR footage from sanctioned Cowboy Polo chukkers
+            to thepoloway.com so patrons can follow and support the Circuit from
+            anywhere.
           </p>
         </div>
       </section>
@@ -636,7 +733,13 @@ export default function App() {
                 >
                   COWBOY POLO CIRCUIT STANDINGS
                 </div>
-                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: 1.6,
+                    color: "#f5eedc",
+                  }}
+                >
                   Sign into your Patron Wallet to view live rider handicaps and
                   Circuit tables.
                 </div>
@@ -754,7 +857,13 @@ export default function App() {
                 >
                   REMUDA &amp; HORSE PERFORMANCE
                 </div>
-                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: 1.6,
+                    color: "#f5eedc",
+                  }}
+                >
                   Sign into your Patron Wallet to view tracked horses and Remuda
                   performance.
                 </div>
@@ -867,9 +976,15 @@ export default function App() {
                 >
                   CIRCUIT RESULTS
                 </div>
-                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
-                  Sign into your Patron Wallet to submit official chukker
-                  results and season records.
+                <div
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: 1.6,
+                    color: "#f5eedc",
+                  }}
+                >
+                  Sign into your Patron Wallet to submit official chukker results
+                  and season records.
                 </div>
               </div>
             </div>
