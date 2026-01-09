@@ -1,4 +1,3 @@
-/* src/App.css */
 :root {
   --bg: #000000;
   --fg: #ffffff;
@@ -26,6 +25,77 @@ body {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 36px 18px 96px;
+
+  /* allow absolute background layer behind content */
+  position: relative;
+  isolation: isolate; /* keeps z-index:-1 children behind page content, not behind body */
+  z-index: 0;
+}
+
+/* ---------------------------------------------------
+   Full-bleed stacked background photos (NO CROP)
+   - photos are <img> width:100vw height:auto
+   - responsive gaps stretch to bottom on short pages
+   - feather edges to blend into black
+--------------------------------------------------- */
+.bg-stack {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+
+  z-index: -1;
+  pointer-events: none;
+}
+
+.bg-stack-inner {
+  min-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+.bg-band {
+  position: relative;
+  width: 100%;
+  background: #000;
+}
+
+.bg-photo {
+  display: block;
+  width: 100%;
+  height: auto; /* never crop */
+}
+
+/* feather top/bottom edges into black */
+.bg-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0) 18%,
+    rgba(0, 0, 0, 0) 82%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+}
+
+.bg-gap {
+  flex: 1;
+  min-height: clamp(64px, 12vh, 320px); /* "large black space" that’s responsive */
+  background: #000;
+}
+
+.bg-tail {
+  flex: 1;
+  min-height: clamp(120px, 18vh, 520px); /* ensures background reaches bottom on short pages */
+  background: #000;
 }
 
 /* HERO POSTER (Tall & Centered) */
@@ -135,6 +205,21 @@ body {
   opacity: 0.85;
 }
 
+/* STREAMING ON · THE POLO WAY */
+.hero-streaming {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.hero-streaming-mark {
+  margin-top: 4px;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.95rem; /* increased size for THE POLO WAY */
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+
 /* HERO CTA */
 .hero-cta-row {
   margin-top: 32px;
@@ -142,6 +227,15 @@ body {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+/* little explanatory line under wallet button */
+.hero-wallet-copy {
+  margin-top: 16px;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
 }
 
 .btn {
@@ -177,63 +271,73 @@ body {
   border-color: #ffffff;
 }
 
+/* Gate overlay (nice reminder card) */
+.gate-zone {
+  position: relative;
+}
+
+.gate-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  text-align: center;
+}
+
+.gate-card {
+  width: min(560px, 100%);
+  border: 1px solid #3a2b16;
+  border-radius: 22px;
+  padding: 22px 18px;
+  background:
+    radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.08) 0, rgba(0, 0, 0, 0.92) 55%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.92));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.85);
+}
+
+.gate-kicker {
+  font-family: "IM Fell English SC", serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #c7b08a;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.gate-title {
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 2rem;
+  line-height: 1.05;
+  color: #f5eedc;
+  margin-bottom: 14px;
+}
+
+.gate-copy {
+  color: #c7c7c7;
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: 42ch;
+  margin: 0 auto;
+}
+
+.btn-gate {
+  border-color: rgba(227, 191, 114, 0.85);
+  color: #e3bf72;
+}
+
 /* SECTION SHARED */
 section {
   margin-top: var(--section-gap);
-}
-
-/* FULL-BLEED BACKGROUND PHOTOS (as the site background, stacked) */
-.bg-photo {
-  position: relative;
-  padding-top: 56px;
-  padding-bottom: 56px;
-  isolation: isolate; /* keeps ::before behind content */
-}
-
-/* large black space BETWEEN the background-photo sections */
-.bg-photo + .bg-photo {
-  margin-top: clamp(120px, 12vw, 260px);
-}
-
-.bg-photo::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 0;
-  bottom: 0;
-  width: 100vw; /* full screen width */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* IMPORTANT:
-   Put your .jpeg files here:
-   public/images/cowboy-1.jpeg
-   public/images/cowboy-2.jpeg
-   public/images/cowboy-3.jpeg
-   (or change the filenames below to match yours exactly)
-*/
-.bg-photo-1::before {
-  background-image: url("/images/cowboy-1.jpeg");
-}
-
-.bg-photo-2::before {
-  background-image: url("/images/cowboy-2.jpeg");
-}
-
-.bg-photo-3::before {
-  background-image: url("/images/cowboy-3.jpeg");
-}
-
-/* Subtle shadow for readability on photo backgrounds (no overlay) */
-.bg-photo .section-header,
-.bg-photo .section-body,
-.bg-photo .board,
-.bg-photo .board * {
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.92);
 }
 
 .section-header {
@@ -336,6 +440,32 @@ section {
 .section-body p {
   margin: 0 0 14px;
   text-align: justify;
+}
+
+/* DARK MODE CARDS */
+.panel {
+  max-width: 720px;
+  margin: 26px auto 0;
+  background: radial-gradient(circle at 10% 0%, #1b1b1b 0, #050505 65%);
+  color: var(--fg);
+  border-radius: 4px;
+  border: 1px solid #444;
+  padding: 20px 18px 22px;
+  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.8);
+}
+
+.panel-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.panel p {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: var(--muted);
 }
 
 /* Leaderboard tables */
@@ -489,5 +619,9 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
+  }
+
+  .gate-title {
+    font-size: 1.6rem;
   }
 }
