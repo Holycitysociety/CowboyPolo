@@ -7,6 +7,9 @@
   --accent: #ffffff;
   --max-width: 900px;
   --section-gap: 72px;
+
+  /* responsive gap between photo areas */
+  --photo-gap: clamp(18px, 4.5vh, 56px);
 }
 
 * {
@@ -27,101 +30,7 @@ body {
   padding: 36px 18px 96px;
 }
 
-/* Full-bleed helper for 100vw sections inside a centered container */
-.full-bleed {
-  width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
-}
-
-/* -----------------------------
-   Parallax photo bands
-   ----------------------------- */
-
-.parallax-band {
-  position: relative;
-  overflow: hidden;
-  background: #000;
-  /* space from previous content like any section */
-  margin-top: var(--section-gap);
-  /* the band should feel immersive but expand if content is taller */
-  min-height: 100vh;
-}
-
-.parallax-media {
-  position: absolute;
-  inset: 0;
-  background: #000;
-  z-index: 0;
-}
-
-/* No cropping */
-.parallax-img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transform: translate3d(-50%, -50%, 0);
-  will-change: transform;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Feather the photo into black (top/bottom) */
-.parallax-vignette {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.95) 0%,
-      rgba(0,0,0,0.10) 18%,
-      rgba(0,0,0,0.10) 82%,
-      rgba(0,0,0,0.97) 100%
-    );
-}
-
-.parallax-content {
-  position: relative;
-  z-index: 2;
-  /* responsive breathing room so text never kisses edges */
-  padding: clamp(48px, 7vh, 96px) 18px;
-}
-
-/* Remove extra "section top margin" inside photo band */
-.band-section {
-  margin-top: 0;
-}
-
-/* Big black space between photo bands */
-.band-gap {
-  height: clamp(120px, 14vh, 280px);
-  background: #000;
-  margin-top: 0;
-}
-
-/* Add a dark shadow behind white letters on photo bands */
-.parallax-band .section-title,
-.parallax-band .section-kicker,
-.parallax-band .board-title,
-.parallax-band .board-sub,
-.parallax-band .board-header,
-.parallax-band .board-row,
-.parallax-band .hero-topline,
-.parallax-band .hero-word,
-.parallax-band .hero-tagline {
-  text-shadow:
-    0 2px 14px rgba(0,0,0,0.9),
-    0 0 3px rgba(0,0,0,0.95);
-}
-
-/* -----------------------------
-   HERO POSTER (Tall & Centered)
-   ----------------------------- */
-
+/* HERO POSTER (Tall & Centered) */
 .hero {
   text-align: center;
   padding: 56px 18px 64px;
@@ -137,6 +46,7 @@ body {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   opacity: 0.85;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.85);
 }
 
 .hero-rule {
@@ -151,19 +61,11 @@ body {
   letter-spacing: 0.24em;
   text-transform: uppercase;
   opacity: 0.9;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.85);
 }
 
 .hero-main {
   margin-top: 24px;
-}
-
-.hero-main .the {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  opacity: 0.7;
-  margin-bottom: 6px;
 }
 
 .hero-word {
@@ -172,6 +74,7 @@ body {
   font-family: "Cormorant Garamond", serif;
   line-height: 0.92;
   letter-spacing: 0.2em;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.92);
 }
 
 .hero-word.cowboy {
@@ -198,6 +101,7 @@ body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0.78;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.85);
 }
 
 .hero-rule-2 {
@@ -212,11 +116,7 @@ body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   opacity: 0.8;
-}
-
-.hero-badges span {
-  display: inline-block;
-  margin: 0 8px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.85);
 }
 
 .hero-badge-intro {
@@ -228,21 +128,6 @@ body {
   opacity: 0.85;
 }
 
-/* STREAMING ON · THE POLO WAY */
-.hero-streaming {
-  margin-top: 14px;
-  text-align: center;
-}
-
-.hero-streaming-mark {
-  margin-top: 4px;
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  opacity: 0.95;
-}
-
 /* HERO CTA */
 .hero-cta-row {
   margin-top: 32px;
@@ -250,15 +135,6 @@ body {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-}
-
-/* little explanatory line under wallet button */
-.hero-wallet-copy {
-  margin-top: 16px;
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.8;
 }
 
 .btn {
@@ -294,6 +170,71 @@ body {
   border-color: #ffffff;
 }
 
+/* responsive black gaps between areas */
+.photo-gap {
+  height: var(--photo-gap);
+  background: #000;
+}
+
+/* -------------------------------------------
+   PARALLAX FULL-BLEED BAND
+   - Full width background (100vw)
+   - Centered inner content (max-width)
+   - No crop: background-size: contain
+   - Vignette on the same band, not a separate obscuring layer
+------------------------------------------- */
+.parallax-band {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw); /* full-bleed outside the 900px page */
+  overflow: hidden;
+  background: #000;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: var(--section-gap) 0;
+}
+
+.parallax-bg {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain; /* ✅ no cropping */
+  transform: translate3d(0, var(--parallaxY, 0px), 0) scale(1.02);
+  will-change: transform;
+  opacity: 1;
+}
+
+/* fades photo edges into black so it blends without “black bars overlaying the photo” */
+.parallax-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 40%,
+      rgba(0, 0, 0, 0.00) 0%,
+      rgba(0, 0, 0, 0.35) 55%,
+      rgba(0, 0, 0, 0.92) 100%),
+    linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.90) 0%,
+      rgba(0, 0, 0, 0.10) 24%,
+      rgba(0, 0, 0, 0.10) 76%,
+      rgba(0, 0, 0, 0.90) 100%);
+}
+
+.parallax-inner {
+  position: relative;
+  z-index: 2;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+/* remove default top margin for sections placed inside photo bands */
+.section-reset {
+  margin-top: 0 !important;
+}
+
 /* SECTION SHARED */
 section {
   margin-top: var(--section-gap);
@@ -302,6 +243,7 @@ section {
 .section-header {
   text-align: center;
   margin-bottom: 26px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.92);
 }
 
 .section-kicker {
@@ -337,16 +279,13 @@ section {
 .hero-badges .three-sevens-numeral {
   font-size: 1.3rem;
 }
-
 .hero-badges .three-sevens-text {
   font-size: 0.72rem;
   opacity: 0.9;
 }
-
 .section-kicker .three-sevens-numeral {
   font-size: 1rem;
 }
-
 .section-kicker .three-sevens-text {
   font-size: 0.7rem;
   opacity: 0.9;
@@ -376,7 +315,6 @@ section {
   right: 100%;
   margin-right: 12px;
 }
-
 .section-title::after {
   left: 100%;
   margin-left: 12px;
@@ -394,6 +332,7 @@ section {
   margin: 20px auto 0;
   color: var(--muted);
   font-size: 0.98rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.92);
 }
 
 .section-body p {
