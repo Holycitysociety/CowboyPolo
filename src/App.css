@@ -27,6 +27,22 @@ body {
   padding: 36px 18px 96px;
 }
 
+/* ✅ Dark shadow behind white letters (legibility boost) */
+.hero,
+.section-header,
+.board-title,
+.hero-badges,
+.hero-tagline,
+.hero-topline,
+.hero-presents,
+.hero-word,
+.section-title,
+.section-kicker {
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.75),
+    0 1px 2px rgba(0, 0, 0, 0.95);
+}
+
 /* HERO POSTER (Tall & Centered) */
 .hero {
   text-align: center;
@@ -134,21 +150,6 @@ body {
   opacity: 0.85;
 }
 
-/* STREAMING ON · THE POLO WAY */
-.hero-streaming {
-  margin-top: 14px;
-  text-align: center;
-}
-
-.hero-streaming-mark {
-  margin-top: 4px;
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  opacity: 0.95;
-}
-
 /* HERO CTA */
 .hero-cta-row {
   margin-top: 32px;
@@ -156,15 +157,6 @@ body {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-}
-
-/* little explanatory line under wallet button */
-.hero-wallet-copy {
-  margin-top: 16px;
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.8;
 }
 
 .btn {
@@ -198,70 +190,6 @@ body {
 .btn-outline:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: #ffffff;
-}
-
-/* Gate overlay (nice reminder card) */
-.gate-zone {
-  position: relative;
-}
-
-.gate-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 50;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 22px;
-  text-align: center;
-}
-
-.gate-card {
-  width: min(560px, 100%);
-  border: 1px solid #3a2b16;
-  border-radius: 22px;
-  padding: 22px 18px;
-  background:
-    radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.08) 0, rgba(0, 0, 0, 0.92) 55%),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.92));
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.85);
-}
-
-.gate-kicker {
-  font-family: "IM Fell English SC", serif;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  color: #c7b08a;
-  opacity: 0.9;
-  margin-bottom: 10px;
-}
-
-.gate-title {
-  font-family: "Cormorant Garamond", serif;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 2rem;
-  line-height: 1.05;
-  color: #f5eedc;
-  margin-bottom: 14px;
-}
-
-.gate-copy {
-  color: #c7c7c7;
-  font-size: 1rem;
-  line-height: 1.55;
-  max-width: 42ch;
-  margin: 0 auto;
-}
-
-.btn-gate {
-  border-color: rgba(227, 191, 114, 0.85);
-  color: #e3bf72;
 }
 
 /* SECTION SHARED */
@@ -371,30 +299,31 @@ section {
   text-align: justify;
 }
 
-/* DARK MODE CARDS */
-.panel {
-  max-width: 720px;
-  margin: 26px auto 0;
-  background: radial-gradient(circle at 10% 0%, #1b1b1b 0, #050505 65%);
-  color: var(--fg);
-  border-radius: 4px;
-  border: 1px solid #444;
-  padding: 20px 18px 22px;
-  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.8);
+/* ✅ PHOTO STACK STYLES */
+.photo-stack {
+  margin-top: var(--section-gap);
 }
 
-.panel-title {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.05rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
+.photo-stack-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-.panel p {
-  margin: 0 0 10px;
-  font-size: 0.95rem;
-  color: var(--muted);
+.photo-card {
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #050505;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
+}
+
+.photo-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 /* Leaderboard tables */
@@ -548,9 +477,5 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
-  }
-
-  .gate-title {
-    font-size: 1.6rem;
   }
 }
