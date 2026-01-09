@@ -276,17 +276,17 @@ export default function App() {
       <div className="photo-stack" aria-hidden="true">
         <div
           className="photo-band feather"
-          style={{ "--photo": 'url("/photo-1.jpeg")' }}
+          style={{ "--photo": 'url("/cowboy-1.jpeg")' }}
         />
         <div className="photo-gap" />
         <div
           className="photo-band feather"
-          style={{ "--photo": 'url("/photo-2.jpeg")' }}
+          style={{ "--photo": 'url("/cowboy-2.jpeg")' }}
         />
         <div className="photo-gap" />
         <div
           className="photo-band feather"
-          style={{ "--photo": 'url("/photo-3.jpeg")' }}
+          style={{ "--photo": 'url("/cowboy-3.jpeg")' }}
         />
       </div>
 
