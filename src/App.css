@@ -53,7 +53,7 @@ body {
   z-index: 0;
 }
 
-/* No cropping by default (desktop / tablet) */
+/* No cropping (desktop / non-mobile) */
 .parallax-img {
   position: absolute;
   left: 50%;
@@ -520,23 +520,10 @@ footer {
   text-transform: uppercase;
 }
 
-/* ----------------------------------------------
-   MOBILE: portrait-only tweaks
-   - Make bands square (height = viewport width)
-   - Crop photos with object-fit: cover
-   ---------------------------------------------- */
+/* -----------------------------
+   Mobile tweaks
+   ----------------------------- */
 
-@media (max-width: 640px) and (orientation: portrait) {
-  .parallax-band {
-    min-height: 100vw; /* square: height == viewport width */
-  }
-
-  .parallax-img {
-    object-fit: cover; /* fill the square, crop edges */
-  }
-}
-
-/* General small-screen tweaks (existing) */
 @media (max-width: 640px) {
   .hero {
     padding-left: 12px;
@@ -551,5 +538,34 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
+  }
+}
+
+/* -----------------------------------------
+   MOBILE PORTRAIT: square-crop parallax band
+   ----------------------------------------- */
+
+@media (max-width: 640px) and (orientation: portrait) {
+  /* Let the band grow with content, but at least square-ish */
+  .parallax-band {
+    min-height: auto;
+  }
+
+  /* Make the IMAGE AREA itself a square at the top of the band */
+  .parallax-media {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    height: 100vw; /* square: height = viewport width */
+  }
+
+  .parallax-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* crop left/right on landscape photos */
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
   }
 }
