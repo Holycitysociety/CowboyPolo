@@ -90,6 +90,14 @@ export default function App() {
   const { disconnect } = useDisconnect();
   const isConnected = !!account;
 
+  // ✅ PHOTO STACK (put images in: public/images/)
+  // Then reference as: /images/<filename>
+  const photoStack = [
+    { src: "/images/cowboy-1.jpg", alt: "Cowboy Polo under lights" },
+    { src: "/images/cowboy-2.jpg", alt: "Cowboy Polo riders" },
+    { src: "/images/cowboy-3.jpg", alt: "Cowboy Polo — arena portrait" },
+  ];
+
   // Balances
   const { data: baseBalance } = useWalletBalance({
     address: account?.address,
@@ -269,6 +277,23 @@ export default function App() {
           <button className="btn btn-primary" onClick={openWallet}>
             Sign up / Sign in
           </button>
+        </div>
+      </section>
+
+      {/* ✅ PHOTO STACK (directly under hero) */}
+      <section className="photo-stack" aria-label="Cowboy Polo photography">
+        <div className="section-header" style={{ marginBottom: "18px" }}>
+          <div className="section-kicker">FIELD STUDIES</div>
+          <h2 className="section-title">COWBOY POLO UNDER LIGHTS</h2>
+          <div className="section-rule" />
+        </div>
+
+        <div className="photo-stack-grid">
+          {photoStack.map((p) => (
+            <figure className="photo-card" key={p.src}>
+              <img className="photo-img" src={p.src} alt={p.alt} loading="lazy" />
+            </figure>
+          ))}
         </div>
       </section>
 
@@ -577,12 +602,7 @@ export default function App() {
           <div className="section-rule" />
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
@@ -615,13 +635,7 @@ export default function App() {
                 >
                   COWBOY POLO CIRCUIT STANDINGS
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
                   Sign into your Patron Wallet to view live rider handicaps and
                   Circuit tables.
                 </div>
@@ -646,9 +660,7 @@ export default function App() {
             </div>
 
             <div className="board">
-              <div className="board-title">
-                Top Riders — Mid-Season Snapshot
-              </div>
+              <div className="board-title">Top Riders — Mid-Season Snapshot</div>
               <div className="board-sub">
                 Handicaps update as sanctioned results are submitted.
               </div>
@@ -708,12 +720,7 @@ export default function App() {
           <div className="section-rule" />
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
@@ -746,13 +753,7 @@ export default function App() {
                 >
                   REMUDA &amp; HORSE PERFORMANCE
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
                   Sign into your Patron Wallet to view tracked horses and Remuda
                   performance.
                 </div>
@@ -788,9 +789,7 @@ export default function App() {
             </div>
 
             <div className="board">
-              <div className="board-title">
-                Remuda Horses — Performance Snapshot
-              </div>
+              <div className="board-title">Remuda Horses — Performance Snapshot</div>
               <div className="board-sub">
                 Score blends chukker count, match impact, and rider feedback
                 across the season.
@@ -830,18 +829,11 @@ export default function App() {
       <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
-          <h2 className="section-title">
-            SANCTIONED CHUKKERS &amp; SEASON RECORD
-          </h2>
+          <h2 className="section-title">SANCTIONED CHUKKERS &amp; SEASON RECORD</h2>
           <div className="section-rule" />
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
@@ -874,13 +866,7 @@ export default function App() {
                 >
                   CIRCUIT RESULTS
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
                   Sign into your Patron Wallet to submit official chukker
                   results and season records.
                 </div>
