@@ -71,9 +71,9 @@ const cowboyWalletTheme = darkTheme({
 });
 
 // ---------------------------------------------
-// Parallax full-bleed photo band (no cropping)
+// Parallax full-bleed photo band
 // ---------------------------------------------
-function ParallaxBand({ src, children, speed = 0.08 }) {
+function ParallaxBand({ src, children, speed = 0.18 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -118,17 +118,11 @@ function ParallaxBand({ src, children, speed = 0.08 }) {
         <div className="parallax-vignette" />
       </div>
 
-      <div className="parallax-content">
-        {/* pure photo zone before the text card shows up */}
-        <div className="parallax-top-gap" />
-        {children}
-      </div>
+      {/* Text sits in the same band but starts after a black gap,
+          so the photo is clean at first and the copy scrolls up over it. */}
+      <div className="parallax-content">{children}</div>
     </div>
   );
-}
-
-function BandGap() {
-  return <div className="band-gap full-bleed" aria-hidden="true" />;
 }
 
 // ---------------------------------------------
@@ -333,8 +327,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 1 — FORMAT SECTION */}
+      {/* PHOTO BAND 1 + ABOUT TEXT */}
       <ParallaxBand src="/images/cowboy-1.jpeg">
+        {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
             <div className="section-kicker">THE FORMAT</div>
@@ -382,10 +377,9 @@ export default function App() {
         </section>
       </ParallaxBand>
 
-      <BandGap />
-
-      {/* PHOTO BAND 2 — PLAYER LEADERBOARD */}
+      {/* PHOTO BAND 2 + PLAYER TABLES */}
       <ParallaxBand src="/images/cowboy-2.jpeg">
+        {/* PLAYER LEADERBOARD (GATED) */}
         <section id="players" className="band-section">
           <div className="section-header">
             <div className="section-kicker">PLAYER STANDINGS</div>
@@ -512,10 +506,9 @@ export default function App() {
         </section>
       </ParallaxBand>
 
-      <BandGap />
-
-      {/* PHOTO BAND 3 — HORSE / REMUDA */}
+      {/* PHOTO BAND 3 + HORSE / REMUDA */}
       <ParallaxBand src="/images/cowboy-3.jpeg">
+        {/* HORSE & REMUDA SECTION (GATED) */}
         <section id="horses" className="band-section">
           <div className="section-header">
             <div className="section-kicker">
@@ -646,8 +639,6 @@ export default function App() {
           </div>
         </section>
       </ParallaxBand>
-
-      <BandGap />
 
       {/* WALLET MODAL */}
       {isWalletOpen && (
