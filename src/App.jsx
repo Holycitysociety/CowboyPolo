@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
@@ -89,14 +88,6 @@ export default function App() {
   const activeWallet = useActiveWallet();
   const { disconnect } = useDisconnect();
   const isConnected = !!account;
-
-  // ✅ PHOTO STACK (put images in: public/images/)
-  // Then reference as: /images/<filename>
-  const photoStack = [
-    { src: "/images/cowboy-1.jpeg", alt: "Cowboy Polo under lights" },
-    { src: "/images/cowboy-2.jpeg", alt: "Cowboy Polo riders" },
-    { src: "/images/cowboy-3.jpeg", alt: "Cowboy Polo — arena portrait" },
-  ];
 
   // Balances
   const { data: baseBalance } = useWalletBalance({
@@ -200,6 +191,13 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isConnected, hasTriggeredGate]);
 
+  // Full-bleed photo panels (put your real filenames here)
+  const photoStack = [
+    { src: "/images/cowboy-1.jpeg", alt: "Cowboy Polo under lights" },
+    { src: "/images/cowboy-2.jpeg", alt: "Cowboy Polo riders" },
+    { src: "/images/cowboy-3.jpeg", alt: "Cowboy Polo — arena portrait" },
+  ];
+
   return (
     <div className="page">
       {/* Top header with centered Patron Wallet button */}
@@ -280,21 +278,24 @@ export default function App() {
         </div>
       </section>
 
-      {/* ✅ PHOTO STACK (directly under hero) */}
-      <section className="photo-stack" aria-label="Cowboy Polo photography">
-        <div className="section-header" style={{ marginBottom: "18px" }}>
-          <div className="section-kicker">FIELD STUDIES</div>
-          <h2 className="section-title">COWBOY POLO UNDER LIGHTS</h2>
-          <div className="section-rule" />
-        </div>
-
-        <div className="photo-stack-grid">
-          {photoStack.map((p) => (
-            <figure className="photo-card" key={p.src}>
-              <img className="photo-img" src={p.src} alt={p.alt} loading="lazy" />
-            </figure>
-          ))}
-        </div>
+      {/* FULL-BLEED PHOTO STACK (background images + black gaps) */}
+      <section
+        className="photo-stack full-bleed"
+        aria-label="Cowboy Polo photo gallery"
+      >
+        {photoStack.map((p, idx) => (
+          <React.Fragment key={p.src}>
+            <div
+              className="photo-panel"
+              style={{ backgroundImage: `url(${p.src})` }}
+              role="img"
+              aria-label={p.alt}
+            />
+            {idx !== photoStack.length - 1 && (
+              <div className="photo-gap" aria-hidden="true" />
+            )}
+          </React.Fragment>
+        ))}
       </section>
 
       {/* WALLET MODAL */}
@@ -565,8 +566,8 @@ export default function App() {
           <p>
             Games are played 3 on 3 in arenas or campitos. The key is that a
             player does not need a full string to attract patrons: a rider can
-            progress by playing as little as one chukker, on one good horse,
-            and still build a real Circuit handicap.
+            progress by playing as little as one chukker, on one good horse, and
+            still build a real Circuit handicap.
           </p>
           <p>
             Cowboy Polo chukkers can be hosted by any stable, arena, or program
@@ -586,8 +587,8 @@ export default function App() {
           </p>
           <p>
             Local chapters also feed into{" "}
-            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
-            and arenas can submit 360° VR footage from sanctioned Cowboy Polo
+            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders and
+            arenas can submit 360° VR footage from sanctioned Cowboy Polo
             chukkers to thepoloway.com so patrons can follow and support the
             Circuit from anywhere.
           </p>
@@ -973,8 +974,8 @@ export default function App() {
       </section>
 
       <footer>
-        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
-        POLO CIRCUIT
+        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY POLO
+        CIRCUIT
       </footer>
     </div>
   );
