@@ -163,6 +163,36 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
+  // ---------------------------------------------
+  // SIMPLE PARALLAX: move bg of .bg-photo sections
+  // ---------------------------------------------
+  useEffect(() => {
+    const PARALLAX_SPEED = 0.25; // tweak: smaller = subtler
+
+    const handleScroll = () => {
+      const sections = document.querySelectorAll(".bg-photo");
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+
+      sections.forEach((el) => {
+        const offsetTop = el.offsetTop || 0;
+        const relativeY = scrollY - offsetTop;
+        const y = relativeY * -PARALLAX_SPEED;
+
+        // keep X centered, move Y slightly
+        el.style.backgroundPosition = `center ${y}px`;
+      });
+    };
+
+    handleScroll(); // initial position
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
   return (
     <div className="page">
       {/* Top header with centered Patron Wallet button */}
