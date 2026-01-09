@@ -1,3 +1,5 @@
+/* src/App.css */
+
 :root {
   --bg: #000000;
   --fg: #ffffff;
@@ -6,7 +8,7 @@
   --border: #333333;
   --accent: #ffffff;
   --max-width: 900px;
-  --section-gap: 20vh;
+  --section-gap: 72px;
 }
 
 * {
@@ -35,66 +37,45 @@ body {
 }
 
 /* -----------------------------
-   Parallax photo bands
+   Photo background sections
    ----------------------------- */
 
-.parallax-band {
+.photo-section {
   position: relative;
-  overflow: hidden;
-  background: #000;
-  margin-top: var(--section-gap);
-  min-height: 100vh;
+  background-color: #000;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;     /* show entire photo, no cropping */
+  background-attachment: fixed; /* simple parallax on desktop */
+  min-height: 100vh;            /* at least one full screen tall */
 }
 
-.parallax-media {
-  position: absolute;
-  inset: 0;
-  background: #000;
-  z-index: 0;
+/* Text container inside each photo section */
+.photo-section-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: clamp(48px, 10vh, 96px) 18px;
 }
 
-/* No cropping */
-.parallax-img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transform: translate3d(-50%, -50%, 0);
-  will-change: transform;
-  pointer-events: none;
-  user-select: none;
-}
-
-.parallax-content {
-  position: relative;
-  z-index: 2;
-  padding: clamp(48px, 7vh, 96px) 18px;
-}
-
-/* Remove extra "section top margin" inside photo band */
-.band-section {
-  margin-top: .5vh;
-}
-
-/* (unused now, safe to remove if you want) */
-.band-gap {
-  height: 100vh;
-  background: #000;
-  margin-top: 0.5vh;
-}
-
-/* Add a dark shadow behind white letters on photo bands */
-.parallax-band .section-title,
-.parallax-band .section-kicker,
-.parallax-band .board-title,
-.parallax-band .board-sub,
-.parallax-band .board-header,
-.parallax-band .board-row {
+/* Make type sit off the photo nicely */
+.photo-section .section-title,
+.photo-section .section-kicker,
+.photo-section .board-title,
+.photo-section .board-sub,
+.photo-section .board-header,
+.photo-section .board-row,
+.photo-section .section-body {
   text-shadow:
     0 2px 14px rgba(0, 0, 0, 0.9),
     0 0 3px rgba(0, 0, 0, 0.95);
+}
+
+/* Mobile / tablet: disable background-attachment: fixed
+   to avoid iOS artifacts. Background will scroll normally. */
+@media (max-width: 1024px) {
+  .photo-section {
+    background-attachment: scroll;
+  }
 }
 
 /* -----------------------------
@@ -216,6 +197,7 @@ body {
   flex-wrap: wrap;
 }
 
+/* Buttons */
 .btn {
   display: inline-flex;
   justify-content: center;
@@ -249,7 +231,10 @@ body {
   border-color: #ffffff;
 }
 
-/* SECTION SHARED */
+/* -----------------------------
+   SECTION SHARED
+   ----------------------------- */
+
 section {
   margin-top: var(--section-gap);
 }
@@ -356,13 +341,16 @@ section {
   text-align: justify;
 }
 
-/* Leaderboard tables */
+/* -----------------------------
+   Leaderboard tables
+   ----------------------------- */
+
 .board {
   max-width: 720px;
   margin: 22px auto 0;
   border: 1px solid var(--border);
   border-radius: 4px;
-  background: transparent;
+  background: transparent; /* transparent so photo shows through */
   padding: 18px 16px 14px;
   box-shadow: none;
 }
@@ -430,7 +418,10 @@ section {
   opacity: 0.9;
 }
 
-/* Results form */
+/* -----------------------------
+   Results form
+   ----------------------------- */
+
 .results-form {
   max-width: 720px;
   margin: 26px auto 0;
@@ -481,7 +472,10 @@ section {
   color: var(--muted);
 }
 
-/* Footer */
+/* -----------------------------
+   Footer
+   ----------------------------- */
+
 footer {
   margin-top: var(--section-gap);
   padding-top: 18px;
