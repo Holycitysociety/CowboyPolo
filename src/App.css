@@ -42,9 +42,7 @@ body {
   position: relative;
   overflow: hidden;
   background: #000;
-  /* space from previous content like any section */
   margin-top: var(--section-gap);
-  /* the band should feel immersive but expand if content is taller */
   min-height: 100vh;
 }
 
@@ -72,7 +70,6 @@ body {
 .parallax-content {
   position: relative;
   z-index: 2;
-  /* responsive breathing room so text never kisses edges */
   padding: clamp(48px, 7vh, 96px) 18px;
 }
 
@@ -99,8 +96,8 @@ body {
 .parallax-band .hero-word,
 .parallax-band .hero-tagline {
   text-shadow:
-    0 2px 14px rgba(0,0,0,0.9),
-    0 0 3px rgba(0,0,0,0.95);
+    0 2px 14px rgba(0, 0, 0, 0.9),
+    0 0 3px rgba(0, 0, 0, 0.95);
 }
 
 /* -----------------------------
