@@ -73,7 +73,7 @@ const cowboyWalletTheme = darkTheme({
 // ---------------------------------------------
 // Parallax full-bleed photo band (no cropping)
 // ---------------------------------------------
-function ParallaxBand({ src, children, speed = 0.77 }) {
+function ParallaxBand({ src, children, speed = 0.08 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -86,12 +86,10 @@ function ParallaxBand({ src, children, speed = 0.77 }) {
       const rect = bandRef.current.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // Center-to-center delta (band center vs viewport center)
       const bandCenter = rect.top + rect.height / 2;
       const viewportCenter = vh / 2;
       const delta = bandCenter - viewportCenter;
 
-      // Translate image opposite the delta for parallax feel
       const translateY = -delta * speed;
 
       imgRef.current.style.transform = `translate3d(-50%, calc(-50% + ${translateY}px), 0)`;
@@ -120,7 +118,11 @@ function ParallaxBand({ src, children, speed = 0.77 }) {
         <div className="parallax-vignette" />
       </div>
 
-      <div className="parallax-content">{children}</div>
+      <div className="parallax-content">
+        {/* pure photo zone before the text card shows up */}
+        <div className="parallax-top-gap" />
+        {children}
+      </div>
     </div>
   );
 }
@@ -331,9 +333,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* Background photo band #1 */}
+      {/* PHOTO BAND 1 — FORMAT SECTION */}
       <ParallaxBand src="/images/cowboy-1.jpeg">
-        {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
             <div className="section-kicker">THE FORMAT</div>
@@ -361,13 +362,14 @@ export default function App() {
               and the game results table for teams.
             </p>
             <p>
-              Each sanctioned chukker updates both sides of the story: how riders
-              are rated, and how their teams are performing.
+              Each sanctioned chukker updates both sides of the story: how
+              riders are rated, and how their teams are performing.
             </p>
             <p>
               Over the course of a Circuit season, those two tables are the
-              backbone of the standings: player handicaps and team records (wins,
-              losses, goal difference) together define how the season is read.
+              backbone of the standings: player handicaps and team records
+              (wins, losses, goal difference) together define how the season is
+              read.
             </p>
             <p>
               Local chapters also feed into{" "}
@@ -382,9 +384,8 @@ export default function App() {
 
       <BandGap />
 
-      {/* Background photo band #2 */}
+      {/* PHOTO BAND 2 — PLAYER LEADERBOARD */}
       <ParallaxBand src="/images/cowboy-2.jpeg">
-        {/* PLAYER LEADERBOARD (GATED) */}
         <section id="players" className="band-section">
           <div className="section-header">
             <div className="section-kicker">PLAYER STANDINGS</div>
@@ -437,8 +438,8 @@ export default function App() {
                       color: "#f5eedc",
                     }}
                   >
-                    Sign into your Patron Wallet to view live rider handicaps and
-                    Circuit tables.
+                    Sign into your Patron Wallet to view live rider handicaps
+                    and Circuit tables.
                   </div>
                 </div>
               </div>
@@ -447,16 +448,16 @@ export default function App() {
             <div aria-hidden={!isConnected && true}>
               <div className="section-body">
                 <p>
-                  Player handicaps in the Cowboy Polo Circuit are not just static
-                  numbers. Each rider’s Cowboy Polo handicap is a statistically
-                  calculated, ELO-style rating, updated after every sanctioned
-                  chukker and displayed to two decimal places.
+                  Player handicaps in the Cowboy Polo Circuit are not just
+                  static numbers. Each rider’s Cowboy Polo handicap is a
+                  statistically calculated, ELO-style rating, updated after
+                  every sanctioned chukker and displayed to two decimal places.
                 </p>
                 <p>
-                  Ratings move with performance over time: goals scored, assists,
-                  ride-offs won, and overall impact on the match all feed the same
-                  underlying score. The table below shows how a leaderboard might
-                  appear during mid-season.
+                  Ratings move with performance over time: goals scored,
+                  assists, ride-offs won, and overall impact on the match all
+                  feed the same underlying score. The table below shows how a
+                  leaderboard might appear during mid-season.
                 </p>
               </div>
 
@@ -513,9 +514,8 @@ export default function App() {
 
       <BandGap />
 
-      {/* Background photo band #3 */}
+      {/* PHOTO BAND 3 — HORSE / REMUDA */}
       <ParallaxBand src="/images/cowboy-3.jpeg">
-        {/* HORSE & REMUDA SECTION (GATED) */}
         <section id="horses" className="band-section">
           <div className="section-header">
             <div className="section-kicker">
@@ -573,8 +573,8 @@ export default function App() {
                       color: "#f5eedc",
                     }}
                   >
-                    Sign into your Patron Wallet to view tracked horses and Remuda
-                    performance.
+                    Sign into your Patron Wallet to view tracked horses and
+                    Remuda performance.
                   </div>
                 </div>
               </div>
@@ -585,15 +585,14 @@ export default function App() {
                 <p>
                   The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
                   horses — tracked from their first Cowboy Polo chukker through
-
                   their entire competitive career.
                 </p>
                 <p>
                   Every sanctioned appearance adds to a horse’s trace: chukkers
-                  played, riders carried, contribution to wins, and awards earned
-                  across chapters and seasons. The same horse might be bred in one
-                  place, started by another, developed by a pro, and later carry
-                  juniors and patrons.
+                  played, riders carried, contribution to wins, and awards
+                  earned across chapters and seasons. The same horse might be
+                  bred in one place, started by another, developed by a pro,
+                  and later carry juniors and patrons.
                 </p>
                 <p>
                   By keeping a single, living record for each Remuda horse,
@@ -602,9 +601,9 @@ export default function App() {
                 </p>
                 <p>
                   Over time, those records can be linked into the Patronium
-                  ecosystem so that the people who helped bring a horse along its
-                  path can participate in its economic story, not only its final
-                  ownership.
+                  ecosystem so that the people who helped bring a horse along
+                  its path can participate in its economic story, not only its
+                  final ownership.
                 </p>
               </div>
 
