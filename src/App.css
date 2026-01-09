@@ -78,7 +78,14 @@ body {
   margin-top: 0;
 }
 
-/* Text shadow over photos for legibility */
+/* (unused now, safe to remove if you want) */
+.band-gap {
+  height: clamp(120px, 14vh, 280px);
+  background: #000;
+  margin-top: 0;
+}
+
+/* Add a dark shadow behind white letters on photo bands */
 .parallax-band .section-title,
 .parallax-band .section-kicker,
 .parallax-band .board-title,
@@ -207,14 +214,6 @@ body {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-}
-
-.hero-wallet-copy {
-  margin-top: 16px;
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.8;
 }
 
 .btn {
@@ -363,9 +362,9 @@ section {
   margin: 22px auto 0;
   border: 1px solid var(--border);
   border-radius: 4px;
-  background: #080808;
+  background: transparent;
   padding: 18px 16px 14px;
-  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.7);
+  box-shadow: none;
 }
 
 .board-title {
