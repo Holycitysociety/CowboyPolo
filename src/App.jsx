@@ -39,9 +39,9 @@ const wallets = [
 const BASE_URL = import.meta.env.BASE_URL || "/";
 
 // ✅ CHANGE THESE THREE FILENAMES to match your actual .jpeg names in /public
-const PHOTO_1 = `${BASE_URL}photo-1.jpeg`;
-const PHOTO_2 = `${BASE_URL}photo-2.jpeg`;
-const PHOTO_3 = `${BASE_URL}photo-3.jpeg`;
+const PHOTO_1 = `${BASE_URL}cowboy-1.jpeg`;
+const PHOTO_2 = `${BASE_URL}cowboy-2.jpeg`;
+const PHOTO_3 = `${BASE_URL}cowboy-3.jpeg`;
 
 // Theme to match Patron wallet look
 const cowboyWalletTheme = darkTheme({
