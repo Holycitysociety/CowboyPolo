@@ -134,7 +134,10 @@ export default function App() {
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const walletScrollRef = useRef(null);
 
-  // We still keep this ref for the ABOUT section (no more scroll popup)
+  // Gate-cleared flag (persisted so returning users don't see blur)
+  const [hasClearedGate, setHasClearedGate] = useState(false);
+
+  // Anchor for ABOUT section (no longer used for scroll pop-up, just IDs)
   const roadmapGateRef = useRef(null);
 
   // Thirdweb hooks
@@ -142,6 +145,9 @@ export default function App() {
   const activeWallet = useActiveWallet();
   const { disconnect } = useDisconnect();
   const isConnected = !!account;
+
+  // Derived: can the user view gated content?
+  const canViewProtected = hasClearedGate || isConnected;
 
   // Balances
   const { data: baseBalance } = useWalletBalance({
@@ -171,6 +177,33 @@ export default function App() {
     ? `${account.address.slice(0, 6)}…${account.address.slice(-4)}`
     : "";
 
+  // ---------------------------------------------
+  // Gate-cleared persistence
+  // ---------------------------------------------
+
+  // On first load, read flag from localStorage
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem("cpc_gate_cleared");
+      if (stored === "true") {
+        setHasClearedGate(true);
+      }
+    } catch (err) {
+      console.error("Error reading gate flag:", err);
+    }
+  }, []);
+
+  // Whenever an account becomes active, mark gate as cleared
+  useEffect(() => {
+    if (!account) return;
+    setHasClearedGate(true);
+    try {
+      window.localStorage.setItem("cpc_gate_cleared", "true");
+    } catch (err) {
+      console.error("Error saving gate flag:", err);
+    }
+  }, [account]);
+
   const handleCopyAddress = async () => {
     if (!account?.address) return;
     try {
@@ -185,6 +218,13 @@ export default function App() {
     if (!activeWallet || !disconnect) return;
     try {
       disconnect(activeWallet);
+      // Explicit sign out: re-enable gating
+      setHasClearedGate(false);
+      try {
+        window.localStorage.removeItem("cpc_gate_cleared");
+      } catch (err) {
+        console.error("Error clearing gate flag:", err);
+      }
     } catch (err) {
       console.error("Error disconnecting wallet:", err);
     }
@@ -220,8 +260,8 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
-  // NOTE: scroll pop-up effect has been completely removed
-  // so being signed in never triggers an auto wallet open.
+  // NOTE: scroll-based wallet pop-up has been removed.
+  // Wallet only opens when the user taps a wallet button.
 
   return (
     <div className="page">
@@ -271,7 +311,7 @@ export default function App() {
           <div className="hero-badge-intro">STREAMING ON</div>
           <div
             style={{
-              fontFamily: '"IM Fell English SC", serif',
+              fontFamily: '"IM Fell English SC", serif",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
               fontSize: "0.95rem",
@@ -305,7 +345,7 @@ export default function App() {
 
       {/* Background photo band #1 */}
       <ParallaxBand src="/images/cowboy-1.jpeg">
-        {/* ABOUT / HOW IT FUNCTIONS (scroll gate anchor only) */}
+        {/* ABOUT / HOW IT FUNCTIONS */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
             <div className="section-kicker">THE FORMAT</div>
@@ -368,7 +408,7 @@ export default function App() {
               marginTop: "20px",
             }}
           >
-            {!isConnected && (
+            {!canViewProtected && (
               <div
                 onClick={openWallet}
                 aria-label="Sign in required to view rider standings"
@@ -414,7 +454,7 @@ export default function App() {
               </div>
             )}
 
-            <div aria-hidden={!isConnected && true}>
+            <div aria-hidden={!canViewProtected && true}>
               <div className="section-body">
                 <p>
                   Player handicaps in the Cowboy Polo Circuit are not just static
@@ -502,7 +542,7 @@ export default function App() {
               marginTop: "20px",
             }}
           >
-            {!isConnected && (
+            {!canViewProtected && (
               <div
                 onClick={openWallet}
                 aria-label="Sign in required to view Remuda tables"
@@ -548,7 +588,7 @@ export default function App() {
               </div>
             )}
 
-            <div aria-hidden={!isConnected && true}>
+            <div aria-hidden={!canViewProtected && true}>
               <div className="section-body">
                 <p>
                   The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
@@ -882,7 +922,7 @@ export default function App() {
             marginTop: "20px",
           }}
         >
-          {!isConnected && (
+          {!canViewProtected && (
             <div
               onClick={openWallet}
               aria-label="Sign in required to submit or view results"
@@ -928,7 +968,7 @@ export default function App() {
             </div>
           )}
 
-          <div aria-hidden={!isConnected && true}>
+          <div aria-hidden={!canViewProtected && true}>
             <div className="section-body">
               <p>
                 Match captains or appointed officials submit chukker sheets:
