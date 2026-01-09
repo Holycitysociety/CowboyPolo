@@ -176,7 +176,7 @@ export default function App() {
       sections.forEach((el) => {
         const offsetTop = el.offsetTop || 0;
         const relativeY = scrollY - offsetTop;
-        const y = relativeY * -PARALLAX_SPEED;
+        const y = relativeY * PARALLAX_SPEED;
 
         // keep X centered, move Y slightly
         el.style.backgroundPosition = `center ${y}px`;
