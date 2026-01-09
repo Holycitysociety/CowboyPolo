@@ -134,10 +134,8 @@ export default function App() {
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const walletScrollRef = useRef(null);
 
-  // Gate-cleared flag (persisted so returning users don't see blur)
-  const [hasClearedGate, setHasClearedGate] = useState(false);
-
-  // Anchor for ABOUT section (no longer used for scroll pop-up, just IDs)
+  // Scroll-gating state
+  const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
   const roadmapGateRef = useRef(null);
 
   // Thirdweb hooks
@@ -145,9 +143,6 @@ export default function App() {
   const activeWallet = useActiveWallet();
   const { disconnect } = useDisconnect();
   const isConnected = !!account;
-
-  // Derived: can the user view gated content?
-  const canViewProtected = hasClearedGate || isConnected;
 
   // Balances
   const { data: baseBalance } = useWalletBalance({
@@ -177,33 +172,6 @@ export default function App() {
     ? `${account.address.slice(0, 6)}…${account.address.slice(-4)}`
     : "";
 
-  // ---------------------------------------------
-  // Gate-cleared persistence
-  // ---------------------------------------------
-
-  // On first load, read flag from localStorage
-  useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem("cpc_gate_cleared");
-      if (stored === "true") {
-        setHasClearedGate(true);
-      }
-    } catch (err) {
-      console.error("Error reading gate flag:", err);
-    }
-  }, []);
-
-  // Whenever an account becomes active, mark gate as cleared
-  useEffect(() => {
-    if (!account) return;
-    setHasClearedGate(true);
-    try {
-      window.localStorage.setItem("cpc_gate_cleared", "true");
-    } catch (err) {
-      console.error("Error saving gate flag:", err);
-    }
-  }, [account]);
-
   const handleCopyAddress = async () => {
     if (!account?.address) return;
     try {
@@ -218,13 +186,6 @@ export default function App() {
     if (!activeWallet || !disconnect) return;
     try {
       disconnect(activeWallet);
-      // Explicit sign out: re-enable gating
-      setHasClearedGate(false);
-      try {
-        window.localStorage.removeItem("cpc_gate_cleared");
-      } catch (err) {
-        console.error("Error clearing gate flag:", err);
-      }
     } catch (err) {
       console.error("Error disconnecting wallet:", err);
     }
@@ -260,8 +221,30 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
-  // NOTE: scroll-based wallet pop-up has been removed.
-  // Wallet only opens when the user taps a wallet button.
+  // Scroll gating: when ABOUT section bottom crosses near top, open wallet once
+  useEffect(() => {
+    if (isConnected) {
+      setHasTriggeredGate(false);
+      return;
+    }
+
+    const handleScroll = () => {
+      if (hasTriggeredGate) return;
+      const el = roadmapGateRef.current;
+      if (!el) return;
+
+      const rect = el.getBoundingClientRect();
+      const triggerY = 96; // px from top of viewport
+
+      if (rect.bottom <= triggerY) {
+        setHasTriggeredGate(true);
+        setIsWalletOpen(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isConnected, hasTriggeredGate]);
 
   return (
     <div className="page">
@@ -309,23 +292,16 @@ export default function App() {
         {/* Streaming on THE POLO WAY first */}
         <div className="hero-badges" style={{ marginTop: "0" }}>
           <div className="hero-badge-intro">STREAMING ON</div>
-         
-          
-          
-           <div
-  style={{
-    fontFamily: "'IM Fell English SC', serif",
-    letterSpacing: "0.22em",
-    textTransform: "uppercase",
-    fontSize: "0.95rem",
-  }}
->
-  THE POLO WAY
-</div>
-          
-          
-          
-          
+          <div
+            style={{
+              fontFamily: '"IM Fell English SC", serif',
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              fontSize: "0.95rem",
+            }}
+          >
+            THE POLO WAY
+          </div>
         </div>
 
         {/* Divider between Polo Way and Remuda */}
@@ -352,7 +328,7 @@ export default function App() {
 
       {/* Background photo band #1 */}
       <ParallaxBand src="/images/cowboy-1.jpeg">
-        {/* ABOUT / HOW IT FUNCTIONS */}
+        {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
             <div className="section-kicker">THE FORMAT</div>
@@ -380,13 +356,14 @@ export default function App() {
               and the game results table for teams.
             </p>
             <p>
-              Each sanctioned chukker updates both sides of the story: how riders
-              are rated, and how their teams are performing.
+              Each sanctioned chukker updates both sides of the story: how
+              riders are rated, and how their teams are performing.
             </p>
             <p>
               Over the course of a Circuit season, those two tables are the
-              backbone of the standings: player handicaps and team records (wins,
-              losses, goal difference) together define how the season is read.
+              backbone of the standings: player handicaps and team records
+              (wins, losses, goal difference) together define how the season is
+              read.
             </p>
             <p>
               Local chapters also feed into{" "}
@@ -415,7 +392,7 @@ export default function App() {
               marginTop: "20px",
             }}
           >
-            {!canViewProtected && (
+            {!isConnected && (
               <div
                 onClick={openWallet}
                 aria-label="Sign in required to view rider standings"
@@ -454,26 +431,26 @@ export default function App() {
                       color: "#f5eedc",
                     }}
                   >
-                    Sign into your Patron Wallet to view live rider handicaps and
-                    Circuit tables.
+                    Sign into your Patron Wallet to view live rider handicaps
+                    and Circuit tables.
                   </div>
                 </div>
               </div>
             )}
 
-            <div aria-hidden={!canViewProtected && true}>
+            <div aria-hidden={!isConnected && true}>
               <div className="section-body">
                 <p>
-                  Player handicaps in the Cowboy Polo Circuit are not just static
-                  numbers. Each rider’s Cowboy Polo handicap is a statistically
-                  calculated, ELO-style rating, updated after every sanctioned
-                  chukker and displayed to two decimal places.
+                  Player handicaps in the Cowboy Polo Circuit are not just
+                  static numbers. Each rider’s Cowboy Polo handicap is a
+                  statistically calculated, ELO-style rating, updated after
+                  every sanctioned chukker and displayed to two decimal places.
                 </p>
                 <p>
-                  Ratings move with performance over time: goals scored, assists,
-                  ride-offs won, and overall impact on the match all feed the same
-                  underlying score. The table below shows how a leaderboard might
-                  appear during mid-season.
+                  Ratings move with performance over time: goals scored,
+                  assists, ride-offs won, and overall impact on the match all
+                  feed the same underlying score. The table below shows how a
+                  leaderboard might appear during mid-season.
                 </p>
               </div>
 
@@ -549,7 +526,7 @@ export default function App() {
               marginTop: "20px",
             }}
           >
-            {!canViewProtected && (
+            {!isConnected && (
               <div
                 onClick={openWallet}
                 aria-label="Sign in required to view Remuda tables"
@@ -588,14 +565,14 @@ export default function App() {
                       color: "#f5eedc",
                     }}
                   >
-                    Sign into your Patron Wallet to view tracked horses and Remuda
-                    performance.
+                    Sign into your Patron Wallet to view tracked horses and
+                    Remuda performance.
                   </div>
                 </div>
               </div>
             )}
 
-            <div aria-hidden={!canViewProtected && true}>
+            <div aria-hidden={!isConnected && true}>
               <div className="section-body">
                 <p>
                   The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
@@ -604,10 +581,10 @@ export default function App() {
                 </p>
                 <p>
                   Every sanctioned appearance adds to a horse’s trace: chukkers
-                  played, riders carried, contribution to wins, and awards earned
-                  across chapters and seasons. The same horse might be bred in one
-                  place, started by another, developed by a pro, and later carry
-                  juniors and patrons.
+                  played, riders carried, contribution to wins, and awards
+                  earned across chapters and seasons. The same horse might be
+                  bred in one place, started by another, developed by a pro, and
+                  later carry juniors and patrons.
                 </p>
                 <p>
                   By keeping a single, living record for each Remuda horse,
@@ -616,9 +593,9 @@ export default function App() {
                 </p>
                 <p>
                   Over time, those records can be linked into the Patronium
-                  ecosystem so that the people who helped bring a horse along its
-                  path can participate in its economic story, not only its final
-                  ownership.
+                  ecosystem so that the people who helped bring a horse along
+                  its path can participate in its economic story, not only its
+                  final ownership.
                 </p>
               </div>
 
@@ -929,7 +906,7 @@ export default function App() {
             marginTop: "20px",
           }}
         >
-          {!canViewProtected && (
+          {!isConnected && (
             <div
               onClick={openWallet}
               aria-label="Sign in required to submit or view results"
@@ -975,7 +952,7 @@ export default function App() {
             </div>
           )}
 
-          <div aria-hidden={!canViewProtected && true}>
+          <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
                 Match captains or appointed officials submit chukker sheets:
