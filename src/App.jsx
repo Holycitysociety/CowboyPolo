@@ -73,7 +73,7 @@ const cowboyWalletTheme = darkTheme({
 // ---------------------------------------------
 // Parallax full-bleed photo band (no cropping)
 // ---------------------------------------------
-function ParallaxBand({ src, children, speed = 0.06 }) {
+function ParallaxBand({ src, children, speed = 0.01 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
