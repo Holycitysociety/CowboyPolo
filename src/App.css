@@ -1,3 +1,4 @@
+/* src/App.css */
 :root {
   --bg: #000000;
   --fg: #ffffff;
@@ -25,12 +26,6 @@ body {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 36px 18px 96px;
-}
-
-/* Full-bleed helper (extends beyond max-width page) */
-.full-bleed {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
 }
 
 /* HERO POSTER (Tall & Centered) */
@@ -67,6 +62,15 @@ body {
 
 .hero-main {
   margin-top: 24px;
+}
+
+.hero-main .the {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 6px;
 }
 
 .hero-word {
@@ -115,6 +119,11 @@ body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   opacity: 0.8;
+}
+
+.hero-badges span {
+  display: inline-block;
+  margin: 0 8px;
 }
 
 .hero-badge-intro {
@@ -168,6 +177,79 @@ body {
   border-color: #ffffff;
 }
 
+/* SECTION SHARED */
+section {
+  margin-top: var(--section-gap);
+}
+
+/* FULL-BLEED BACKGROUND PHOTOS (as the site background, stacked) */
+.bg-photo {
+  position: relative;
+  padding-top: 56px;
+  padding-bottom: 56px;
+  isolation: isolate; /* keeps ::before behind content */
+}
+
+/* large black space BETWEEN the background-photo sections */
+.bg-photo + .bg-photo {
+  margin-top: clamp(120px, 12vw, 260px);
+}
+
+.bg-photo::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 100vw; /* full screen width */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* IMPORTANT:
+   Put your .jpeg files here:
+   public/images/cowboy-1.jpeg
+   public/images/cowboy-2.jpeg
+   public/images/cowboy-3.jpeg
+   (or change the filenames below to match yours exactly)
+*/
+.bg-photo-1::before {
+  background-image: url("/images/cowboy-1.jpeg");
+}
+
+.bg-photo-2::before {
+  background-image: url("/images/cowboy-2.jpeg");
+}
+
+.bg-photo-3::before {
+  background-image: url("/images/cowboy-3.jpeg");
+}
+
+/* Subtle shadow for readability on photo backgrounds (no overlay) */
+.bg-photo .section-header,
+.bg-photo .section-body,
+.bg-photo .board,
+.bg-photo .board * {
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.92);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.section-kicker {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
 /* Three Sevens wordmark */
 .three-sevens-mark {
   display: inline-flex;
@@ -188,6 +270,7 @@ body {
   text-transform: uppercase;
 }
 
+/* Size tuning by context */
 .hero-badges .three-sevens-numeral {
   font-size: 1.3rem;
 }
@@ -204,118 +287,6 @@ body {
 .section-kicker .three-sevens-text {
   font-size: 0.7rem;
   opacity: 0.9;
-}
-
-/* ================================
-   PHOTO CHAPTERS (BG + TEXT OVERLAY)
-   ================================ */
-.photo-chapters {
-  margin-top: 42px; /* starts under hero */
-}
-
-/* black space between panels */
-.photo-gap {
-  height: 56px;
-  background: #000;
-}
-
-/* full-bleed background panel */
-.photo-chapter {
-  min-height: clamp(520px, 84vh, 900px);
-  display: flex;
-  align-items: flex-end;
-  padding: clamp(18px, 3vw, 42px);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center 50%;
-  position: relative;
-
-  /* desktop parallax */
-  background-attachment: fixed;
-
-  /* subtle framing */
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* iOS + many mobile browsers hate background-attachment: fixed */
-@media (max-width: 900px) {
-  .photo-chapter {
-    background-attachment: scroll;
-    min-height: clamp(520px, 78vh, 820px);
-  }
-}
-
-.photo-chapter.align-left {
-  justify-content: flex-start;
-}
-
-.photo-chapter.align-right {
-  justify-content: flex-end;
-}
-
-/* text overlay block (no photo overlay, just readable type) */
-.photo-chapter-inner {
-  width: min(560px, 92vw);
-  padding: 0;
-  color: #fff;
-
-  /* This is the key: strong shadow behind white letters */
-  text-shadow:
-    0 2px 12px rgba(0, 0, 0, 0.92),
-    0 1px 2px rgba(0, 0, 0, 0.85),
-    0 0 24px rgba(0, 0, 0, 0.65);
-}
-
-.photo-kicker {
-  font-family: "IM Fell English SC", serif;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  opacity: 0.95;
-}
-
-.photo-title {
-  margin-top: 10px;
-  font-family: "Cormorant Garamond", serif;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  line-height: 1.05;
-  font-size: clamp(1.6rem, 4.2vw, 2.35rem);
-  font-weight: 700;
-}
-
-.photo-copy {
-  margin-top: 12px;
-  font-size: clamp(1rem, 2.2vw, 1.1rem);
-  line-height: 1.55;
-  opacity: 0.95;
-}
-
-.photo-actions {
-  margin-top: 18px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-/* SECTION SHARED */
-section {
-  margin-top: var(--section-gap);
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 26px;
-}
-
-.section-kicker {
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.8rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 6px;
 }
 
 /* WORDMARK-STYLE TITLES */
@@ -518,9 +489,5 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
-  }
-
-  .photo-gap {
-    height: 44px;
   }
 }
