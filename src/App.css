@@ -27,20 +27,10 @@ body {
   padding: 36px 18px 96px;
 }
 
-/* ✅ Dark shadow behind white letters (legibility boost) */
-.hero,
-.section-header,
-.board-title,
-.hero-badges,
-.hero-tagline,
-.hero-topline,
-.hero-presents,
-.hero-word,
-.section-title,
-.section-kicker {
-  text-shadow:
-    0 2px 18px rgba(0, 0, 0, 0.75),
-    0 1px 2px rgba(0, 0, 0, 0.95);
+/* Full-bleed helper (extends beyond max-width page) */
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
 }
 
 /* HERO POSTER (Tall & Centered) */
@@ -77,15 +67,6 @@ body {
 
 .hero-main {
   margin-top: 24px;
-}
-
-.hero-main .the {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  opacity: 0.7;
-  margin-bottom: 6px;
 }
 
 .hero-word {
@@ -134,11 +115,6 @@ body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   opacity: 0.8;
-}
-
-.hero-badges span {
-  display: inline-block;
-  margin: 0 8px;
 }
 
 .hero-badge-intro {
@@ -192,25 +168,6 @@ body {
   border-color: #ffffff;
 }
 
-/* SECTION SHARED */
-section {
-  margin-top: var(--section-gap);
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 26px;
-}
-
-.section-kicker {
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.8rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-
 /* Three Sevens wordmark */
 .three-sevens-mark {
   display: inline-flex;
@@ -248,6 +205,51 @@ section {
 .section-kicker .three-sevens-text {
   font-size: 0.7rem;
   opacity: 0.9;
+}
+
+/* ===========================================
+   PHOTO STACK (full-bleed background panels)
+   =========================================== */
+.photo-stack {
+  margin-top: 42px; /* starts under hero */
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* we use .photo-gap divs */
+}
+
+.photo-panel {
+  min-height: clamp(420px, 72vh, 780px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* subtle structure without overlays */
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.photo-gap {
+  height: 56px; /* the black space between images */
+  background: #000;
+}
+
+/* SECTION SHARED */
+section {
+  margin-top: var(--section-gap);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.section-kicker {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
 }
 
 /* WORDMARK-STYLE TITLES */
@@ -297,33 +299,6 @@ section {
 .section-body p {
   margin: 0 0 14px;
   text-align: justify;
-}
-
-/* ✅ PHOTO STACK STYLES */
-.photo-stack {
-  margin-top: var(--section-gap);
-}
-
-.photo-stack-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.photo-card {
-  margin: 0;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: #050505;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
-  overflow: hidden;
-}
-
-.photo-img {
-  display: block;
-  width: 100%;
-  height: auto;
 }
 
 /* Leaderboard tables */
@@ -477,5 +452,9 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
+  }
+
+  .photo-gap {
+    height: 44px;
   }
 }
