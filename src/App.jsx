@@ -167,7 +167,7 @@ export default function App() {
   // SIMPLE PARALLAX: move bg of .bg-photo sections
   // ---------------------------------------------
   useEffect(() => {
-    const PARALLAX_SPEED = 0.01; // tweak: smaller = subtler
+    const PARALLAX_SPEED = 0.77; // tweak: smaller = subtler
 
     const handleScroll = () => {
       const sections = document.querySelectorAll(".bg-photo");
