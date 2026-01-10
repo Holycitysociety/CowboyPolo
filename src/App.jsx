@@ -75,7 +75,7 @@ const cowboyWalletTheme = darkTheme({
 //  - zoom: starting zoom (e.g. 3.5 = 3.5x)
 //  - speed: how aggressively it eases back to 1x
 // ---------------------------------------------
-function ParallaxBand({ src, children, first = false, zoom = 3.5, speed = 1 }) {
+function ParallaxBand({ src, children, first = false, zoom = 3.5, speed = 4 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
