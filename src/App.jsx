@@ -343,7 +343,7 @@ export default function App() {
       </section>
 
       {/* PHOTO BAND 1 + ABOUT TEXT */}
-      <ParallaxBand src="/images/cowboy-1.jpeg" first zoom={3.5} speed={0.8}>
+      <ParallaxBand src="/images/cowboy-1.jpeg" first zoom={3.5} speed={4}>
         {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
@@ -393,7 +393,7 @@ export default function App() {
       </ParallaxBand>
 
       {/* PHOTO BAND 2 + PLAYER TABLES */}
-      <ParallaxBand src="/images/cowboy-2.jpeg" zoom={3.5} speed={1}>
+      <ParallaxBand src="/images/cowboy-2.jpeg" zoom={3.5} speed={4}>
         {/* PLAYER LEADERBOARD (GATED) */}
         <section id="players" className="band-section">
           <div className="section-header">
@@ -522,7 +522,7 @@ export default function App() {
       </ParallaxBand>
 
       {/* PHOTO BAND 3 + HORSE / REMUDA */}
-      <ParallaxBand src="/images/cowboy-3.jpeg" zoom={3.8} speed={0.9}>
+      <ParallaxBand src="/images/cowboy-3.jpeg" zoom={3.8} speed={4}>
         {/* HORSE & REMUDA SECTION (GATED) */}
         <section id="horses" className="band-section">
           <div className="section-header">
