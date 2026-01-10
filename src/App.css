@@ -1,6 +1,6 @@
-/* ---------------------------------------
-   Base + layout
---------------------------------------- */
+/* -------------------------------------
+   Base layout
+------------------------------------- */
 
 *,
 *::before,
@@ -8,24 +8,14 @@
   box-sizing: border-box;
 }
 
-:root {
-  --bg: #050505;
-  --ink: #f5eedc;
-  --muted: #c7b08a;
-  --line: rgba(246, 241, 230, 0.16);
-  --gold: #e3bf72;
-  --panel: #0b0907;
-}
-
 html,
 body {
   margin: 0;
   padding: 0;
-  min-height: 100%;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  background: #050505;
+  color: #f5eedc;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
 }
 
 body {
@@ -34,114 +24,126 @@ body {
 
 .page {
   min-height: 100vh;
-  background: radial-gradient(circle at top, #18120c 0, #050505 52%, #000 100%);
-  color: var(--ink);
+  background: radial-gradient(circle at top, #16100c 0, #050505 52%, #020202 100%);
+  color: #f5eedc;
 }
 
-/* ---------------------------------------
+/* -------------------------------------
    Buttons
---------------------------------------- */
+------------------------------------- */
 
 .btn {
   border-radius: 999px;
-  border: 1px solid var(--gold);
-  padding: 8px 22px;
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  border: 1px solid #e3bf72;
+  padding: 8px 24px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  background: transparent;
-  color: var(--ink);
   cursor: pointer;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.btn-primary {
-  background: var(--gold);
-  color: #181210;
+  background: transparent;
+  color: #e3bf72;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease,
+    box-shadow 0.12s ease;
 }
 
 .btn-outline {
   background: transparent;
-  color: var(--gold);
 }
 
-.btn:hover {
-  filter: brightness(1.05);
+.btn-outline:hover {
+  background: #e3bf72;
+  color: #181210;
+  box-shadow: 0 0 0 1px #e3bf72, 0 10px 26px rgba(0, 0, 0, 0.7);
+  transform: translateY(-1px);
 }
 
-/* ---------------------------------------
-   Hero poster
---------------------------------------- */
+.btn-primary {
+  background: #e3bf72;
+  color: #181210;
+}
+
+.btn-primary:hover {
+  background: #f0cf86;
+  box-shadow: 0 0 0 1px #f0cf86, 0 10px 26px rgba(0, 0, 0, 0.7);
+  transform: translateY(-1px);
+}
+
+/* -------------------------------------
+   Hero section
+------------------------------------- */
 
 .hero {
-  padding: 32px 18px 40px;
+  padding: 32px 16px 40px;
   text-align: center;
-  max-width: 960px;
-  margin: 0 auto 10px;
 }
 
 .hero-topline {
   font-family: "Cinzel", "EB Garamond", serif;
-  font-size: 13px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: #c7b08a;
   line-height: 1.6;
 }
 
 .hero-rule,
 .hero-rule-2 {
-  border-top: 1px solid var(--line);
+  width: 120px;
+  height: 1px;
   margin: 12px auto;
-  max-width: 320px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(227, 191, 114, 0.8),
+    transparent
+  );
 }
 
 .hero-presents {
+  margin-top: 8px;
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 10px;
+  color: #9f8a64;
 }
 
 .hero-main {
-  margin-top: 20px;
+  margin: 16px 0 10px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  align-items: center;
-  justify-content: center;
+  gap: 4px;
+  font-family: "Cinzel", serif;
 }
 
 .hero-word {
-  font-family: "Cinzel", serif;
-  letter-spacing: 0.26em;
+  display: block;
+  font-size: 32px;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
 }
 
 .hero-word.cowboy {
-  font-size: 28px;
+  color: #f5eedc;
 }
 
 .hero-word.polo {
-  font-size: 26px;
+  color: #e3bf72;
 }
 
 .hero-word.circuit {
-  font-size: 20px;
+  color: #c7b08a;
 }
 
 .hero-tagline {
-  margin-top: 18px;
-  font-size: 12px;
+  margin-top: 8px;
+  font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: #d0c2a1;
 }
 
 .hero-badges {
-  margin-top: 18px;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -152,37 +154,38 @@ body {
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: #9f8a64;
 }
 
 .three-sevens-mark {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
+  gap: 2px;
 }
 
 .three-sevens-numeral {
   font-family: "Cinzel", serif;
   font-size: 20px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.28em;
 }
 
 .three-sevens-text {
-  font-size: 11px;
-  letter-spacing: 0.22em;
+  font-size: 10px;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
+  color: #d0c2a1;
 }
 
 .hero-cta-row {
-  margin-top: 22px;
+  margin-top: 16px;
   display: flex;
   justify-content: center;
 }
 
-/* ---------------------------------------
-   Parallax / zoom bands
---------------------------------------- */
+/* -------------------------------------
+   Parallax bands
+------------------------------------- */
 
 .parallax-band {
   position: relative;
@@ -190,15 +193,14 @@ body {
   overflow: hidden;
 }
 
-.parallax-band-first {
-  margin-top: 6px;
+.parallax-band.full-bleed {
+  width: 100%;
 }
 
 .parallax-media {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  pointer-events: none;
 }
 
 .parallax-img {
@@ -207,170 +209,170 @@ body {
   left: 50%;
   width: auto;
   height: 120%;
-  transform: translate3d(-50%, -50%, 0) scale(3.5);
+  max-width: none;
+  transform: translate3d(-50%, -50%, 0) scale(3.5); /* JS overrides scale */
   object-fit: cover;
 }
 
-/* Dark vignette - keep subtle so it doesn't obscure the image */
+/* Dark vignette at edges, not too heavy */
 .parallax-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at center, rgba(0, 0, 0, 0) 0%, transparent 40%, rgba(0, 0, 0, 0.5) 100%),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.8));
+    radial-gradient(circle at center, transparent 0, rgba(0, 0, 0, 0.35) 65%, rgba(0, 0, 0, 0.75) 100%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.45), transparent 20%, transparent 80%, rgba(0, 0, 0, 0.7));
 }
 
-/* Content wrapper INSIDE band when used that way
-   (safe to keep even after separating sections below) */
-.parallax-content {
-  position: relative;
-  z-index: 2;
-}
-
-/* ---------------------------------------
+/* -------------------------------------
    Sections after bands
---------------------------------------- */
+------------------------------------- */
 
 .band-section {
   position: relative;
+  padding: 48px 16px 32px;
   max-width: 960px;
   margin: 0 auto;
-  padding: 64px 18px 48px;
-}
-
-/* This gives a bit of overlap between the section title
-   and the bottom edge of the photo band */
-#about.band-section,
-#players.band-section,
-#horses.band-section {
-  margin-top: -40px;
-  padding-top: 56px;
 }
 
 .section-header {
-  margin-bottom: 18px;
+  text-align: center;
+  margin-bottom: 16px;
 }
 
 .section-kicker {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
+  color: #c7b08a;
+  margin-bottom: 6px;
 }
 
 .section-title {
+  margin: 0;
   font-family: "Cinzel", serif;
   font-size: 20px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin: 0 0 8px;
 }
 
 .section-rule {
-  border-top: 1px solid var(--line);
-  max-width: 280px;
+  width: 80px;
+  height: 1px;
+  margin: 10px auto 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(227, 191, 114, 0.8),
+    transparent
+  );
 }
 
 .section-body {
   font-size: 14px;
   line-height: 1.7;
-  color: var(--ink);
+  color: #e6dcc7;
 }
 
 .section-body p {
-  margin: 0 0 12px;
+  margin-top: 0;
+  margin-bottom: 12px;
 }
 
-/* ---------------------------------------
-   Tables / boards
---------------------------------------- */
+/* -------------------------------------
+   Boards / tables
+------------------------------------- */
 
 .board {
-  margin-top: 18px;
-  padding: 16px 14px 14px;
+  margin-top: 20px;
   border-radius: 12px;
-  border: 1px solid rgba(233, 207, 146, 0.4);
-  background: radial-gradient(circle at top left, #1a120a 0, #060404 52%, #020202 100%);
+  border: 1px solid rgba(227, 191, 114, 0.4);
+  background: radial-gradient(circle at top left, rgba(227, 191, 114, 0.12), #050505 55%);
+  padding: 14px 12px 12px;
   font-size: 13px;
 }
 
 .board-title {
   font-family: "Cinzel", serif;
   font-size: 14px;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .board-sub {
   font-size: 11px;
-  color: var(--muted);
-  margin-bottom: 10px;
+  color: #c7b08a;
+  margin-bottom: 8px;
 }
 
 .board-header,
 .board-row {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr;
-  gap: 8px;
-  padding: 4px 0;
+  grid-template-columns: 1.4fr 1.2fr 0.8fr;
+  column-gap: 8px;
+  align-items: center;
 }
 
 .board-header {
-  border-bottom: 1px solid var(--line);
   font-size: 11px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
+  color: #c7b08a;
+  border-bottom: 1px solid rgba(227, 191, 114, 0.3);
+  padding-bottom: 6px;
+  margin-bottom: 4px;
 }
 
-.board-row + .board-row {
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+.board-row {
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(227, 191, 114, 0.14);
+}
+
+.board-row:last-of-type {
+  border-bottom: none;
 }
 
 .handicap-value {
-  display: inline-flex;
-  align-items: baseline;
-  justify-content: flex-end;
+  justify-self: flex-end;
+  font-family: "Cinzel", serif;
 }
 
 .handicap-value-main {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .handicap-value-decimal {
-  font-size: 11px;
+  font-size: 13px;
 }
 
-/* ---------------------------------------
+/* -------------------------------------
    Results form
---------------------------------------- */
+------------------------------------- */
 
 .results-form {
-  margin-top: 18px;
-  padding: 16px 14px 14px;
+  margin-top: 14px;
+  padding: 14px 12px 16px;
   border-radius: 12px;
-  border: 1px solid rgba(233, 207, 146, 0.4);
-  background: radial-gradient(circle at top left, #1a120a 0, #060404 52%, #020202 100%);
+  border: 1px solid rgba(227, 191, 114, 0.4);
+  background: radial-gradient(circle at top left, rgba(227, 191, 114, 0.12), #050505 55%);
   font-size: 13px;
 }
 
 .results-form-row-inline {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 .results-form-row-inline > div {
-  flex: 1 1 130px;
+  flex: 1 1 140px;
 }
 
 .results-form label {
   display: block;
   font-size: 11px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
+  color: #c7b08a;
   margin-bottom: 4px;
 }
 
@@ -378,80 +380,88 @@ body {
 .results-form select,
 .results-form textarea {
   width: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(180, 150, 102, 0.6);
   border-radius: 8px;
-  padding: 7px 8px;
+  border: 1px solid #3a2b16;
+  background: rgba(0, 0, 0, 0.65);
+  color: #f5eedc;
+  padding: 7px 9px;
   font-size: 13px;
-  color: var(--ink);
+  font-family: inherit;
+}
+
+.results-form textarea {
+  resize: vertical;
 }
 
 .results-form small {
+  display: block;
+  margin-top: 4px;
   font-size: 11px;
-  color: var(--muted);
+  color: #9f8a64;
 }
 
-/* ---------------------------------------
-   Wallet modal
---------------------------------------- */
+/* -------------------------------------
+   Wallet modal backdrop
+------------------------------------- */
 
 .wallet-modal-backdrop {
-  /* the inline styles in JSX handle most of this;
-     keep class in case of future enhancements */
+  /* styles are mostly inline in JSX; keep placeholder if needed */
 }
 
-/* ---------------------------------------
+/* -------------------------------------
    Footer
---------------------------------------- */
+------------------------------------- */
 
 footer {
-  padding: 24px 18px 40px;
-  font-size: 11px;
+  padding: 24px 16px 40px;
   text-align: center;
-  color: var(--muted);
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-  margin-top: 24px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #9f8a64;
 }
 
-/* ---------------------------------------
-   MOBILE tweaks
---------------------------------------- */
+/* -------------------------------------
+   Responsive tweaks
+------------------------------------- */
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .hero {
-    padding-top: 22px;
+    padding: 40px 32px 56px;
   }
 
-  .hero-word.cowboy {
-    font-size: 24px;
+  .hero-main {
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
   }
 
-  .hero-word.polo {
-    font-size: 22px;
-  }
-
-  .hero-word.circuit {
-    font-size: 18px;
+  .hero-word {
+    font-size: 42px;
   }
 
   .band-section {
-    padding: 52px 16px 40px;
-  }
-
-  /* 🔹 Option 2: pull sections closer to photo on mobile
-     so there’s less black space before/after the band.
-     This does NOT change band height, only how far below
-     the band the text starts.
-  */
-  #about.band-section,
-  #players.band-section,
-  #horses.band-section {
-    margin-top: -60px;  /* overlap a bit more into the photo area */
-    padding-top: 48px;  /* keep headings readable */
+    padding: 64px 24px 40px;
   }
 
   .board,
   .results-form {
-    padding: 14px 12px 12px;
+    padding: 18px 16px 18px;
+  }
+}
+
+/* -------------------------------------
+   MOBILE: pull text sections closer
+   to bottom of photos
+------------------------------------- */
+
+@media (max-width: 768px) {
+  /* Pull the three main sections up so there's less black gap
+     between the end of the photo band and the start of text. */
+  #about,
+  #players,
+  #horses {
+    margin-top: -60px;   /* overlap slightly into the lower edge of the band */
+    padding-top: 40px;   /* keep headings readable, not jammed */
   }
 }
