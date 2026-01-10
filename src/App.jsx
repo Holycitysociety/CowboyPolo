@@ -9,6 +9,7 @@ import {
   useDisconnect,
   useWalletBalance,
   darkTheme,
+  BuyWidget,            // ⬅️ NEW: checkout widget
 } from "thirdweb/react";
 import { createThirdwebClient, defineChain } from "thirdweb";
 import { inAppWallet } from "thirdweb/wallets";
@@ -72,7 +73,7 @@ const cowboyWalletTheme = darkTheme({
 
 // ---------------------------------------------
 // Zoom-on-scroll full-bleed photo band
-//  - zoom: starting zoom (e.g. 30 = 30x)
+//  - zoom: starting zoom (e.g. 3.5 = 3.5x)
 //  - speed: how aggressively it eases back to 1x
 //  - finishFactor: >1 = finish zooming earlier in scroll
 // ---------------------------------------------
@@ -147,6 +148,7 @@ function ParallaxBand({
         <div className="parallax-vignette" />
       </div>
 
+      {/* Reserved slot for badges if you ever want them */}
       <div className="parallax-content">{children}</div>
     </div>
   );
@@ -369,7 +371,7 @@ export default function App() {
         ref={roadmapGateRef}
         className="band-section"
         style={{
-          marginTop: 0,
+          marginTop: "0px",
           paddingTop: "56px",
         }}
       >
@@ -430,7 +432,7 @@ export default function App() {
         id="players"
         className="band-section"
         style={{
-          marginTop: 0,
+          marginTop: "0px",
           paddingTop: "56px",
         }}
       >
@@ -529,12 +531,7 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Casey Navarro</span>
-                <span>
-                  <span className="cp-mark">
-                    <span>C</span>
-                    <span className="cp-sub">P</span>
-                  </span>
-                </span>
+                <span>Three Sevens 7̶7̶7̶</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">1</span>
                   <span className="handicap-value-decimal">.40</span>
@@ -574,7 +571,7 @@ export default function App() {
         id="horses"
         className="band-section"
         style={{
-          marginTop: 0,
+          marginTop: "0px",
           paddingTop: "56px",
         }}
       >
@@ -687,12 +684,12 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Sundance</span>
-                <span>CP</span>
+                <span>7̶7̶7̶</span>
                 <span>88</span>
               </div>
               <div className="board-row">
                 <span>Cholla</span>
-                <span>6666</span>
+                <span>Private</span>
                 <span>81</span>
               </div>
               <div className="board-row">
@@ -748,21 +745,45 @@ export default function App() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginBottom: "8px",
+                  marginBottom: "10px",
                   position: "relative",
                   paddingTop: "4px",
                 }}
               >
-                <div
-                  style={{
-                    fontSize: "18px",
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    lineHeight: 1.1,
-                  }}
-                >
-                  PATRON WALLET
+                <div style={{ textAlign: "center" }}>
+                  <div
+                    style={{
+                      fontSize: "10px",
+                      letterSpacing: "0.28em",
+                      textTransform: "uppercase",
+                      color: "#9f8a64",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    U&nbsp;S&nbsp;P&nbsp;P&nbsp;A
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "15px",
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    COWBOY POLO CIRCUIT
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      letterSpacing: "0.22em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                      marginTop: "4px",
+                    }}
+                  >
+                    PATRON WALLET
+                  </div>
                 </div>
 
                 <button
@@ -809,7 +830,7 @@ export default function App() {
                 </p>
               )}
 
-              {/* Connect or account view */}
+              {/* Connect or account view + Checkout widget */}
               {!account ? (
                 <div style={{ marginBottom: "14px" }}>
                   <ConnectEmbed
@@ -818,6 +839,34 @@ export default function App() {
                     chain={BASE}
                     theme={cowboyWalletTheme}
                   />
+
+                  {/* Checkout / Buy widget (works once a wallet is connected) */}
+                  <div
+                    style={{
+                      marginTop: "16px",
+                      borderTop: "1px solid #3a2b16",
+                      paddingTop: "12px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        marginBottom: "6px",
+                        textAlign: "center",
+                      }}
+                    >
+                      Fund Your Patron Wallet
+                    </div>
+                    <BuyWidget
+                      client={client}
+                      chain={BASE}
+                      tokenAddress="0xD766a771887fFB6c528434d5710B406313CAe03A" // PATRON on Base
+                      amount="25"
+                    />
+                  </div>
                 </div>
               ) : (
                 <div style={{ marginBottom: "14px", textAlign: "center" }}>
@@ -922,6 +971,34 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* Checkout widget under balances */}
+                  <div
+                    style={{
+                      marginTop: "8px",
+                      marginBottom: "12px",
+                      borderTop: "1px solid #3a2b16",
+                      paddingTop: "10px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      Add More PATRON
+                    </div>
+                    <BuyWidget
+                      client={client}
+                      chain={BASE}
+                      tokenAddress="0xD766a771887fFB6c528434d5710B406313CAe03A" // PATRON
+                      amount="25"
+                    />
+                  </div>
+
                   <button
                     className="btn btn-outline"
                     style={{
@@ -1021,8 +1098,6 @@ export default function App() {
               <p>
                 Match captains or appointed officials submit chukker sheets:
                 teams, scorelines, rider combinations, and notable horse usage.
-              </p>
-              <p>
                 Those sheets become the official record that updates handicaps
                 and team standings across the Circuit.
               </p>
