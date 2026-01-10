@@ -47,7 +47,7 @@ body {
 
 /* Give the first band a slightly tighter link on some devices */
 .parallax-band-first {
-  margin-top: 20px;
+  margin-top: 0px;
 }
 
 /* Image layer */
@@ -563,12 +563,12 @@ footer {
 
   /* First band: kill the feeling of a huge gap before the first photo */
   .parallax-band-first {
-    margin-top: 10px;
+    margin-top: 0px;
   }
 
   /* Anchor the first photo a bit higher on mobile so you see it sooner */
   .parallax-band-first .parallax-img {
-    top: 20%;
+    top: 30%;
     transform: translate3d(-50%, -50%, 0);
   }
 }
