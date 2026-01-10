@@ -449,17 +449,19 @@ export default function App() {
           <div className="section-rule" />
         </div>
 
-        <div className="section-body">
+       
+                <div className="section-body">
           <p>
             The Cowboy Polo Circuit is a national development league for
-            players, ponies, &amp; patrons built on sanctioned Cowboy Polo
-            chukkers.
+            players, ponies, &amp; patrons built on sanctioned and recorded
+            Cowboy Polo chukkers.
           </p>
           <p>
-            Games are played 3 on 3 in arenas or campitos. The key is that a
-            player does not need a full string to attract patrons: a rider can
-            progress by playing as little as one chukker, on one good horse,
-            and still build a real Circuit handicap.
+            Games are played 3 on 3 in arenas or campitos, with teams of up to
+            12 riders. The key is that a player does not need a full string to
+            play and attract patrons: a rider can progress by playing as little
+            as one chukker, on one good horse, and still build a real Circuit
+            handicap.
           </p>
           <p>
             Cowboy Polo chukkers can be hosted by any stable, arena, or program
@@ -474,17 +476,20 @@ export default function App() {
           </p>
           <p>
             Over the course of a Circuit season, those two tables are the
-            backbone of the standings: player handicaps and team records (wins,
-            losses, goal difference) together define how the season is read.
+            backbone of the standings: player handicaps and team records
+            together define how the season is read.
           </p>
           <p>
             Local chapters also feed into{" "}
             <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
-            and arenas can submit 360° VR footage from sanctioned Cowboy Polo
+            and arenas submit 360° VR footage from sanctioned Cowboy Polo
             chukkers to thepoloway.com so patrons can follow and support the
             Circuit from anywhere.
           </p>
         </div>
+        
+        
+        
       </section>
 
       {/* PHOTO BAND 2 (image only) */}
