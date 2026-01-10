@@ -88,11 +88,7 @@ body {
     );
 }
 
-
-/* Content in the band:
-   - empty space at top (~full viewport) to see the photo
-   - then text rides over the lower part / fade
-*/
+/* Content in the band */
 .parallax-content {
   position: relative;
   z-index: 2;
@@ -353,7 +349,7 @@ section {
   opacity: 0.9;
 }
 
-/* WORDMARK-STYLE TITLES */
+/* WORDMARK-STYLE TITLES (no lines) */
 .section-title {
   position: relative;
   display: inline-block;
@@ -362,32 +358,18 @@ section {
   text-transform: uppercase;
   letter-spacing: 0.28em;
   padding: 6px 22px;
+  text-align: center;
 }
 
+/* Kill the fine lines around titles */
 .section-title::before,
 .section-title::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 36px;
-  border-top: 1px solid rgba(255, 255, 255, 0.45);
+  content: none;
 }
 
-.section-title::before {
-  right: 100%;
-  margin-right: 12px;
-}
-
-.section-title::after {
-  left: 100%;
-  margin-left: 12px;
-}
-
+/* Also remove the underline rule under section titles */
 .section-rule {
-  width: 180px;
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  margin: 16px auto 0;
-  opacity: 0.6;
+  display: none;
 }
 
 .section-body {
@@ -476,6 +458,20 @@ section {
   opacity: 0.9;
 }
 
+/* CP mark with full-size P in subscript */
+.cp-mark {
+  display: inline-flex;
+  align-items: flex-end;
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cp-mark .cp-sub {
+  font-size: 1em;            /* full size */
+  transform: translateY(0.18em);
+}
+
 /* Results form */
 .results-form {
   max-width: 720px;
@@ -552,11 +548,6 @@ footer {
   .board-header,
   .board-row {
     grid-template-columns: 1.8fr 1fr 1.1fr;
-  }
-
-  .section-title::before,
-  .section-title::after {
-    width: 24px;
   }
 
   /* Start the text much closer to the photo on mobile */
