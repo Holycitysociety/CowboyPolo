@@ -76,10 +76,10 @@ const cowboyWalletTheme = darkTheme({
 //  - speed: how aggressively it eases back to 1x
 //  - finishFactor: >1 means "finish zooming earlier" than original
 //
-// Original mapping we had:
+// Original mapping:
 //   total = vh + rect.height
 //   raw = (vh - rect.top) / total  → rect.top: vh → -height  ⇒ raw: 0 → 1
-// Now we do raw * finishFactor so 1 is hit sooner.
+// We now do raw * finishFactor so 1 is hit sooner.
 // ---------------------------------------------
 function ParallaxBand({
   src,
@@ -87,7 +87,7 @@ function ParallaxBand({
   first = false,
   zoom = 3.5,
   speed = 4,
-  finishFactor = 1.5, // try 1.5–2.0 to finish earlier; 1 = original "too late"
+  finishFactor = 2, // was 1.5; bumped another +0.5 as requested
 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
@@ -101,7 +101,7 @@ function ParallaxBand({
       const rect = bandRef.current.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // Original path: from just entering bottom to fully off top
+      // Original full path: from entering bottom to fully off top
       const total = vh + rect.height;
       let raw = (vh - rect.top) / total;
 
@@ -365,7 +365,7 @@ export default function App() {
         first
         zoom={3.5}
         speed={4}
-        finishFactor={1.5}
+        finishFactor={2}
       >
         {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
@@ -420,7 +420,7 @@ export default function App() {
         src="/images/cowboy-2.jpeg"
         zoom={3.5}
         speed={4}
-        finishFactor={1.5}
+        finishFactor={2}
       >
         {/* PLAYER LEADERBOARD (GATED) */}
         <section id="players" className="band-section">
@@ -554,7 +554,7 @@ export default function App() {
         src="/images/cowboy-3.jpeg"
         zoom={3.8}
         speed={4}
-        finishFactor={1.5}
+        finishFactor={2}
       >
         {/* HORSE & REMUDA SECTION (GATED) */}
         <section id="horses" className="band-section">
