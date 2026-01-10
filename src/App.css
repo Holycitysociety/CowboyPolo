@@ -35,74 +35,45 @@ body {
 }
 
 /* -----------------------------
-   Pan-scene (photo + overlay text)
+   Cinematic pan-on-scroll frames
    ----------------------------- */
 
-.pan-scene {
+.pan-frame {
+  height: 220vh; /* extra scroll room for the pan */
   position: relative;
   background: #000;
-  margin-top: var(--section-gap);
 }
 
-.pan-scene-first {
-  margin-top: 20px;
-}
-
-.pan-scene-media {
+.pan-frame-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
-  max-width: var(--max-width); /* constrain image zone to content width */
-  margin: 0 auto;
   overflow: hidden;
   background: #000;
-  z-index: 0;
 }
 
-.pan-scene-img {
+.pan-frame-img {
   height: 100%;
   width: auto;
   display: block;
-  margin: 0 auto;
   transform: translate3d(0, 0, 0);
   will-change: transform;
+  margin: 0 auto;
 }
 
-.pan-scene-vignette {
+.pan-frame-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.7) 0, transparent 40%),
-    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.9) 0, transparent 45%),
+    radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.7) 0, transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.8) 0, transparent 45%),
     linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0.96),
-      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0.1) 30%,
       rgba(0, 0, 0, 0.96)
     );
-}
-
-.pan-scene-content {
-  position: relative;
-  z-index: 2;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 18px 72px;
-  /* This is the "black gap" — text starts after one viewport of image */
-  margin-top: 100vh;
-}
-
-/* Strong shadow so text stays readable over photo */
-.pan-scene .section-title,
-.pan-scene .section-kicker,
-.pan-scene .board-title,
-.pan-scene .board-sub,
-.pan-scene .board-header,
-.pan-scene .board-row {
-  text-shadow:
-    0 2px 16px rgba(0, 0, 0, 0.95),
-    0 0 4px rgba(0, 0, 0, 0.95);
 }
 
 /* -----------------------------
@@ -250,7 +221,7 @@ body {
 
 .btn {
   display: inline-flex;
-  justifyContent: center;
+  justify-content: center;
   align-items: center;
   padding: 12px 28px;
   border-radius: 999px;
@@ -535,6 +506,10 @@ footer {
     padding-right: 12px;
   }
 
+  .pan-frame {
+    height: 200vh; /* slightly shorter pan on small screens */
+  }
+
   .board-header,
   .board-row {
     grid-template-columns: 1.8fr 1fr 1.1fr;
@@ -543,10 +518,5 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
-  }
-
-  .pan-scene-content {
-    margin-top: 90vh; /* slightly tighter on small screens */
-    padding-bottom: 56px;
   }
 }
