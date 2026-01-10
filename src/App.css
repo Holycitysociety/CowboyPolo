@@ -6,15 +6,20 @@
   --border: #333333;
   --accent: #ffffff;
   --max-width: 900px;
-  --section-gap: 60px;
+  --section-gap: 20px;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  overflow-x: hidden;
+}
+
+body {
   background: var(--bg);
   color: var(--fg);
   font-family: "EB Garamond", serif;
@@ -30,45 +35,93 @@ body {
 /* Full-bleed helper for 100vw bands inside centered page */
 .full-bleed {
   width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
+  width: 100dvw;
+  margin-left: calc(50% - 50vw);
+  margin-left: calc(50% - 50dvw);
+  transform: none;
 }
 
 /* -----------------------------
-   Zoom-out photo frames
+   Zoom photo bands
    ----------------------------- */
 
-.zoom-frame {
+.parallax-band {
   position: relative;
-  min-height: 90vh;
-  background: #000;
   overflow: hidden;
-  margin: calc(var(--section-gap) * 0.75) 0;
+  background: #000;
+  margin-top: var(--section-gap);
 }
 
-/* The image starts zoomed in; JS animates scale down to 1 */
-.zoom-img {
+/* First band sits tight under hero */
+.parallax-band-first {
+  margin-top: 0;
+}
+
+/* Image layer */
+.parallax-media {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 0;
+}
+
+/* Zoomed image: start centered & large, JS updates transform scale() */
+.parallax-img {
   position: absolute;
   left: 50%;
   top: 50%;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transform: translate(-50%, -50%) scale(3.5);
+  object-position: 50% 50%;
+  transform: translate3d(-50%, -50%, 0) scale(3.5);
+  transform-origin: 50% 50%;
   will-change: transform;
   pointer-events: none;
   user-select: none;
 }
 
-/* Soft edge into black */
-.zoom-vignette {
+/* Feather edges into black; darker at bottom for the “gap” */
+.parallax-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 10% 0%, rgba(0, 0, 0, 0.7), transparent 55%),
-    radial-gradient(circle at 90% 0%, rgba(0, 0, 0, 0.85), transparent 60%),
-    linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 28%, rgba(0, 0, 0, 1));
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.98) 0%,
+      rgba(0, 0, 0, 0.1) 25%,
+      rgba(0, 0, 0, 0.15) 55%,
+      rgba(0, 0, 0, 0.96) 100%
+    );
+}
+
+/* Content in the band:
+   big empty space at top so photo is seen before text */
+.parallax-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 18px clamp(48px, 7vh, 96px);
+  padding-top: calc(100vh + clamp(24px, 4vh, 56px));
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* Inside bands we don't want extra top margin */
+.band-section {
+  margin-top: 0;
+}
+
+/* Strong text shadow on light text over photos */
+.parallax-band .section-title,
+.parallax-band .section-kicker,
+.parallax-band .board-title,
+.parallax-band .board-sub,
+.parallax-band .board-header,
+.parallax-band .board-row {
+  text-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.95),
+    0 0 4px rgba(0, 0, 0, 0.95);
 }
 
 /* -----------------------------
@@ -501,11 +554,6 @@ footer {
     padding-right: 12px;
   }
 
-  .zoom-frame {
-    min-height: 80vh;
-    margin: 40px 0;
-  }
-
   .board-header,
   .board-row {
     grid-template-columns: 1.8fr 1fr 1.1fr;
@@ -514,5 +562,18 @@ footer {
   .section-title::before,
   .section-title::after {
     width: 24px;
+  }
+
+  /* On mobile: show full photo, then text starts lower */
+  .parallax-content {
+    padding-top: clamp(260px, 65vh, 260px);
+  }
+
+  .parallax-band-first {
+    margin-top: 0;
+  }
+
+  .parallax-band-first .parallax-img {
+    top: 50%;
   }
 }
