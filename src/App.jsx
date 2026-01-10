@@ -75,11 +75,6 @@ const cowboyWalletTheme = darkTheme({
 //  - zoom: starting zoom (e.g. 3.5 = 3.5x)
 //  - speed: how aggressively it eases back to 1x
 //  - finishFactor: >1 = finish zooming earlier vs original
-//
-// Original mapping:
-//   total = vh + rect.height
-//   raw = (vh - rect.top) / total  → rect.top: vh → -height  ⇒ raw: 0 → 1
-// We now do raw * finishFactor so 1 is hit sooner.
 // ---------------------------------------------
 function ParallaxBand({
   src,
@@ -87,7 +82,7 @@ function ParallaxBand({
   first = false,
   zoom = 3.5,
   speed = 4,
-  finishFactor = 2, // this is what you liked
+  finishFactor = 2, // this is the “epic” tuning you liked
 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
@@ -102,17 +97,14 @@ function ParallaxBand({
       const vh = window.innerHeight || 1;
 
       const total = vh + rect.height;
-      let raw = (vh - rect.top) / total;
+      let raw = (vh - rect.top) / total; // 0 → 1 as band moves through view
 
       // Finish earlier across the same scroll span
       raw *= finishFactor;
 
       const progress = Math.min(1, Math.max(0, raw));
 
-      // Speed as an easing exponent:
-      //  - speed < 1  = stays zoomed in longer
-      //  - speed = 1  = linear
-      //  - speed > 1  = zooms out faster near the end
+      // Speed as easing exponent:
       const eased = Math.pow(progress, speed);
 
       const minZoom = 1;
@@ -151,7 +143,6 @@ function ParallaxBand({
         <div className="parallax-vignette" />
       </div>
 
-      {/* Restore children inside band so height + layout are correct */}
       <div className="parallax-content">{children}</div>
     </div>
   );
@@ -445,9 +436,7 @@ export default function App() {
                   position: "absolute",
                   inset: 0,
                   zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
+                  background: "rgba(0,0,0,0.35)",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -584,9 +573,7 @@ export default function App() {
                   position: "absolute",
                   inset: 0,
                   zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
+                  background: "rgba(0,0,0,0.35)",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -713,9 +700,7 @@ export default function App() {
                 position: "absolute",
                 inset: 0,
                 zIndex: 50,
-                background: "rgba(0,0,0,0.25)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
+                background: "rgba(0,0,0,0.35)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
