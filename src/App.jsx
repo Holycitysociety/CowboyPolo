@@ -75,10 +75,14 @@ const cowboyWalletTheme = darkTheme({
 //  - zoom: starting zoom (e.g. 3.5 = 3.5x)
 //  - speed: how aggressively it eases back to 1x
 //  - finishFactor: >1 means "finish zooming earlier" than original
+//
+// Original mapping:
+//   total = vh + rect.height
+//   raw = (vh - rect.top) / total  → rect.top: vh → -height  ⇒ raw: 0 → 1
+// We now do raw * finishFactor so 1 is hit sooner.
 // ---------------------------------------------
 function ParallaxBand({
   src,
-  children,
   first = false,
   zoom = 3.5,
   speed = 4,
@@ -96,17 +100,18 @@ function ParallaxBand({
       const rect = bandRef.current.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // Original full journey: from fully entering bottom (rect.top ~ vh)
-      // until totally off the top (rect.top ~ -rect.height)
       const total = vh + rect.height;
       let raw = (vh - rect.top) / total;
 
-      // Finish earlier by scaling
+      // Finish earlier across the same scroll span
       raw *= finishFactor;
 
       const progress = Math.min(1, Math.max(0, raw));
 
-      // Easing exponent
+      // Speed as an easing exponent:
+      //  - speed < 1  = stays zoomed in longer
+      //  - speed = 1  = linear
+      //  - speed > 1  = zooms out faster near the end
       const eased = Math.pow(progress, speed);
 
       const minZoom = 1;
@@ -143,11 +148,6 @@ function ParallaxBand({
       <div className="parallax-media" aria-hidden="true">
         <img ref={imgRef} className="parallax-img" src={src} alt="" />
         <div className="parallax-vignette" />
-      </div>
-
-      {/* Only titles / labels overlap the bottom of the photo */}
-      <div className="parallax-content parallax-content-bottom">
-        {children}
       </div>
     </div>
   );
@@ -355,22 +355,25 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 1 – FORMAT TITLE ONLY */}
+      {/* ======================================= */}
+      {/* PHOTO BAND 1                          */}
+      {/* ======================================= */}
       <ParallaxBand
         src="/images/cowboy-1.jpeg"
         first
         zoom={3.5}
         speed={4}
         finishFactor={2}
-      >
-        <div className="band-label">
+      />
+
+      {/* ABOUT / HOW IT FUNCTIONS (now after photo) */}
+      <section id="about" ref={roadmapGateRef} className="band-section">
+        <div className="section-header">
           <div className="section-kicker">THE FORMAT</div>
           <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
+          <div className="section-rule" />
         </div>
-      </ParallaxBand>
 
-      {/* ABOUT TEXT BELOW PHOTO 1 */}
-      <section id="about" ref={roadmapGateRef} className="band-section">
         <div className="section-body">
           <p>
             The Cowboy Polo Circuit is a national development league for
@@ -380,25 +383,24 @@ export default function App() {
           <p>
             Games are played 3 on 3 in arenas or campitos. The key is that a
             player does not need a full string to attract patrons: a rider can
-            progress by playing as little as one chukker, on one good horse,
-            and still build a real Circuit handicap.
+            progress by playing as little as one chukker, on one good horse, and
+            still build a real Circuit handicap.
           </p>
           <p>
-            Cowboy Polo chukkers can be hosted by any stable, arena, or
-            program that signs on to the Circuit. A local coach, instructor,
-            or appointed captains run the game, then submit the chukker sheet
+            Cowboy Polo chukkers can be hosted by any stable, arena, or program
+            that signs on to the Circuit. A local coach, instructor, or
+            appointed captains run the game, then submit the chukker sheet
             feeding two tables: the individual handicap table for each rider,
             and the game results table for teams.
           </p>
           <p>
-            Each sanctioned chukker updates both sides of the story: how
-            riders are rated, and how their teams are performing.
+            Each sanctioned chukker updates both sides of the story: how riders
+            are rated, and how their teams are performing.
           </p>
           <p>
             Over the course of a Circuit season, those two tables are the
-            backbone of the standings: player handicaps and team records
-            (wins, losses, goal difference) together define how the season is
-            read.
+            backbone of the standings: player handicaps and team records (wins,
+            losses, goal difference) together define how the season is read.
           </p>
           <p>
             Local chapters also feed into{" "}
@@ -410,21 +412,24 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 2 – PLAYER TITLE ONLY */}
+      {/* ======================================= */}
+      {/* PHOTO BAND 2                          */}
+      {/* ======================================= */}
       <ParallaxBand
         src="/images/cowboy-2.jpeg"
         zoom={3.5}
         speed={4}
         finishFactor={2}
-      >
-        <div className="band-label">
+      />
+
+      {/* PLAYER LEADERBOARD (GATED, after photo) */}
+      <section id="players" className="band-section">
+        <div className="section-header">
           <div className="section-kicker">PLAYER STANDINGS</div>
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
+          <div className="section-rule" />
         </div>
-      </ParallaxBand>
 
-      {/* PLAYER TEXT + TABLE BELOW PHOTO 2 (GATED) */}
-      <section id="players" className="band-section">
         <div
           style={{
             position: "relative",
@@ -470,8 +475,8 @@ export default function App() {
                     color: "#f5eedc",
                   }}
                 >
-                  Sign into your Patron Wallet to view live rider handicaps
-                  and Circuit tables.
+                  Sign into your Patron Wallet to view live rider handicaps and
+                  Circuit tables.
                 </div>
               </div>
             </div>
@@ -480,16 +485,16 @@ export default function App() {
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
-                Player handicaps in the Cowboy Polo Circuit are not just
-                static numbers. Each rider’s Cowboy Polo handicap is a
-                statistically calculated, ELO-style rating, updated after
-                every sanctioned chukker and displayed to two decimal places.
+                Player handicaps in the Cowboy Polo Circuit are not just static
+                numbers. Each rider’s Cowboy Polo handicap is a statistically
+                calculated, ELO-style rating, updated after every sanctioned
+                chukker and displayed to two decimal places.
               </p>
               <p>
-                Ratings move with performance over time: goals scored,
-                assists, ride-offs won, and overall impact on the match all
-                feed the same underlying score. The table below shows how a
-                leaderboard might appear during mid-season.
+                Ratings move with performance over time: goals scored, assists,
+                ride-offs won, and overall impact on the match all feed the same
+                underlying score. The table below shows how a leaderboard might
+                appear during mid-season.
               </p>
             </div>
 
@@ -543,14 +548,19 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 3 – HORSE TITLE ONLY */}
+      {/* ======================================= */}
+      {/* PHOTO BAND 3                          */}
+      {/* ======================================= */}
       <ParallaxBand
         src="/images/cowboy-3.jpeg"
         zoom={3.8}
         speed={4}
         finishFactor={2}
-      >
-        <div className="band-label">
+      />
+
+      {/* HORSE & REMUDA SECTION (GATED, after photo) */}
+      <section id="horses" className="band-section">
+        <div className="section-header">
           <div className="section-kicker">
             <div className="three-sevens-mark">
               <div className="three-sevens-numeral">7̶7̶7̶</div>
@@ -558,11 +568,9 @@ export default function App() {
             </div>
           </div>
           <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
+          <div className="section-rule" />
         </div>
-      </ParallaxBand>
 
-      {/* HORSE / REMUDA TEXT + TABLE BELOW PHOTO 3 (GATED) */}
-      <section id="horses" className="band-section">
         <div
           style={{
             position: "relative",
@@ -608,8 +616,8 @@ export default function App() {
                     color: "#f5eedc",
                   }}
                 >
-                  Sign into your Patron Wallet to view tracked horses and
-                  Remuda performance.
+                  Sign into your Patron Wallet to view tracked horses and Remuda
+                  performance.
                 </div>
               </div>
             </div>
@@ -624,10 +632,10 @@ export default function App() {
               </p>
               <p>
                 Every sanctioned appearance adds to a horse’s trace: chukkers
-                played, riders carried, contribution to wins, and awards
-                earned across chapters and seasons. The same horse might be
-                bred in one place, started by another, developed by a pro,
-                and later carry juniors and patrons.
+                played, riders carried, contribution to wins, and awards earned
+                across chapters and seasons. The same horse might be bred in one
+                place, started by another, developed by a pro, and later carry
+                juniors and patrons.
               </p>
               <p>
                 By keeping a single, living record for each Remuda horse,
@@ -636,9 +644,9 @@ export default function App() {
               </p>
               <p>
                 Over time, those records can be linked into the Patronium
-                ecosystem so that the people who helped bring a horse along
-                its path can participate in its economic story, not only its
-                final ownership.
+                ecosystem so that the people who helped bring a horse along its
+                path can participate in its economic story, not only its final
+                ownership.
               </p>
             </div>
 
@@ -680,257 +688,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-      {/* WALLET MODAL */}
-      {isWalletOpen && (
-        <div
-          className="wallet-modal-backdrop"
-          onClick={closeWallet}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.86)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-            padding: "14px",
-          }}
-        >
-          <div style={{ width: "100%", maxWidth: "380px" }}>
-            <div
-              ref={walletScrollRef}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                width: "100%",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                border: "1px solid #3a2b16",
-                borderRadius: "14px",
-                padding: "16px",
-                paddingTop: "26px",
-                background: "#050505",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.85)",
-                fontFamily:
-                  '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-                color: "#f5eedc",
-                fontSize: "13px",
-                position: "relative",
-              }}
-            >
-              {/* Modal header */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "8px",
-                  position: "relative",
-                  paddingTop: "4px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "18px",
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    lineHeight: 1.1,
-                  }}
-                >
-                  PATRON WALLET
-                </div>
-
-                <button
-                  onClick={closeWallet}
-                  aria-label="Close wallet"
-                  title="Close"
-                  style={{
-                    position: "absolute",
-                    right: 0,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "56px",
-                    height: "56px",
-                    border: "none",
-                    background: "transparent",
-                    color: "#e3bf72",
-                    fontSize: "38px",
-                    lineHeight: 1,
-                    cursor: "pointer",
-                    padding: 0,
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-
-              {/* Explanatory copy under title (ONLY when not signed in) */}
-              {!account && (
-                <p
-                  style={{
-                    margin: "0 0 14px",
-                    fontSize: "12px",
-                    lineHeight: 1.5,
-                    textAlign: "center",
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: "#dec89a",
-                  }}
-                >
-                  Sign up with your email to create your Cowboy Polo Patron
-                  Wallet. After you sign in, you&apos;ll receive an email with
-                  the Cowboy Polo Circuit signup details.
-                </p>
-              )}
-
-              {/* Connect or account view */}
-              {!account ? (
-                <div style={{ marginBottom: "14px" }}>
-                  <ConnectEmbed
-                    client={client}
-                    wallets={wallets}
-                    chain={BASE}
-                    theme={cowboyWalletTheme}
-                  />
-                </div>
-              ) : (
-                <div style={{ marginBottom: "14px", textAlign: "center" }}>
-                  {/* Address + copy */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 8,
-                      marginBottom: "10px",
-                      marginTop: "2px",
-                    }}
-                  >
-                    <div style={{ fontFamily: "monospace", fontSize: "13px" }}>
-                      {shortAddress}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleCopyAddress}
-                      style={{
-                        border: "none",
-                        background: "transparent",
-                        color: "#e3bf72",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                      }}
-                      aria-label="Copy wallet address"
-                    >
-                      📋
-                    </button>
-                  </div>
-
-                  {/* Balances */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "28px",
-                      marginBottom: "10px",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "#9f8a64",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        Gas
-                      </div>
-                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                        {baseBalance?.displayValue || "0"}{" "}
-                        {baseBalance?.symbol || "ETH"}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "#9f8a64",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        USDC
-                      </div>
-                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                        {usdcBalance?.displayValue || "0"}{" "}
-                        {usdcBalance?.symbol || "USDC"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: "12px" }}>
-                    <div
-                      style={{
-                        fontSize: "10px",
-                        letterSpacing: "0.18em",
-                        textTransform: "uppercase",
-                        color: "#c7b08a",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      Patronium Balance
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "18px",
-                        letterSpacing: "0.02em",
-                        color: "#f5eedc",
-                      }}
-                    >
-                      {patronBalance?.displayValue || "0"}{" "}
-                      {patronBalance?.symbol || "PATRON"}
-                    </div>
-                  </div>
-
-                  <button
-                    className="btn btn-outline"
-                    style={{
-                      minWidth: "auto",
-                      padding: "6px 18px",
-                      fontSize: "11px",
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                    }}
-                    onClick={handleSignOut}
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              )}
-
-              {/* Small note */}
-              <p
-                style={{
-                  marginTop: "10px",
-                  fontSize: "11px",
-                  lineHeight: 1.5,
-                  color: "#c7b08a",
-                  textAlign: "center",
-                }}
-              >
-                This Patron Wallet works across the Cowboy Polo Circuit and the
-                Polo Patronium site on Base.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* RESULTS / NETLIFY FORM (GATED) */}
       <section id="results">
