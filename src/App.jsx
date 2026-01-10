@@ -80,7 +80,7 @@ function ParallaxBand({
   src,
   children,
   first = false,
-  zoom = 3.5,
+  zoom = 10,
   speed = .5,
   finishFactor = 2, // tuned so zoom-out feels right
 }) {
@@ -360,7 +360,7 @@ export default function App() {
       <ParallaxBand
         src="/images/cowboy-1.jpeg"
         first
-        zoom={3.5}
+        zoom={10}
         speed={.5}
         finishFactor={2}
       />
@@ -423,7 +423,7 @@ export default function App() {
       {/* PHOTO BAND 2 (image only) */}
       <ParallaxBand
         src="/images/cowboy-2.jpeg"
-        zoom={3.5}
+        zoom={10}
         speed={.5}
         finishFactor={2}
       />
@@ -562,7 +562,7 @@ export default function App() {
       {/* PHOTO BAND 3 (image only) */}
       <ParallaxBand
         src="/images/cowboy-3.jpeg"
-        zoom={3.8}
+        zoom={10}
         speed={.5}
         finishFactor={2}
       />
