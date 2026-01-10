@@ -52,6 +52,8 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  max-width: var(--max-width); /* constrain image zone to content width */
+  margin: 0 auto;
   overflow: hidden;
   background: #000;
   z-index: 0;
@@ -248,7 +250,7 @@ body {
 
 .btn {
   display: inline-flex;
-  justify-content: center;
+  justifyContent: center;
   align-items: center;
   padding: 12px 28px;
   border-radius: 999px;
