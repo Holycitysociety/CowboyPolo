@@ -6,20 +6,15 @@
   --border: #333333;
   --accent: #ffffff;
   --max-width: 900px;
-  --section-gap: 20px;
+  --section-gap: 40px;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html,
 body {
   margin: 0;
-  overflow-x: hidden;
-}
-
-body {
   background: var(--bg);
   color: var(--fg);
   font-family: "EB Garamond", serif;
@@ -35,14 +30,12 @@ body {
 /* Full-bleed helper for 100vw bands inside centered page */
 .full-bleed {
   width: 100vw;
-  width: 100dvw;
-  margin-left: calc(50% - 50vw);
-  margin-left: calc(50% - 50dvw);
-  transform: none;
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 
 /* -----------------------------
-   Zoom photo bands
+   Parallax photo bands
    ----------------------------- */
 
 .parallax-band {
@@ -52,9 +45,14 @@ body {
   margin-top: var(--section-gap);
 }
 
-/* First band sits tight under hero */
+/* Extra gap only between photo bands (not above the first one) */
+.parallax-band + .parallax-band {
+  margin-top: calc(var(--section-gap) * 2);
+}
+
+/* Give the first band a tighter link to the hero */
 .parallax-band-first {
-  margin-top: 0;
+  margin-top: 0px;
 }
 
 /* Image layer */
@@ -65,7 +63,7 @@ body {
   z-index: 0;
 }
 
-/* Zoomed image: start centered & large, JS updates transform scale() */
+/* No cropping — keep entire photo */
 .parallax-img {
   position: absolute;
   left: 50%;
@@ -73,15 +71,13 @@ body {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: 50% 50%;
-  transform: translate3d(-50%, -50%, 0) scale(3.5);
-  transform-origin: 50% 50%;
+  transform: translate3d(-50%, -50%, 0);
   will-change: transform;
   pointer-events: none;
   user-select: none;
 }
 
-/* Feather edges into black; darker at bottom for the “gap” */
+/* Feather edges into black; lighter through the middle so the subject reads */
 .parallax-vignette {
   position: absolute;
   inset: 0;
@@ -89,15 +85,18 @@ body {
   background:
     linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.98) 0%,
-      rgba(0, 0, 0, 0.1) 25%,
-      rgba(0, 0, 0, 0.15) 55%,
-      rgba(0, 0, 0, 0.96) 100%
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.35) 10%,
+      rgba(0, 0, 0, 0.05) 35%,
+      rgba(0, 0, 0, 0.05) 65%,
+      rgba(0, 0, 0, 0.35) 90%,
+      rgba(0, 0, 0, 0.9) 100%
     );
 }
 
 /* Content in the band:
-   big empty space at top so photo is seen before text */
+   - big empty space at top (100vh) so photo is seen first on desktop
+   - then text rides over the darker lower part of the band */
 .parallax-content {
   position: relative;
   z-index: 2;
@@ -107,7 +106,7 @@ body {
   margin: 0 auto;
 }
 
-/* Inside bands we don't want extra top margin */
+/* Inside parallax bands we don't want extra top section margin */
 .band-section {
   margin-top: 0;
 }
@@ -120,8 +119,8 @@ body {
 .parallax-band .board-header,
 .parallax-band .board-row {
   text-shadow:
-    0 2px 16px rgba(0, 0, 0, 0.95),
-    0 0 4px rgba(0, 0, 0, 0.95);
+    0 2px 16px rgba(0,0,0,0.95),
+    0 0 4px rgba(0,0,0,0.95);
 }
 
 /* -----------------------------
@@ -253,7 +252,7 @@ body {
 .hero-cta-row {
   margin-top: 32px;
   display: flex;
-  justify-content: center;
+  justifyContent: center;
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -564,16 +563,19 @@ footer {
     width: 24px;
   }
 
-  /* On mobile: show full photo, then text starts lower */
+  /* On mobile, start the text lower so photo is fully read first */
   .parallax-content {
     padding-top: clamp(260px, 65vh, 260px);
   }
 
+  /* First band: no big gap above first photo */
   .parallax-band-first {
-    margin-top: 0;
+    margin-top: 0px;
   }
 
+  /* Center the first photo nicely on mobile */
   .parallax-band-first .parallax-img {
     top: 50%;
+    transform: translate3d(-50%, -50%, 0);
   }
 }
