@@ -687,7 +687,7 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Sundance</span>
-                <span>7̶7̶7̶</span>
+                <span>CP</span>
                 <span>88</span>
               </div>
               <div className="board-row">
