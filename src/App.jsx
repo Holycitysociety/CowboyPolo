@@ -34,6 +34,7 @@ const wallets = [
 
 // ---------------------------------------------
 // Shared Patron Wallet / Checkout theme
+// (same spec as USPOLOPATRONS & PoloPatronium)
 // ---------------------------------------------
 const patronCheckoutTheme = darkTheme({
   fontFamily:
@@ -175,39 +176,6 @@ function ParallaxBand({
 }
 
 // ---------------------------------------------
-// Standard USPPA-style gate overlay
-// ---------------------------------------------
-function GateOverlay({ onClick, copy }) {
-  const text =
-    copy ||
-    "This section and everything below is reserved for signed-in patrons. Tap here to open the Cowboy Polo Circuit Patron Wallet.";
-
-  return (
-    <div
-      className="gate-overlay"
-      onClick={onClick}
-      role="button"
-      aria-label="Sign in required to continue"
-    >
-      <div className="gate-card">
-        <div className="gate-kicker">PATRON WALLET REQUIRED</div>
-        <div className="gate-title">SIGN IN TO CONTINUE</div>
-        <p className="gate-copy">{text}</p>
-        <div className="gate-cta">
-          <button
-            type="button"
-            className="btn btn-outline"
-            onClick={onClick}
-          >
-            OPEN PATRON WALLET
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------
 // Main App
 // ---------------------------------------------
 export default function App() {
@@ -275,7 +243,7 @@ export default function App() {
     }
   };
 
-  // Checkout amount as number
+  // ✅ CheckoutWidget amount expects a NUMBER (not a string)
   const normalizedAmountNumber =
     usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
 
@@ -542,8 +510,56 @@ export default function App() {
           <div className="section-rule" />
         </div>
 
-        <div className="gate-zone" style={{ marginTop: "20px" }}>
-          {!isConnected && <GateOverlay onClick={openWallet} />}
+        <div
+          style={{
+            position: "relative",
+            marginTop: "20px",
+          }}
+        >
+          {!isConnected && (
+            <div
+              onClick={openWallet}
+              aria-label="Sign in required to view rider standings"
+              role="button"
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 50,
+                background: "rgba(0, 0, 0, 1)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "22px",
+                textAlign: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "8px",
+                  }}
+                >
+                  COWBOY POLO CIRCUIT STANDINGS
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: 1.6,
+                    color: "#f5eedc",
+                  }}
+                >
+                  Sign into your Patron Wallet to view live rider handicaps and
+                  Circuit tables.
+                </div>
+              </div>
+            </div>
+          )}
+
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
@@ -638,8 +654,56 @@ export default function App() {
         <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
         <div className="section-rule" />
 
-        <div className="gate-zone" style={{ marginTop: "20px" }}>
-          {!isConnected && <GateOverlay onClick={openWallet} />}
+        <div
+          style={{
+            position: "relative",
+            marginTop: "20px",
+          }}
+        >
+          {!isConnected && (
+            <div
+              onClick={openWallet}
+              aria-label="Sign in required to view Remuda tables"
+              role="button"
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 50,
+                background: "rgba(0, 0, 0, 1)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "22px",
+                textAlign: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "8px",
+                  }}
+                >
+                  REMUDA &amp; HORSE PERFORMANCE
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: 1.6,
+                    color: "#f5eedc",
+                  }}
+                >
+                  Sign into your Patron Wallet to view tracked horses and Remuda
+                  performance.
+                </div>
+              </div>
+            </div>
+          )}
+
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
@@ -699,13 +763,7 @@ export default function App() {
               <div className="board-row">
                 <span>River Scout</span>
                 <span>
-                  C
-                  <span
-                    style={{
-                      fontSize: "0.75em",
-                      verticalAlign: "sub",
-                    }}
-                  >
+                  C<span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>
                     P
                   </span>
                 </span>
@@ -892,7 +950,7 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* Balances */}
+                  {/* Gas + USDC */}
                   <div
                     style={{
                       display: "flex",
@@ -939,6 +997,7 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* Patron balance */}
                   <div style={{ marginBottom: "12px" }}>
                     <div
                       style={{
@@ -979,7 +1038,7 @@ export default function App() {
                 </div>
               )}
 
-              {/* Amount + Checkout */}
+              {/* Amount + Checkout (disabled visually until connected) */}
               <div style={{ position: "relative" }}>
                 {!isConnected && (
                   <button
@@ -1093,8 +1152,56 @@ export default function App() {
           <div className="section-rule" />
         </div>
 
-        <div className="gate-zone" style={{ marginTop: "20px" }}>
-          {!isConnected && <GateOverlay onClick={openWallet} />}
+        <div
+          style={{
+            position: "relative",
+            marginTop: "20px",
+          }}
+        >
+          {!isConnected && (
+            <div
+              onClick={openWallet}
+              aria-label="Sign in required to submit or view results"
+              role="button"
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 50,
+                background: "rgba(0, 0, 0, 1)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "22px",
+                textAlign: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "8px",
+                  }}
+                >
+                  CIRCUIT RESULTS
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: 1.6,
+                    color: "#f5eedc",
+                  }}
+                >
+                  Sign into your Patron Wallet to submit official chukker
+                  results and season records.
+                </div>
+              </div>
+            </div>
+          )}
+
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
