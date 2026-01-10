@@ -558,7 +558,7 @@ footer {
 
   /* On mobile, don't push text a full 100vh down; let it appear sooner */
   .parallax-content {
-    padding-top: clamp(30px, 10vh, 50px);
+    padding-top: clamp(100px, 10vh, 100px);
   }
 
   /* First band: kill the feeling of a huge gap before the first photo */
