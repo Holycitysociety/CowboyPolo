@@ -75,7 +75,7 @@ const cowboyWalletTheme = darkTheme({
 //  - zoom: starting zoom (e.g. 3.5 = 3.5x)
 //  - speed: how aggressively it eases back to 1x
 // ---------------------------------------------
-function ParallaxBand({ src, children, first = false, zoom = 3.5, speed = 4 }) {
+function ParallaxBand({ src, children, first = false, zoom = 1.5, speed = 4 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -343,7 +343,7 @@ export default function App() {
       </section>
 
       {/* PHOTO BAND 1 + ABOUT TEXT */}
-      <ParallaxBand src="/images/cowboy-1.jpeg" first zoom={3.5} speed={4}>
+      <ParallaxBand src="/images/cowboy-1.jpeg" first zoom={1.5} speed={4}>
         {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
@@ -393,7 +393,7 @@ export default function App() {
       </ParallaxBand>
 
       {/* PHOTO BAND 2 + PLAYER TABLES */}
-      <ParallaxBand src="/images/cowboy-2.jpeg" zoom={3.5} speed={4}>
+      <ParallaxBand src="/images/cowboy-2.jpeg" zoom={1.5} speed={4}>
         {/* PLAYER LEADERBOARD (GATED) */}
         <section id="players" className="band-section">
           <div className="section-header">
@@ -522,7 +522,7 @@ export default function App() {
       </ParallaxBand>
 
       {/* PHOTO BAND 3 + HORSE / REMUDA */}
-      <ParallaxBand src="/images/cowboy-3.jpeg" zoom={3.8} speed={4}>
+      <ParallaxBand src="/images/cowboy-3.jpeg" zoom={1.8} speed={4}>
         {/* HORSE & REMUDA SECTION (GATED) */}
         <section id="horses" className="band-section">
           <div className="section-header">
