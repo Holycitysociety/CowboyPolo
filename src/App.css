@@ -559,9 +559,9 @@ footer {
     width: 24px;
   }
 
-  /* Start the text VERY close to the photo on mobile */
+  /* Start the text much closer to the photo on mobile */
   .parallax-content {
-    padding-top: calc(15vh + 24px);
+    padding-top: calc(35vh + 24px);
     padding-bottom: 64px;
   }
 
