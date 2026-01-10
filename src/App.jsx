@@ -456,7 +456,7 @@ export default function App() {
                 position: "absolute",
                 inset: 0,
                 zIndex: 50,
-                background: "rgba(0, 0, 0, 0.6)", // stronger dark overlay, no blur
+                background: "rgba(0, 0, 0, 1)", // stronger dark overlay, no blur
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -600,7 +600,7 @@ export default function App() {
                 position: "absolute",
                 inset: 0,
                 zIndex: 50,
-                background: "rgba(0, 0, 0, 0.6)", // stronger dark overlay, no blur
+                background: "rgba(0, 0, 0, 1)", // stronger dark overlay, no blur
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -977,7 +977,7 @@ export default function App() {
                 position: "absolute",
                 inset: 0,
                 zIndex: 50,
-                background: "rgba(0, 0, 0, 0.6)", // stronger dark overlay, no blur
+                background: "rgba(0, 0, 0, 1)", // stronger dark overlay, no blur
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
