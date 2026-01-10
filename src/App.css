@@ -1,572 +1,457 @@
-:root {
-  --bg: #000000;
-  --fg: #ffffff;
-  --muted: #c7c7c7;
-  --ink: #111111;
-  --border: #333333;
-  --accent: #ffffff;
-  --max-width: 900px;
+/* ---------------------------------------
+   Base + layout
+--------------------------------------- */
 
-  /* vertical spacing between parallax bands + sections */
-  --section-gap: 56px;
-}
-
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
+:root {
+  --bg: #050505;
+  --ink: #f5eedc;
+  --muted: #c7b08a;
+  --line: rgba(246, 241, 230, 0.16);
+  --gold: #e3bf72;
+  --panel: #0b0907;
+}
+
+html,
 body {
   margin: 0;
+  padding: 0;
+  min-height: 100%;
   background: var(--bg);
-  color: var(--fg);
-  font-family: "EB Garamond", serif;
-  line-height: 1.65;
+  color: var(--ink);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
 }
 
 .page {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 36px 18px 96px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #18120c 0, #050505 52%, #000 100%);
+  color: var(--ink);
 }
 
-/* Full-bleed helper for 100vw bands inside centered page */
-.full-bleed {
-  width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
+/* ---------------------------------------
+   Buttons
+--------------------------------------- */
+
+.btn {
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  padding: 8px 22px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
 }
 
-/* -----------------------------
-   Parallax / zoom photo bands
-   ----------------------------- */
+.btn-primary {
+  background: var(--gold);
+  color: #181210;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--gold);
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+/* ---------------------------------------
+   Hero poster
+--------------------------------------- */
+
+.hero {
+  padding: 32px 18px 40px;
+  text-align: center;
+  max-width: 960px;
+  margin: 0 auto 10px;
+}
+
+.hero-topline {
+  font-family: "Cinzel", "EB Garamond", serif;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.hero-rule,
+.hero-rule-2 {
+  border-top: 1px solid var(--line);
+  margin: 12px auto;
+  max-width: 320px;
+}
+
+.hero-presents {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.hero-main {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-word {
+  font-family: "Cinzel", serif;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.hero-word.cowboy {
+  font-size: 28px;
+}
+
+.hero-word.polo {
+  font-size: 26px;
+}
+
+.hero-word.circuit {
+  font-size: 20px;
+}
+
+.hero-tagline {
+  margin-top: 18px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-badges {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.hero-badge-intro {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.three-sevens-mark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.three-sevens-numeral {
+  font-family: "Cinzel", serif;
+  font-size: 20px;
+  letter-spacing: 0.18em;
+}
+
+.three-sevens-text {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.hero-cta-row {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------------------------------------
+   Parallax / zoom bands
+--------------------------------------- */
 
 .parallax-band {
   position: relative;
+  min-height: 100vh;
   overflow: hidden;
-  background: #000;
-  margin-top: var(--section-gap);
 }
 
-/* First band sits a bit closer to the hero */
 .parallax-band-first {
-  margin-top: 32px;
+  margin-top: 6px;
 }
 
-/* Image layer */
 .parallax-media {
   position: absolute;
   inset: 0;
-  background: #000;
-  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-/* Centered image; zoom transform applied in JS */
 .parallax-img {
   position: absolute;
-  left: 50%;
   top: 50%;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transform: translate3d(-50%, -50%, 0) scale(1);
-  will-change: transform;
-  pointer-events: none;
-  user-select: none;
+  left: 50%;
+  width: auto;
+  height: 120%;
+  transform: translate3d(-50%, -50%, 0) scale(3.5);
+  object-fit: cover;
 }
 
-/* Feather edges into black; slightly softened vs ultra-dark */
+/* Dark vignette - keep subtle so it doesn't obscure the image */
 .parallax-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.9) 0%,
-      rgba(0, 0, 0, 0.15) 25%,
-      rgba(0, 0, 0, 0.22) 60%,
-      rgba(0, 0, 0, 0.9) 100%
-    );
+    radial-gradient(circle at center, rgba(0, 0, 0, 0) 0%, transparent 40%, rgba(0, 0, 0, 0.5) 100%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.8));
 }
 
-/* Content in the band:
-   - empty space at top (~full viewport) to see the photo
-   - then text rides over the lower part / fade
-*/
+/* Content wrapper INSIDE band when used that way
+   (safe to keep even after separating sections below) */
 .parallax-content {
   position: relative;
   z-index: 2;
-  padding: 0 18px clamp(64px, 9vh, 120px); /* bottom padding */
-  padding-top: calc(100vh + clamp(24px, 4vh, 56px));
-  max-width: var(--max-width);
-  margin: 0 auto;
 }
 
-/* Inside parallax bands we don't want extra top section margin */
+/* ---------------------------------------
+   Sections after bands
+--------------------------------------- */
+
 .band-section {
-  margin-top: 0;
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 64px 18px 48px;
 }
 
-/* Strong text shadow on light text over photos */
-.parallax-band .section-title,
-.parallax-band .section-kicker,
-.parallax-band .board-title,
-.parallax-band .board-sub,
-.parallax-band .board-header,
-.parallax-band .board-row {
-  text-shadow:
-    0 2px 16px rgba(0, 0, 0, 0.95),
-    0 0 4px rgba(0, 0, 0, 0.95);
-}
-
-/* -----------------------------
-   HERO POSTER (Tall & Centered)
-   ----------------------------- */
-
-.hero {
-  text-align: center;
-  padding: 56px 18px 64px;
-  border: 1px solid var(--border);
-  background:
-    radial-gradient(circle at 30% 10%, #333333 0, #000000 50%),
-    linear-gradient(to bottom, #111111, #000000 55%, #121212 100%);
-}
-
-.hero-topline {
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-.hero-rule {
-  width: 260px;
-  margin: 16px auto 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.45);
-}
-
-.hero-presents {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 0.8rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  opacity: 0.9;
-}
-
-.hero-main {
-  margin-top: 24px;
-}
-
-.hero-main .the {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  opacity: 0.7;
-  margin-bottom: 6px;
-}
-
-.hero-word {
-  display: block;
-  text-transform: uppercase;
-  font-family: "Cormorant Garamond", serif;
-  line-height: 0.92;
-  letter-spacing: 0.2em;
-}
-
-.hero-word.cowboy {
-  font-size: clamp(2.6rem, 7vw, 3.4rem);
-  font-weight: 700;
-}
-
-.hero-word.polo {
-  font-size: clamp(2.1rem, 6vw, 2.8rem);
-  font-weight: 600;
-  margin-top: 4px;
-}
-
-.hero-word.circuit {
-  font-size: clamp(1.7rem, 5vw, 2.2rem);
-  font-weight: 600;
-  margin-top: 6px;
-  letter-spacing: 0.28em;
-}
-
-.hero-tagline {
-  margin-top: 26px;
-  font-size: 0.9rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  opacity: 0.78;
-}
-
-.hero-rule-2 {
-  width: 190px;
-  border-top: 1px solid rgba(255, 255, 255, 0.28);
-  margin: 20px auto 22px;
-}
-
-/* INTRODUCING + THREE SEVENS */
-.hero-badges {
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.8;
-}
-
-.hero-badges span {
-  display: inline-block;
-  margin: 0 8px;
-}
-
-.hero-badge-intro {
-  display: block;
-  font-size: 0.7rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-  opacity: 0.85;
-}
-
-/* STREAMING ON · THE POLO WAY */
-.hero-streaming {
-  margin-top: 14px;
-  text-align: center;
-}
-
-.hero-streaming-mark {
-  margin-top: 4px;
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  opacity: 0.95;
-}
-
-/* HERO CTA */
-.hero-cta-row {
-  margin-top: 32px;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-/* little explanatory line under wallet button */
-.hero-wallet-copy {
-  margin-top: 16px;
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.8;
-}
-
-.btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12px 28px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  font-family: "Cormorant Garamond", serif;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  background: transparent;
-  color: var(--fg);
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.btn-primary {
-  background: var(--fg);
-  color: #000;
-  border-color: var(--fg);
-}
-
-.btn-primary:hover {
-  background: #fefefe;
-}
-
-.btn-outline:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: #ffffff;
-}
-
-/* SECTION SHARED */
-section {
-  margin-top: var(--section-gap);
+/* This gives a bit of overlap between the section title
+   and the bottom edge of the photo band */
+#about.band-section,
+#players.band-section,
+#horses.band-section {
+  margin-top: -40px;
+  padding-top: 56px;
 }
 
 .section-header {
-  text-align: center;
-  margin-bottom: 26px;
+  margin-bottom: 18px;
 }
 
 .section-kicker {
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.8rem;
+  font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
-/* Three Sevens wordmark */
-.three-sevens-mark {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.three-sevens-numeral {
-  font-family: "Cormorant Garamond", serif;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-}
-
-.three-sevens-text {
-  font-family: "IM Fell English SC", serif;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-}
-
-/* Size tuning by context */
-.hero-badges .three-sevens-numeral {
-  font-size: 1.3rem;
-}
-
-.hero-badges .three-sevens-text {
-  font-size: 0.72rem;
-  opacity: 0.9;
-}
-
-.section-kicker .three-sevens-numeral {
-  font-size: 1rem;
-}
-
-.section-kicker .three-sevens-text {
-  font-size: 0.7rem;
-  opacity: 0.9;
-}
-
-/* WORDMARK-STYLE TITLES */
 .section-title {
-  position: relative;
-  display: inline-block;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.35rem;
+  font-family: "Cinzel", serif;
+  font-size: 20px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.28em;
-  padding: 6px 22px;
-}
-
-.section-title::before,
-.section-title::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 36px;
-  border-top: 1px solid rgba(255, 255, 255, 0.45);
-}
-
-.section-title::before {
-  right: 100%;
-  margin-right: 12px;
-}
-
-.section-title::after {
-  left: 100%;
-  margin-left: 12px;
+  margin: 0 0 8px;
 }
 
 .section-rule {
-  width: 180px;
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  margin: 16px auto 0;
-  opacity: 0.6;
+  border-top: 1px solid var(--line);
+  max-width: 280px;
 }
 
 .section-body {
-  max-width: 720px;
-  margin: 20px auto 0;
-  color: var(--muted);
-  font-size: 0.98rem;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
 }
 
 .section-body p {
-  margin: 0 0 14px;
-  text-align: justify;
+  margin: 0 0 12px;
 }
 
-/* Leaderboard tables */
+/* ---------------------------------------
+   Tables / boards
+--------------------------------------- */
+
 .board {
-  max-width: 720px;
-  margin: 22px auto 0;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: #080808;
-  padding: 18px 16px 14px;
-  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.7);
+  margin-top: 18px;
+  padding: 16px 14px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(233, 207, 146, 0.4);
+  background: radial-gradient(circle at top left, #1a120a 0, #060404 52%, #020202 100%);
+  font-size: 13px;
 }
 
 .board-title {
-  font-family: "Cormorant Garamond", serif;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.95rem;
-  margin-bottom: 10px;
+  font-family: "Cinzel", serif;
+  font-size: 14px;
+  margin-bottom: 4px;
 }
 
 .board-sub {
-  font-size: 0.85rem;
+  font-size: 11px;
   color: var(--muted);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .board-header,
 .board-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  column-gap: 12px;
-  font-size: 0.9rem;
+  grid-template-columns: 2fr 2fr 1fr;
+  gap: 8px;
+  padding: 4px 0;
 }
 
 .board-header {
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   color: var(--muted);
-  border-bottom: 1px solid #262626;
-  padding-bottom: 6px;
-  margin-bottom: 4px;
 }
 
-.board-row {
-  padding: 6px 0;
-  border-bottom: 1px dashed #202020;
+.board-row + .board-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.board-row:last-child {
-  border-bottom: 0;
-}
-
-.board-row span:last-child {
-  text-align: right;
-}
-
-.board-row span:nth-child(2) {
-  text-align: center;
-}
-
-/* Handicap formatting */
 .handicap-value {
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-end;
 }
 
 .handicap-value-main {
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .handicap-value-decimal {
-  font-size: 0.75rem;
-  opacity: 0.9;
+  font-size: 11px;
 }
 
-/* Results form */
+/* ---------------------------------------
+   Results form
+--------------------------------------- */
+
 .results-form {
-  max-width: 720px;
-  margin: 26px auto 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  row-gap: 14px;
+  margin-top: 18px;
+  padding: 16px 14px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(233, 207, 146, 0.4);
+  background: radial-gradient(circle at top left, #1a120a 0, #060404 52%, #020202 100%);
+  font-size: 13px;
 }
 
 .results-form-row-inline {
   display: flex;
-  gap: 12px;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .results-form-row-inline > div {
-  flex: 1 1 160px;
+  flex: 1 1 130px;
 }
 
 .results-form label {
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   display: block;
-  margin-bottom: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   color: var(--muted);
+  margin-bottom: 4px;
 }
 
 .results-form input,
-.results-form textarea,
-.results-form select {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: #050505;
-  color: var(--fg);
-  font-family: "EB Garamond", serif;
-  font-size: 0.95rem;
-}
-
+.results-form select,
 .results-form textarea {
-  resize: vertical;
-  min-height: 110px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(180, 150, 102, 0.6);
+  border-radius: 8px;
+  padding: 7px 8px;
+  font-size: 13px;
+  color: var(--ink);
 }
 
 .results-form small {
-  font-size: 0.78rem;
+  font-size: 11px;
   color: var(--muted);
 }
 
-/* Footer */
+/* ---------------------------------------
+   Wallet modal
+--------------------------------------- */
+
+.wallet-modal-backdrop {
+  /* the inline styles in JSX handle most of this;
+     keep class in case of future enhancements */
+}
+
+/* ---------------------------------------
+   Footer
+--------------------------------------- */
+
 footer {
-  margin-top: var(--section-gap);
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
+  padding: 24px 18px 40px;
+  font-size: 11px;
   text-align: center;
-  font-size: 0.78rem;
   color: var(--muted);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  margin-top: 24px;
 }
 
-/* -----------------------------
-   Mobile adjustments
-   ----------------------------- */
+/* ---------------------------------------
+   MOBILE tweaks
+--------------------------------------- */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .hero {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-top: 22px;
   }
 
-  .board-header,
-  .board-row {
-    grid-template-columns: 1.8fr 1fr 1.1fr;
+  .hero-word.cowboy {
+    font-size: 24px;
   }
 
-  .section-title::before,
-  .section-title::after {
-    width: 24px;
+  .hero-word.polo {
+    font-size: 22px;
   }
 
-  /* Start the text lower on mobile, but not crazy far */
-  .parallax-content {
-    padding-top: calc(80vh + 32px);
-    padding-bottom: 72px;
+  .hero-word.circuit {
+    font-size: 18px;
   }
 
-  /* First band closer to hero on mobile */
-  .parallax-band-first {
-    margin-top: 16px;
+  .band-section {
+    padding: 52px 16px 40px;
+  }
+
+  /* 🔹 Option 2: pull sections closer to photo on mobile
+     so there’s less black space before/after the band.
+     This does NOT change band height, only how far below
+     the band the text starts.
+  */
+  #about.band-section,
+  #players.band-section,
+  #horses.band-section {
+    margin-top: -60px;  /* overlap a bit more into the photo area */
+    padding-top: 48px;  /* keep headings readable */
+  }
+
+  .board,
+  .results-form {
+    padding: 14px 12px 12px;
   }
 }
