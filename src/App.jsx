@@ -74,8 +74,19 @@ const cowboyWalletTheme = darkTheme({
 // Zoom-on-scroll full-bleed photo band
 //  - zoom: starting zoom (e.g. 3.5 = 3.5x)
 //  - speed: how aggressively it eases back to 1x
+//
+// Mapping now:
+//   rect.top === vh       → progress = 0 (band top at bottom of screen, fully zoomed IN)
+//   rect.top === vh * 0.5 → progress = 1 (band top at mid-screen, fully zoomed OUT)
+// After that it stays at 1x as it scrolls away.
 // ---------------------------------------------
-function ParallaxBand({ src, children, first = false, zoom = 3.5, speed = 10 }) {
+function ParallaxBand({
+  src,
+  children,
+  first = false,
+  zoom = 3.5,
+  speed = 10,
+}) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -88,16 +99,21 @@ function ParallaxBand({ src, children, first = false, zoom = 3.5, speed = 10 }) 
       const rect = bandRef.current.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // We want:
-      // - when band top is at bottom of viewport (rect.top === vh) => progress = 0 (fully zoomed in)
-      // - when band top is at top of viewport   (rect.top === 0)  => progress = 1 (fully zoomed out)
-      const raw = (vh - rect.top) / vh; // maps [vh → 0] to [0 → 1]
+      // Start: band top at bottom of viewport
+      const startTop = vh;
+      // End: band top at 50% of viewport height
+      const targetTop = vh * 0.5;
+
+      // Map:
+      //   rect.top = startTop  → raw = 0
+      //   rect.top = targetTop → raw = 1
+      const raw = (startTop - rect.top) / (startTop - targetTop);
       const progress = Math.min(1, Math.max(0, raw));
 
       // Speed as an easing exponent:
       //  - speed < 1  = stays zoomed in longer
       //  - speed = 1  = linear
-      //  - speed > 1  = zooms out faster
+      //  - speed > 1  = zooms out faster toward the end
       const eased = Math.pow(progress, speed);
 
       const minZoom = 1;
