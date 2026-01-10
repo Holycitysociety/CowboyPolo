@@ -81,7 +81,7 @@ function ParallaxBand({
   children,
   first = false,
   zoom = 30,
-  speed = .3,
+  speed = 0.3,
   finishFactor = 2, // tuned so zoom-out feels right
 }) {
   const bandRef = useRef(null);
@@ -360,7 +360,7 @@ export default function App() {
         src="/images/cowboy-1.jpeg"
         first
         zoom={30}
-        speed={.3}
+        speed={0.3}
         finishFactor={2}
       />
 
@@ -370,7 +370,7 @@ export default function App() {
         ref={roadmapGateRef}
         className="band-section"
         style={{
-          marginTop: "-40px",
+          marginTop: "-20px", // 👈 -40 -> -20
           paddingTop: "56px",
         }}
       >
@@ -422,7 +422,7 @@ export default function App() {
       <ParallaxBand
         src="/images/cowboy-2.jpeg"
         zoom={30}
-        speed={.3}
+        speed={0.3}
         finishFactor={2}
       />
 
@@ -431,7 +431,7 @@ export default function App() {
         id="players"
         className="band-section"
         style={{
-          marginTop: "-40px",
+          marginTop: "-20px", // 👈 -40 -> -20
           paddingTop: "56px",
         }}
       >
@@ -561,7 +561,7 @@ export default function App() {
       <ParallaxBand
         src="/images/cowboy-3.jpeg"
         zoom={30}
-        speed={.3}
+        speed={0.3}
         finishFactor={2}
       />
 
@@ -570,7 +570,7 @@ export default function App() {
         id="horses"
         className="band-section"
         style={{
-          marginTop: "-40px",
+          marginTop: "-20px", // 👈 -40 -> -20
           paddingTop: "56px",
         }}
       >
