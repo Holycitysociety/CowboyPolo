@@ -568,7 +568,7 @@ footer {
 
   /* Anchor the first photo a bit higher on mobile so you see it sooner */
   .parallax-band-first .parallax-img {
-    top: 40%;
+    top: 20%;
     transform: translate3d(-50%, -50%, 0);
   }
 }
