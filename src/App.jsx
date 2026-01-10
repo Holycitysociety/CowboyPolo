@@ -370,7 +370,7 @@ export default function App() {
         ref={roadmapGateRef}
         className="band-section"
         style={{
-          marginTop: "-20px", // 👈 -40 -> -20
+          marginTop: "0",
           paddingTop: "56px",
         }}
       >
@@ -431,7 +431,7 @@ export default function App() {
         id="players"
         className="band-section"
         style={{
-          marginTop: "-20px", // 👈 -40 -> -20
+          marginTop: "0",
           paddingTop: "56px",
         }}
       >
@@ -570,7 +570,7 @@ export default function App() {
         id="horses"
         className="band-section"
         style={{
-          marginTop: "-20px", // 👈 -40 -> -20
+          marginTop: "0",
           paddingTop: "56px",
         }}
       >
@@ -1017,6 +1017,8 @@ export default function App() {
               <p>
                 Match captains or appointed officials submit chukker sheets:
                 teams, scorelines, rider combinations, and notable horse usage.
+              </p>
+              <p>
                 Those sheets become the official record that updates handicaps
                 and team standings across the Circuit.
               </p>
