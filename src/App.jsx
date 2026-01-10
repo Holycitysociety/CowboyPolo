@@ -1335,7 +1335,7 @@ export default function App() {
       </section>
 
       <footer>
-        © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
+        © <span>{year}</span> USPPA · COWBOY
         POLO CIRCUIT ·{" "}
         <a
           href="https://uspolopatrons.org"
