@@ -559,10 +559,10 @@ footer {
     width: 24px;
   }
 
-  /* Start the text lower on mobile, but not crazy far */
+  /* Start the text closer to the photo on mobile */
   .parallax-content {
-    padding-top: calc(80vh + 32px);
-    padding-bottom: 72px;
+    padding-top: calc(65vh + 24px);
+    padding-bottom: 64px;
   }
 
   /* First band closer to hero on mobile */
