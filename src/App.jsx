@@ -72,8 +72,10 @@ const cowboyWalletTheme = darkTheme({
 
 // ---------------------------------------------
 // Zoom-on-scroll full-bleed photo band
+//  - zoom: starting zoom (e.g. 3.5 = 3.5x)
+//  - speed: how aggressively it eases back to 1x
 // ---------------------------------------------
-function ParallaxBand({ src, children, first = false, zoom = 1.5 }) {
+function ParallaxBand({ src, children, first = false, zoom = 3.5, speed = 1 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -86,17 +88,23 @@ function ParallaxBand({ src, children, first = false, zoom = 1.5 }) {
       const rect = bandRef.current.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // Progress: 0 when band is just entering viewport,
-      // 1 when it has fully passed.
+      // Progress 0 → 1 as the band travels through viewport
       const total = vh + rect.height;
       const raw = (vh - rect.top) / total;
       const progress = Math.min(1, Math.max(0, raw));
 
+      // Speed as an easing exponent:
+      //  - speed < 1  = stays zoomed longer
+      //  - speed = 1  = linear (current behavior)
+      //  - speed > 1  = zooms out faster
+      const eased = Math.pow(progress, speed);
+
       const minZoom = 1;
       const maxZoom = zoom;
-      const currentZoom = maxZoom - (maxZoom - minZoom) * progress;
+      const currentZoom = maxZoom - (maxZoom - minZoom) * eased;
 
-      imgRef.current.style.transform = `translate3d(-50%, -50%, 0) scale(${currentZoom})`;
+      imgRef.current.style.transform =
+        `translate3d(-50%, -50%, 0) scale(${currentZoom})`;
     };
 
     const onScrollOrResize = () => {
@@ -113,7 +121,7 @@ function ParallaxBand({ src, children, first = false, zoom = 1.5 }) {
       window.removeEventListener("scroll", onScrollOrResize);
       window.removeEventListener("resize", onScrollOrResize);
     };
-  }, [zoom]);
+  }, [zoom, speed]);
 
   return (
     <div
@@ -335,7 +343,7 @@ export default function App() {
       </section>
 
       {/* PHOTO BAND 1 + ABOUT TEXT */}
-      <ParallaxBand src="/images/cowboy-1.jpeg" first zoom={1.5}>
+      <ParallaxBand src="/images/cowboy-1.jpeg" first zoom={3.5} speed={0.8}>
         {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
@@ -385,7 +393,7 @@ export default function App() {
       </ParallaxBand>
 
       {/* PHOTO BAND 2 + PLAYER TABLES */}
-      <ParallaxBand src="/images/cowboy-2.jpeg" zoom={1.5}>
+      <ParallaxBand src="/images/cowboy-2.jpeg" zoom={3.5} speed={1}>
         {/* PLAYER LEADERBOARD (GATED) */}
         <section id="players" className="band-section">
           <div className="section-header">
@@ -514,7 +522,7 @@ export default function App() {
       </ParallaxBand>
 
       {/* PHOTO BAND 3 + HORSE / REMUDA */}
-      <ParallaxBand src="/images/cowboy-3.jpeg" zoom={1.5}>
+      <ParallaxBand src="/images/cowboy-3.jpeg" zoom={3.8} speed={0.9}>
         {/* HORSE & REMUDA SECTION (GATED) */}
         <section id="horses" className="band-section">
           <div className="section-header">
