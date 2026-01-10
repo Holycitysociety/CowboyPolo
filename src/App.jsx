@@ -74,18 +74,20 @@ const cowboyWalletTheme = darkTheme({
 // Zoom-on-scroll full-bleed photo band
 //  - zoom: starting zoom (e.g. 3.5 = 3.5x)
 //  - speed: how aggressively it eases back to 1x
+//  - finishFactor: >1 means "finish zooming earlier" than original
 //
-// Mapping now:
-//   rect.top === vh       → progress = 0 (band top at bottom of screen, fully zoomed IN)
-//   rect.top === vh * 0.5 → progress = 1 (band top at mid-screen, fully zoomed OUT)
-// After that it stays at 1x as it scrolls away.
+// Original mapping we had:
+//   total = vh + rect.height
+//   raw = (vh - rect.top) / total  → rect.top: vh → -height  ⇒ raw: 0 → 1
+// Now we do raw * finishFactor so 1 is hit sooner.
 // ---------------------------------------------
 function ParallaxBand({
   src,
   children,
   first = false,
   zoom = 3.5,
-  speed = 10,
+  speed = 4,
+  finishFactor = 1.5, // try 1.5–2.0 to finish earlier; 1 = original "too late"
 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
@@ -99,21 +101,19 @@ function ParallaxBand({
       const rect = bandRef.current.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // Start: band top at bottom of viewport
-      const startTop = vh;
-      // End: band top at 50% of viewport height
-      const targetTop = vh * 0.5;
+      // Original path: from just entering bottom to fully off top
+      const total = vh + rect.height;
+      let raw = (vh - rect.top) / total;
 
-      // Map:
-      //   rect.top = startTop  → raw = 0
-      //   rect.top = targetTop → raw = 1
-      const raw = (startTop - rect.top) / (startTop - targetTop);
+      // Finish earlier by multiplying
+      raw *= finishFactor;
+
       const progress = Math.min(1, Math.max(0, raw));
 
       // Speed as an easing exponent:
       //  - speed < 1  = stays zoomed in longer
       //  - speed = 1  = linear
-      //  - speed > 1  = zooms out faster toward the end
+      //  - speed > 1  = zooms out faster near the end
       const eased = Math.pow(progress, speed);
 
       const minZoom = 1;
@@ -138,7 +138,7 @@ function ParallaxBand({
       window.removeEventListener("scroll", onScrollOrResize);
       window.removeEventListener("resize", onScrollOrResize);
     };
-  }, [zoom, speed]);
+  }, [zoom, speed, finishFactor]);
 
   return (
     <div
@@ -360,7 +360,13 @@ export default function App() {
       </section>
 
       {/* PHOTO BAND 1 + ABOUT TEXT */}
-      <ParallaxBand src="/images/cowboy-1.jpeg" first zoom={3.5} speed={10}>
+      <ParallaxBand
+        src="/images/cowboy-1.jpeg"
+        first
+        zoom={3.5}
+        speed={4}
+        finishFactor={1.5}
+      >
         {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
         <section id="about" ref={roadmapGateRef} className="band-section">
           <div className="section-header">
@@ -410,7 +416,12 @@ export default function App() {
       </ParallaxBand>
 
       {/* PHOTO BAND 2 + PLAYER TABLES */}
-      <ParallaxBand src="/images/cowboy-2.jpeg" zoom={3.5} speed={10}>
+      <ParallaxBand
+        src="/images/cowboy-2.jpeg"
+        zoom={3.5}
+        speed={4}
+        finishFactor={1.5}
+      >
         {/* PLAYER LEADERBOARD (GATED) */}
         <section id="players" className="band-section">
           <div className="section-header">
@@ -539,7 +550,12 @@ export default function App() {
       </ParallaxBand>
 
       {/* PHOTO BAND 3 + HORSE / REMUDA */}
-      <ParallaxBand src="/images/cowboy-3.jpeg" zoom={3.8} speed={10}>
+      <ParallaxBand
+        src="/images/cowboy-3.jpeg"
+        zoom={3.8}
+        speed={4}
+        finishFactor={1.5}
+      >
         {/* HORSE & REMUDA SECTION (GATED) */}
         <section id="horses" className="band-section">
           <div className="section-header">
