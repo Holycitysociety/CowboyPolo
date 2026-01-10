@@ -71,60 +71,94 @@ const cowboyWalletTheme = darkTheme({
 });
 
 // ---------------------------------------------
-// Parallax full-bleed photo band
+// Pan + sticky image scene with overlay content
 // ---------------------------------------------
-function ParallaxBand({ src, children, speed = 0.18, first = false }) {
-  const bandRef = useRef(null);
+function PanScene({ src, direction = "right", first = false, children }) {
+  const sceneRef = useRef(null);
+  const stickyRef = useRef(null);
   const imgRef = useRef(null);
 
   useEffect(() => {
+    if (!sceneRef.current || !stickyRef.current || !imgRef.current) return;
+
     let raf = 0;
+    let maxShift = 0;
 
-    const update = () => {
-      if (!bandRef.current || !imgRef.current) return;
-
-      const rect = bandRef.current.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-
-      const bandCenter = rect.top + rect.height / 2;
-      const viewportCenter = vh / 2;
-      const delta = bandCenter - viewportCenter;
-
-      const translateY = -delta * speed;
-
-      imgRef.current.style.transform = `translate3d(-50%, calc(-50% + ${translateY}px), 0)`;
+    const computeMaxShift = () => {
+      if (!stickyRef.current || !imgRef.current) return;
+      const cw = stickyRef.current.clientWidth;
+      const iw = imgRef.current.clientWidth;
+      maxShift = Math.max(iw - cw, 0);
     };
 
-    const onScrollOrResize = () => {
+    const update = () => {
+      if (!sceneRef.current || !imgRef.current) return;
+
+      const rect = sceneRef.current.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const totalScrollable = rect.height - vh;
+
+      if (totalScrollable <= 0) {
+        imgRef.current.style.transform = "translate3d(0,0,0)";
+        return;
+      }
+
+      const raw = -rect.top / totalScrollable;
+      const progress = Math.min(Math.max(raw, 0), 1);
+
+      const sign = direction === "left" ? 1 : -1;
+      const shift = sign * maxShift * progress;
+
+      imgRef.current.style.transform = `translate3d(${shift}px,0,0)`;
+    };
+
+    const handleScroll = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(update);
     };
 
+    const handleResize = () => {
+      computeMaxShift();
+      update();
+    };
+
+    computeMaxShift();
     update();
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
-  }, [speed]);
+  }, [direction]);
+
+  const handleImgLoad = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("resize"));
+    }
+  };
 
   return (
-    <div
-      ref={bandRef}
-      className={`parallax-band full-bleed ${
-        first ? "parallax-band-first" : ""
-      }`}
+    <section
+      ref={sceneRef}
+      className={`pan-scene full-bleed ${first ? "pan-scene-first" : ""}`}
     >
-      <div className="parallax-media" aria-hidden="true">
-        <img ref={imgRef} className="parallax-img" src={src} alt="" />
-        <div className="parallax-vignette" />
+      <div ref={stickyRef} className="pan-scene-media">
+        <img
+          ref={imgRef}
+          src={src}
+          alt=""
+          className="pan-scene-img"
+          onLoad={handleImgLoad}
+        />
+        <div className="pan-scene-vignette" aria-hidden="true" />
       </div>
 
-      <div className="parallax-content">{children}</div>
-    </div>
+      <div className="pan-scene-content">{children}</div>
+    </section>
   );
 }
 
@@ -330,10 +364,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 1 + ABOUT TEXT */}
-      <ParallaxBand src="/images/cowboy-1.jpeg" first>
-        {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
-        <section id="about" ref={roadmapGateRef} className="band-section">
+      {/* SCENE 1: first photo + ABOUT text scrolling over it */}
+      <PanScene src="/images/cowboy-1.jpeg" direction="right" first>
+        <section id="about" ref={roadmapGateRef}>
           <div className="section-header">
             <div className="section-kicker">THE FORMAT</div>
             <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
@@ -378,12 +411,11 @@ export default function App() {
             </p>
           </div>
         </section>
-      </ParallaxBand>
+      </PanScene>
 
-      {/* PHOTO BAND 2 + PLAYER TABLES */}
-      <ParallaxBand src="/images/cowboy-2.jpeg">
-        {/* PLAYER LEADERBOARD (GATED) */}
-        <section id="players" className="band-section">
+      {/* SCENE 2: second photo + PLAYER LEADERBOARD text overlay */}
+      <PanScene src="/images/cowboy-2.jpeg" direction="left">
+        <section id="players">
           <div className="section-header">
             <div className="section-kicker">PLAYER STANDINGS</div>
             <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
@@ -507,12 +539,11 @@ export default function App() {
             </div>
           </div>
         </section>
-      </ParallaxBand>
+      </PanScene>
 
-      {/* PHOTO BAND 3 + HORSE / REMUDA */}
-      <ParallaxBand src="/images/cowboy-3.jpeg">
-        {/* HORSE & REMUDA SECTION (GATED) */}
-        <section id="horses" className="band-section">
+      {/* SCENE 3: third photo + HORSES text overlay */}
+      <PanScene src="/images/cowboy-3.jpeg" direction="right">
+        <section id="horses">
           <div className="section-header">
             <div className="section-kicker">
               <div className="three-sevens-mark">
@@ -641,258 +672,7 @@ export default function App() {
             </div>
           </div>
         </section>
-      </ParallaxBand>
-
-      {/* WALLET MODAL */}
-      {isWalletOpen && (
-        <div
-          className="wallet-modal-backdrop"
-          onClick={closeWallet}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.86)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-            padding: "14px",
-          }}
-        >
-          <div style={{ width: "100%", maxWidth: "380px" }}>
-            <div
-              ref={walletScrollRef}
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                width: "100%",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                border: "1px solid #3a2b16",
-                borderRadius: "14px",
-                padding: "16px",
-                paddingTop: "26px",
-                background: "#050505",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.85)",
-                fontFamily:
-                  '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-                color: "#f5eedc",
-                fontSize: "13px",
-                position: "relative",
-              }}
-            >
-              {/* Modal header */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "8px",
-                  position: "relative",
-                  paddingTop: "4px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "18px",
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    lineHeight: 1.1,
-                  }}
-                >
-                  PATRON WALLET
-                </div>
-
-                <button
-                  onClick={closeWallet}
-                  aria-label="Close wallet"
-                  title="Close"
-                  style={{
-                    position: "absolute",
-                    right: 0,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "56px",
-                    height: "56px",
-                    border: "none",
-                    background: "transparent",
-                    color: "#e3bf72",
-                    fontSize: "38px",
-                    lineHeight: 1,
-                    cursor: "pointer",
-                    padding: 0,
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-
-              {/* Explanatory copy under title (ONLY when not signed in) */}
-              {!account && (
-                <p
-                  style={{
-                    margin: "0 0 14px",
-                    fontSize: "12px",
-                    lineHeight: 1.5,
-                    textAlign: "center",
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    color: "#dec89a",
-                  }}
-                >
-                  Sign up with your email to create your Cowboy Polo Patron
-                  Wallet. After you sign in, you&apos;ll receive an email with
-                  the Cowboy Polo Circuit signup details.
-                </p>
-              )}
-
-              {/* Connect or account view */}
-              {!account ? (
-                <div style={{ marginBottom: "14px" }}>
-                  <ConnectEmbed
-                    client={client}
-                    wallets={wallets}
-                    chain={BASE}
-                    theme={cowboyWalletTheme}
-                  />
-                </div>
-              ) : (
-                <div style={{ marginBottom: "14px", textAlign: "center" }}>
-                  {/* Address + copy */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 8,
-                      marginBottom: "10px",
-                      marginTop: "2px",
-                    }}
-                  >
-                    <div style={{ fontFamily: "monospace", fontSize: "13px" }}>
-                      {shortAddress}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleCopyAddress}
-                      style={{
-                        border: "none",
-                        background: "transparent",
-                        color: "#e3bf72",
-                        cursor: "pointer",
-                        fontSize: "14px",
-                      }}
-                      aria-label="Copy wallet address"
-                    >
-                      📋
-                    </button>
-                  </div>
-
-                  {/* Balances */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "28px",
-                      marginBottom: "10px",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "#9f8a64",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        Gas
-                      </div>
-                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                        {baseBalance?.displayValue || "0"}{" "}
-                        {baseBalance?.symbol || "ETH"}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          letterSpacing: "0.14em",
-                          textTransform: "uppercase",
-                          color: "#9f8a64",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        USDC
-                      </div>
-                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                        {usdcBalance?.displayValue || "0"}{" "}
-                        {usdcBalance?.symbol || "USDC"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: "12px" }}>
-                    <div
-                      style={{
-                        fontSize: "10px",
-                        letterSpacing: "0.18em",
-                        textTransform: "uppercase",
-                        color: "#c7b08a",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      Patronium Balance
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "18px",
-                        letterSpacing: "0.02em",
-                        color: "#f5eedc",
-                      }}
-                    >
-                      {patronBalance?.displayValue || "0"}{" "}
-                      {patronBalance?.symbol || "PATRON"}
-                    </div>
-                  </div>
-
-                  <button
-                    className="btn btn-outline"
-                    style={{
-                      minWidth: "auto",
-                      padding: "6px 18px",
-                      fontSize: "11px",
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                    }}
-                    onClick={handleSignOut}
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              )}
-
-              {/* Small note */}
-              <p
-                style={{
-                  marginTop: "10px",
-                  fontSize: "11px",
-                  lineHeight: 1.5,
-                  color: "#c7b08a",
-                  textAlign: "center",
-                }}
-              >
-                This Patron Wallet works across the Cowboy Polo Circuit and the
-                Polo Patronium site on Base.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      </PanScene>
 
       {/* RESULTS / NETLIFY FORM (GATED) */}
       <section id="results">
