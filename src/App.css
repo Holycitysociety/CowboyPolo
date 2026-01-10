@@ -6,7 +6,7 @@
   --border: #333333;
   --accent: #ffffff;
   --max-width: 900px;
-  --section-gap: 20px;
+  --section-gap: 40px;
 }
 
 * {
@@ -35,85 +35,72 @@ body {
 }
 
 /* -----------------------------
-   Parallax photo bands
+   Pan-scene (photo + overlay text)
    ----------------------------- */
 
-.parallax-band {
+.pan-scene {
   position: relative;
-  overflow: hidden;
   background: #000;
   margin-top: var(--section-gap);
 }
 
-/* Give the first band a slightly tighter link on some devices */
-.parallax-band-first {
-  margin-top: 0px;
+.pan-scene-first {
+  margin-top: 20px;
 }
 
-/* Image layer */
-.parallax-media {
-  position: absolute;
-  inset: 0;
+.pan-scene-media {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
   background: #000;
   z-index: 0;
 }
 
-/* No cropping — keep entire photo */
-.parallax-img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 100%;
+.pan-scene-img {
   height: 100%;
-  object-fit: contain;
-  transform: translate3d(-50%, -50%, 0);
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  transform: translate3d(0, 0, 0);
   will-change: transform;
-  pointer-events: none;
-  user-select: none;
 }
 
-/* Feather edges into black; darker at bottom for the “gap” */
-.parallax-vignette {
+.pan-scene-vignette {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
+    radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.7) 0, transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.9) 0, transparent 45%),
     linear-gradient(
       to bottom,
-      rgba(0,0,0,0.98) 0%,
-      rgba(0,0,0,0.10) 25%,
-      rgba(0,0,0,0.15) 55%,
-      rgba(0,0,0,0.96) 100%
+      rgba(0, 0, 0, 0.96),
+      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0.96)
     );
 }
 
-/* Content in the band:
-   - big empty space at top (100vh) so photo is seen first on desktop
-   - then text rides over the darker lower part of the band */
-.parallax-content {
+.pan-scene-content {
   position: relative;
   z-index: 2;
-  padding: 0 18px clamp(48px, 7vh, 96px);
-  padding-top: calc(100vh + clamp(24px, 4vh, 56px));
   max-width: var(--max-width);
   margin: 0 auto;
+  padding: 0 18px 72px;
+  /* This is the "black gap" — text starts after one viewport of image */
+  margin-top: 100vh;
 }
 
-/* Inside parallax bands we don't want extra top section margin */
-.band-section {
-  margin-top: 0;
-}
-
-/* Strong text shadow on light text over photos */
-.parallax-band .section-title,
-.parallax-band .section-kicker,
-.parallax-band .board-title,
-.parallax-band .board-sub,
-.parallax-band .board-header,
-.parallax-band .board-row {
+/* Strong shadow so text stays readable over photo */
+.pan-scene .section-title,
+.pan-scene .section-kicker,
+.pan-scene .board-title,
+.pan-scene .board-sub,
+.pan-scene .board-header,
+.pan-scene .board-row {
   text-shadow:
-    0 2px 16px rgba(0,0,0,0.95),
-    0 0 4px rgba(0,0,0,0.95);
+    0 2px 16px rgba(0, 0, 0, 0.95),
+    0 0 4px rgba(0, 0, 0, 0.95);
 }
 
 /* -----------------------------
@@ -556,19 +543,8 @@ footer {
     width: 24px;
   }
 
-  /* On mobile, don't push text a full 100vh down; let it appear sooner */
-  .parallax-content {
-    padding-top: clamp(260px, 65vh, 260px);
-  }
-
-  /* First band: kill the feeling of a huge gap before the first photo */
-  .parallax-band-first {
-    margin-top: 0px;
-  }
-
-  /* Anchor the first photo a bit higher on mobile so you see it sooner */
-  .parallax-band-first .parallax-img {
-    top: 30%;
-    transform: translate3d(-50%, -50%, 0);
+  .pan-scene-content {
+    margin-top: 90vh; /* slightly tighter on small screens */
+    padding-bottom: 56px;
   }
 }
