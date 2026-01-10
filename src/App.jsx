@@ -71,18 +71,15 @@ const cowboyWalletTheme = darkTheme({
 });
 
 // ---------------------------------------------
-// Pan + sticky image scene with overlay content
-// direction:
-//   "rtl" = pan from right ➜ left
-//   "ltr" = pan from left ➜ right
+// Cinematic pan-on-scroll photo frame
 // ---------------------------------------------
-function PanScene({ src, direction = "ltr", first = false, children }) {
-  const sceneRef = useRef(null);
+function PanFrame({ src, direction = "right" }) {
+  const frameRef = useRef(null);
   const stickyRef = useRef(null);
   const imgRef = useRef(null);
 
   useEffect(() => {
-    if (!sceneRef.current || !stickyRef.current || !imgRef.current) return;
+    if (!frameRef.current || !stickyRef.current || !imgRef.current) return;
 
     let raf = 0;
     let maxShift = 0;
@@ -95,13 +92,13 @@ function PanScene({ src, direction = "ltr", first = false, children }) {
     };
 
     const update = () => {
-      if (!sceneRef.current || !imgRef.current) return;
+      if (!frameRef.current || !imgRef.current) return;
 
-      const rect = sceneRef.current.getBoundingClientRect();
+      const rect = frameRef.current.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       const totalScrollable = rect.height - vh;
 
-      if (totalScrollable <= 0 || maxShift <= 0) {
+      if (totalScrollable <= 0) {
         imgRef.current.style.transform = "translate3d(0,0,0)";
         return;
       }
@@ -109,19 +106,8 @@ function PanScene({ src, direction = "ltr", first = false, children }) {
       const raw = -rect.top / totalScrollable;
       const progress = Math.min(Math.max(raw, 0), 1);
 
-      let shift = 0;
-
-      // left-to-right: start left, end right
-      if (direction === "ltr") {
-        shift = -maxShift * progress;
-      }
-      // right-to-left: start right, end left
-      else if (direction === "rtl") {
-        shift = -maxShift * (1 - progress);
-      } else {
-        // default fallback
-        shift = -maxShift * progress;
-      }
+      const sign = direction === "left" ? 1 : -1;
+      const shift = sign * maxShift * progress;
 
       imgRef.current.style.transform = `translate3d(${shift}px,0,0)`;
     };
@@ -150,28 +136,24 @@ function PanScene({ src, direction = "ltr", first = false, children }) {
   }, [direction]);
 
   const handleImgLoad = () => {
+    // Recompute once intrinsic size is known
     if (typeof window !== "undefined") {
       window.dispatchEvent(new Event("resize"));
     }
   };
 
   return (
-    <section
-      ref={sceneRef}
-      className={`pan-scene full-bleed ${first ? "pan-scene-first" : ""}`}
-    >
-      <div ref={stickyRef} className="pan-scene-media">
+    <section ref={frameRef} className="pan-frame full-bleed">
+      <div ref={stickyRef} className="pan-frame-sticky">
         <img
           ref={imgRef}
           src={src}
           alt=""
-          className="pan-scene-img"
+          className="pan-frame-img"
           onLoad={handleImgLoad}
         />
-        <div className="pan-scene-vignette" aria-hidden="true" />
+        <div className="pan-frame-vignette" aria-hidden="true" />
       </div>
-
-      <div className="pan-scene-content">{children}</div>
     </section>
   );
 }
@@ -378,315 +360,315 @@ export default function App() {
         </div>
       </section>
 
-      {/* SCENE 1: first photo (right ➜ left) + ABOUT text */}
-      <PanScene src="/images/cowboy-1.jpeg" direction="rtl" first>
-        <section id="about" ref={roadmapGateRef}>
-          <div className="section-header">
-            <div className="section-kicker">THE FORMAT</div>
-            <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
-            <div className="section-rule" />
-          </div>
+      {/* IMAGE 1 — pan right */}
+      <PanFrame src="/images/cowboy-1.jpeg" direction="right" />
 
-          <div className="section-body">
-            <p>
-              The Cowboy Polo Circuit is a national development league for
-              players, ponies, &amp; patrons built on sanctioned Cowboy Polo
-              chukkers.
-            </p>
-            <p>
-              Games are played 3 on 3 in arenas or campitos. The key is that a
-              player does not need a full string to attract patrons: a rider can
-              progress by playing as little as one chukker, on one good horse,
-              and still build a real Circuit handicap.
-            </p>
-            <p>
-              Cowboy Polo chukkers can be hosted by any stable, arena, or
-              program that signs on to the Circuit. A local coach, instructor,
-              or appointed captains run the game, then submit the chukker sheet
-              feeding two tables: the individual handicap table for each rider,
-              and the game results table for teams.
-            </p>
-            <p>
-              Each sanctioned chukker updates both sides of the story: how
-              riders are rated, and how their teams are performing.
-            </p>
-            <p>
-              Over the course of a Circuit season, those two tables are the
-              backbone of the standings: player handicaps and team records
-              (wins, losses, goal difference) together define how the season is
-              read.
-            </p>
-            <p>
-              Local chapters also feed into{" "}
-              <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
-              and arenas can submit 360° VR footage from sanctioned Cowboy Polo
-              chukkers to thepoloway.com so patrons can follow and support the
-              Circuit from anywhere.
-            </p>
-          </div>
-        </section>
-      </PanScene>
+      {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
+      <section id="about" ref={roadmapGateRef}>
+        <div className="section-header">
+          <div className="section-kicker">THE FORMAT</div>
+          <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
+          <div className="section-rule" />
+        </div>
 
-      {/* SCENE 2: second photo (left ➜ right) + PLAYER LEADERBOARD */}
-      <PanScene src="/images/cowboy-2.jpeg" direction="ltr">
-        <section id="players">
-          <div className="section-header">
-            <div className="section-kicker">PLAYER STANDINGS</div>
-            <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
-            <div className="section-rule" />
-          </div>
+        <div className="section-body">
+          <p>
+            The Cowboy Polo Circuit is a national development league for
+            players, ponies, &amp; patrons built on sanctioned Cowboy Polo
+            chukkers.
+          </p>
+          <p>
+            Games are played 3 on 3 in arenas or campitos. The key is that a
+            player does not need a full string to attract patrons: a rider can
+            progress by playing as little as one chukker, on one good horse,
+            and still build a real Circuit handicap.
+          </p>
+          <p>
+            Cowboy Polo chukkers can be hosted by any stable, arena, or program
+            that signs on to the Circuit. A local coach, instructor, or
+            appointed captains run the game, then submit the chukker sheet
+            feeding two tables: the individual handicap table for each rider,
+            and the game results table for teams.
+          </p>
+          <p>
+            Each sanctioned chukker updates both sides of the story: how riders
+            are rated, and how their teams are performing.
+          </p>
+          <p>
+            Over the course of a Circuit season, those two tables are the
+            backbone of the standings: player handicaps and team records (wins,
+            losses, goal difference) together define how the season is read.
+          </p>
+          <p>
+            Local chapters also feed into{" "}
+            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
+            and arenas can submit 360° VR footage from sanctioned Cowboy Polo
+            chukkers to thepoloway.com so patrons can follow and support the
+            Circuit from anywhere.
+          </p>
+        </div>
+      </section>
 
-          <div
-            style={{
-              position: "relative",
-              marginTop: "20px",
-            }}
-          >
-            {!isConnected && (
-              <div
-                onClick={openWallet}
-                aria-label="Sign in required to view rider standings"
-                role="button"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "22px",
-                  textAlign: "center",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.22em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    COWBOY POLO CIRCUIT STANDINGS
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      lineHeight: 1.6,
-                      color: "#f5eedc",
-                    }}
-                  >
-                    Sign into your Patron Wallet to view live rider handicaps
-                    and Circuit tables.
-                  </div>
-                </div>
-              </div>
-            )}
+      {/* IMAGE 2 — pan left */}
+      <PanFrame src="/images/cowboy-2.jpeg" direction="left" />
 
-            <div aria-hidden={!isConnected && true}>
-              <div className="section-body">
-                <p>
-                  Player handicaps in the Cowboy Polo Circuit are not just
-                  static numbers. Each rider’s Cowboy Polo handicap is a
-                  statistically calculated, ELO-style rating, updated after
-                  every sanctioned chukker and displayed to two decimal places.
-                </p>
-                <p>
-                  Ratings move with performance over time: goals scored,
-                  assists, ride-offs won, and overall impact on the match all
-                  feed the same underlying score. The table below shows how a
-                  leaderboard might appear during mid-season.
-                </p>
-              </div>
+      {/* PLAYER LEADERBOARD (GATED) */}
+      <section id="players">
+        <div className="section-header">
+          <div className="section-kicker">PLAYER STANDINGS</div>
+          <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
+          <div className="section-rule" />
+        </div>
 
-              <div className="board">
-                <div className="board-title">
-                  Top Riders — Mid-Season Snapshot
+        <div
+          style={{
+            position: "relative",
+            marginTop: "20px",
+          }}
+        >
+          {!isConnected && (
+            <div
+              onClick={openWallet}
+              aria-label="Sign in required to view rider standings"
+              role="button"
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 50,
+                background: "rgba(0,0,0,0.25)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "22px",
+                textAlign: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "8px",
+                  }}
+                >
+                  COWBOY POLO CIRCUIT STANDINGS
                 </div>
-                <div className="board-sub">
-                  Handicaps update as sanctioned results are submitted.
-                </div>
-
-                <div className="board-header">
-                  <span>Rider</span>
-                  <span>Chapter</span>
-                  <span>Handicap</span>
-                </div>
-                <div className="board-row">
-                  <span>Ryder Mitchell</span>
-                  <span>Charleston</span>
-                  <span className="handicap-value">
-                    <span className="handicap-value-main">2</span>
-                    <span className="handicap-value-decimal">.15</span>
-                  </span>
-                </div>
-                <div className="board-row">
-                  <span>Casey Navarro</span>
-                  <span>Three Sevens 7̶7̶7̶</span>
-                  <span className="handicap-value">
-                    <span className="handicap-value-main">1</span>
-                    <span className="handicap-value-decimal">.40</span>
-                  </span>
-                </div>
-                <div className="board-row">
-                  <span>Jess Carter</span>
-                  <span>Independent</span>
-                  <span className="handicap-value">
-                    <span className="handicap-value-main">1</span>
-                    <span className="handicap-value-decimal">.25</span>
-                  </span>
-                </div>
-                <div className="board-row">
-                  <span>Lane Douglas</span>
-                  <span>Charleston</span>
-                  <span className="handicap-value">
-                    <span className="handicap-value-main">0</span>
-                    <span className="handicap-value-decimal">.85</span>
-                  </span>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: 1.6,
+                    color: "#f5eedc",
+                  }}
+                >
+                  Sign into your Patron Wallet to view live rider handicaps and
+                  Circuit tables.
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-      </PanScene>
+          )}
 
-      {/* SCENE 3: third photo (right ➜ left) + HORSES / REMUDA */}
-      <PanScene src="/images/cowboy-3.jpeg" direction="rtl">
-        <section id="horses">
-          <div className="section-header">
-            <div className="section-kicker">
-              <div className="three-sevens-mark">
-                <div className="three-sevens-numeral">7̶7̶7̶</div>
-                <div className="three-sevens-text">THREE SEVENS REMUDA</div>
-              </div>
+          <div aria-hidden={!isConnected && true}>
+            <div className="section-body">
+              <p>
+                Player handicaps in the Cowboy Polo Circuit are not just static
+                numbers. Each rider’s Cowboy Polo handicap is a statistically
+                calculated, ELO-style rating, updated after every sanctioned
+                chukker and displayed to two decimal places.
+              </p>
+              <p>
+                Ratings move with performance over time: goals scored, assists,
+                ride-offs won, and overall impact on the match all feed the
+                same underlying score. The table below shows how a leaderboard
+                might appear during mid-season.
+              </p>
             </div>
-            <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
-            <div className="section-rule" />
-          </div>
 
-          <div
-            style={{
-              position: "relative",
-              marginTop: "20px",
-            }}
-          >
-            {!isConnected && (
-              <div
-                onClick={openWallet}
-                aria-label="Sign in required to view Remuda tables"
-                role="button"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  zIndex: 50,
-                  background: "rgba(0,0,0,0.25)",
-                  backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "22px",
-                  textAlign: "center",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.22em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    REMUDA &amp; HORSE PERFORMANCE
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      lineHeight: 1.6,
-                      color: "#f5eedc",
-                    }}
-                  >
-                    Sign into your Patron Wallet to view tracked horses and
-                    Remuda performance.
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div aria-hidden={!isConnected && true}>
-              <div className="section-body">
-                <p>
-                  The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
-                  horses — tracked from their first Cowboy Polo chukker through
-                  their entire competitive career.
-                </p>
-                <p>
-                  Every sanctioned appearance adds to a horse’s trace: chukkers
-                  played, riders carried, contribution to wins, and awards
-                  earned across chapters and seasons. The same horse might be
-                  bred in one place, started by another, developed by a pro,
-                  and later carry juniors and patrons.
-                </p>
-                <p>
-                  By keeping a single, living record for each Remuda horse,
-                  breeders, trainers, players, and patrons can all see the full
-                  life of an equine athlete — not just a single sale moment.
-                </p>
-                <p>
-                  Over time, those records can be linked into the Patronium
-                  ecosystem so that the people who helped bring a horse along
-                  its path can participate in its economic story, not only its
-                  final ownership.
-                </p>
+            <div className="board">
+              <div className="board-title">Top Riders — Mid-Season Snapshot</div>
+              <div className="board-sub">
+                Handicaps update as sanctioned results are submitted.
               </div>
 
-              <div className="board">
-                <div className="board-title">
-                  Remuda Horses — Performance Snapshot
-                </div>
-                <div className="board-sub">
-                  Score blends chukker count, match impact, and rider feedback
-                  across the season.
-                </div>
-
-                <div className="board-header">
-                  <span>Horse</span>
-                  <span>String</span>
-                  <span>Score</span>
-                </div>
-                <div className="board-row">
-                  <span>Thunderbird</span>
-                  <span>7̶7̶7̶</span>
-                  <span>92</span>
-                </div>
-                <div className="board-row">
-                  <span>Sundance</span>
-                  <span>7̶7̶7̶</span>
-                  <span>88</span>
-                </div>
-                <div className="board-row">
-                  <span>Cholla</span>
-                  <span>Private</span>
-                  <span>81</span>
-                </div>
-                <div className="board-row">
-                  <span>River Scout</span>
-                  <span>7̶7̶7̶</span>
-                  <span>79</span>
-                </div>
+              <div className="board-header">
+                <span>Rider</span>
+                <span>Chapter</span>
+                <span>Handicap</span>
+              </div>
+              <div className="board-row">
+                <span>Ryder Mitchell</span>
+                <span>Charleston</span>
+                <span className="handicap-value">
+                  <span className="handicap-value-main">2</span>
+                  <span className="handicap-value-decimal">.15</span>
+                </span>
+              </div>
+              <div className="board-row">
+                <span>Casey Navarro</span>
+                <span>Three Sevens 7̶7̶7̶</span>
+                <span className="handicap-value">
+                  <span className="handicap-value-main">1</span>
+                  <span className="handicap-value-decimal">.40</span>
+                </span>
+              </div>
+              <div className="board-row">
+                <span>Jess Carter</span>
+                <span>Independent</span>
+                <span className="handicap-value">
+                  <span className="handicap-value-main">1</span>
+                  <span className="handicap-value-decimal">.25</span>
+                </span>
+              </div>
+              <div className="board-row">
+                <span>Lane Douglas</span>
+                <span>Charleston</span>
+                <span className="handicap-value">
+                  <span className="handicap-value-main">0</span>
+                  <span className="handicap-value-decimal">.85</span>
+                </span>
               </div>
             </div>
           </div>
-        </section>
-      </PanScene>
+        </div>
+      </section>
+
+      {/* IMAGE 3 — pan right again */}
+      <PanFrame src="/images/cowboy-3.jpeg" direction="right" />
+
+      {/* HORSE & REMUDA SECTION (GATED) */}
+      <section id="horses">
+        <div className="section-header">
+          <div className="section-kicker">
+            <div className="three-sevens-mark">
+              <div className="three-sevens-numeral">7̶7̶7̶</div>
+              <div className="three-sevens-text">THREE SEVENS REMUDA</div>
+            </div>
+          </div>
+          <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
+          <div className="section-rule" />
+        </div>
+
+        <div
+          style={{
+            position: "relative",
+            marginTop: "20px",
+          }}
+        >
+          {!isConnected && (
+            <div
+              onClick={openWallet}
+              aria-label="Sign in required to view Remuda tables"
+              role="button"
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 50,
+                background: "rgba(0,0,0,0.25)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "22px",
+                textAlign: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "8px",
+                  }}
+                >
+                  REMUDA &amp; HORSE PERFORMANCE
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    lineHeight: 1.6,
+                    color: "#f5eedc",
+                  }}
+                >
+                  Sign into your Patron Wallet to view tracked horses and
+                  Remuda performance.
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div aria-hidden={!isConnected && true}>
+            <div className="section-body">
+              <p>
+                The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
+                horses — tracked from their first Cowboy Polo chukker through
+                their entire competitive career.
+              </p>
+              <p>
+                Every sanctioned appearance adds to a horse’s trace: chukkers
+                played, riders carried, contribution to wins, and awards earned
+                across chapters and seasons. The same horse might be bred in one
+                place, started by another, developed by a pro, and later carry
+                juniors and patrons.
+              </p>
+              <p>
+                By keeping a single, living record for each Remuda horse,
+                breeders, trainers, players, and patrons can all see the full
+                life of an equine athlete — not just a single sale moment.
+              </p>
+              <p>
+                Over time, those records can be linked into the Patronium
+                ecosystem so that the people who helped bring a horse along its
+                path can participate in its economic story, not only its final
+                ownership.
+              </p>
+            </div>
+
+            <div className="board">
+              <div className="board-title">
+                Remuda Horses — Performance Snapshot
+              </div>
+              <div className="board-sub">
+                Score blends chukker count, match impact, and rider feedback
+                across the season.
+              </div>
+
+              <div className="board-header">
+                <span>Horse</span>
+                <span>String</span>
+                <span>Score</span>
+              </div>
+              <div className="board-row">
+                <span>Thunderbird</span>
+                <span>7̶7̶7̶</span>
+                <span>92</span>
+              </div>
+              <div className="board-row">
+                <span>Sundance</span>
+                <span>7̶7̶7̶</span>
+                <span>88</span>
+              </div>
+              <div className="board-row">
+                <span>Cholla</span>
+                <span>Private</span>
+                <span>81</span>
+              </div>
+              <div className="board-row">
+                <span>River Scout</span>
+                <span>7̶7̶7̶</span>
+                <span>79</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* RESULTS / NETLIFY FORM (GATED) */}
       <section id="results">
