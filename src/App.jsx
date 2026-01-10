@@ -72,7 +72,7 @@ const cowboyWalletTheme = darkTheme({
 
 // ---------------------------------------------
 // Zoom-on-scroll full-bleed photo band
-//  - zoom: starting zoom (e.g. 3.5 = 3.5x)
+//  - zoom: starting zoom (e.g. 30 = 30x)
 //  - speed: how aggressively it eases back to 1x
 //  - finishFactor: >1 = finish zooming earlier in scroll
 // ---------------------------------------------
@@ -80,7 +80,7 @@ function ParallaxBand({
   src,
   children,
   first = false,
-  zoom = 20,
+  zoom = 30,
   speed = 0.3,
   finishFactor = 2, // tuned so zoom-out feels right
 }) {
@@ -147,7 +147,6 @@ function ParallaxBand({
         <div className="parallax-vignette" />
       </div>
 
-      {/* Reserved slot for badges if you ever want them */}
       <div className="parallax-content">{children}</div>
     </div>
   );
@@ -359,7 +358,7 @@ export default function App() {
       <ParallaxBand
         src="/images/cowboy-1.jpeg"
         first
-        zoom={20}
+        zoom={30}
         speed={0.3}
         finishFactor={2}
       />
@@ -370,7 +369,7 @@ export default function App() {
         ref={roadmapGateRef}
         className="band-section"
         style={{
-          marginTop: "0",
+          marginTop: 0,
           paddingTop: "56px",
         }}
       >
@@ -421,7 +420,7 @@ export default function App() {
       {/* PHOTO BAND 2 (image only) */}
       <ParallaxBand
         src="/images/cowboy-2.jpeg"
-        zoom={20}
+        zoom={30}
         speed={0.3}
         finishFactor={2}
       />
@@ -431,7 +430,7 @@ export default function App() {
         id="players"
         className="band-section"
         style={{
-          marginTop: "0",
+          marginTop: 0,
           paddingTop: "56px",
         }}
       >
@@ -530,7 +529,12 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Casey Navarro</span>
-                <span>Three Sevens 7̶7̶7̶</span>
+                <span>
+                  <span className="cp-mark">
+                    <span>C</span>
+                    <span className="cp-sub">P</span>
+                  </span>
+                </span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">1</span>
                   <span className="handicap-value-decimal">.40</span>
@@ -560,7 +564,7 @@ export default function App() {
       {/* PHOTO BAND 3 (image only) */}
       <ParallaxBand
         src="/images/cowboy-3.jpeg"
-        zoom={20}
+        zoom={30}
         speed={0.3}
         finishFactor={2}
       />
@@ -570,7 +574,7 @@ export default function App() {
         id="horses"
         className="band-section"
         style={{
-          marginTop: "0",
+          marginTop: 0,
           paddingTop: "56px",
         }}
       >
@@ -581,9 +585,9 @@ export default function App() {
               <div className="three-sevens-text">THREE SEVENS REMUDA</div>
             </div>
           </div>
+          <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
+          <div className="section-rule" />
         </div>
-        <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
-        <div className="section-rule" />
 
         <div
           style={{
@@ -688,7 +692,7 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Cholla</span>
-                <span>Private</span>
+                <span>6666</span>
                 <span>81</span>
               </div>
               <div className="board-row">
