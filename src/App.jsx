@@ -908,7 +908,7 @@ export default function App() {
                     rel="noreferrer"
                     style={{ color: "#e3bf72", textDecoration: "none" }}
                   >
-                    USPOLOPATRONS.org
+                    USPoloPatrons.org
                   </a>{" "}
                   and{" "}
                   <a
