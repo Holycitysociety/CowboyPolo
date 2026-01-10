@@ -71,89 +71,61 @@ const cowboyWalletTheme = darkTheme({
 });
 
 // ---------------------------------------------
-// Cinematic pan-on-scroll photo frame
+// Scroll-linked zoom-out photo frame
 // ---------------------------------------------
-function PanFrame({ src, direction = "right" }) {
+function ZoomFrame({ src, maxScale = 3.5, focal = "50% 50%" }) {
   const frameRef = useRef(null);
-  const stickyRef = useRef(null);
   const imgRef = useRef(null);
 
   useEffect(() => {
-    if (!frameRef.current || !stickyRef.current || !imgRef.current) return;
-
     let raf = 0;
-    let maxShift = 0;
-
-    const computeMaxShift = () => {
-      if (!stickyRef.current || !imgRef.current) return;
-      const cw = stickyRef.current.clientWidth;
-      const iw = imgRef.current.clientWidth;
-      maxShift = Math.max(iw - cw, 0);
-    };
 
     const update = () => {
       if (!frameRef.current || !imgRef.current) return;
 
       const rect = frameRef.current.getBoundingClientRect();
       const vh = window.innerHeight || 1;
-      const totalScrollable = rect.height - vh;
 
-      if (totalScrollable <= 0) {
-        imgRef.current.style.transform = "translate3d(0,0,0)";
-        return;
-      }
+      // SPEED controls how quickly the zoom finishes.
+      // Smaller SPEED => “faster” zoom; larger => slower.
+      const SPEED = 0.9;
 
-      const raw = -rect.top / totalScrollable;
-      const progress = Math.min(Math.max(raw, 0), 1);
+      // progress 0 → 1 as the frame moves through the viewport
+      let rawProgress = 1 - rect.top / (vh * SPEED);
+      if (rawProgress < 0) rawProgress = 0;
+      if (rawProgress > 1) rawProgress = 1;
 
-      const sign = direction === "left" ? 1 : -1;
-      const shift = sign * maxShift * progress;
+      const scale = maxScale - (maxScale - 1) * rawProgress;
 
-      imgRef.current.style.transform = `translate3d(${shift}px,0,0)`;
+      imgRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
     };
 
-    const handleScroll = () => {
+    const onScrollOrResize = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(update);
     };
 
-    const handleResize = () => {
-      computeMaxShift();
-      update();
-    };
-
-    computeMaxShift();
     update();
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
     };
-  }, [direction]);
-
-  const handleImgLoad = () => {
-    // Recompute once intrinsic size is known
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("resize"));
-    }
-  };
+  }, [maxScale]);
 
   return (
-    <section ref={frameRef} className="pan-frame full-bleed">
-      <div ref={stickyRef} className="pan-frame-sticky">
-        <img
-          ref={imgRef}
-          src={src}
-          alt=""
-          className="pan-frame-img"
-          onLoad={handleImgLoad}
-        />
-        <div className="pan-frame-vignette" aria-hidden="true" />
-      </div>
+    <section ref={frameRef} className="zoom-frame full-bleed">
+      <img
+        ref={imgRef}
+        src={src}
+        alt=""
+        className="zoom-img"
+        style={{ transformOrigin: focal }}
+      />
+      <div className="zoom-vignette" aria-hidden="true" />
     </section>
   );
 }
@@ -360,8 +332,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* IMAGE 1 — pan right */}
-      <PanFrame src="/images/cowboy-1.jpeg" direction="right" />
+      {/* ZOOMED PHOTO 1 */}
+      <ZoomFrame src="/images/cowboy-1.jpeg" maxScale={3.5} focal="50% 50%" />
 
       {/* ABOUT / HOW IT FUNCTIONS (scroll gate attaches here) */}
       <section id="about" ref={roadmapGateRef}>
@@ -409,8 +381,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* IMAGE 2 — pan left */}
-      <PanFrame src="/images/cowboy-2.jpeg" direction="left" />
+      {/* ZOOMED PHOTO 2 */}
+      <ZoomFrame src="/images/cowboy-2.jpeg" maxScale={3.5} focal="50% 50%" />
 
       {/* PLAYER LEADERBOARD (GATED) */}
       <section id="players">
@@ -482,9 +454,9 @@ export default function App() {
               </p>
               <p>
                 Ratings move with performance over time: goals scored, assists,
-                ride-offs won, and overall impact on the match all feed the
-                same underlying score. The table below shows how a leaderboard
-                might appear during mid-season.
+                ride-offs won, and overall impact on the match all feed the same
+                underlying score. The table below shows how a leaderboard might
+                appear during mid-season.
               </p>
             </div>
 
@@ -536,8 +508,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* IMAGE 3 — pan right again */}
-      <PanFrame src="/images/cowboy-3.jpeg" direction="right" />
+      {/* ZOOMED PHOTO 3 */}
+      <ZoomFrame src="/images/cowboy-3.jpeg" maxScale={3.5} focal="50% 50%" />
 
       {/* HORSE & REMUDA SECTION (GATED) */}
       <section id="horses">
@@ -597,8 +569,8 @@ export default function App() {
                     color: "#f5eedc",
                   }}
                 >
-                  Sign into your Patron Wallet to view tracked horses and
-                  Remuda performance.
+                  Sign into your Patron Wallet to view tracked horses and Remuda
+                  performance.
                 </div>
               </div>
             </div>
@@ -669,6 +641,257 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {/* WALLET MODAL */}
+      {isWalletOpen && (
+        <div
+          className="wallet-modal-backdrop"
+          onClick={closeWallet}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.86)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            padding: "14px",
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: "380px" }}>
+            <div
+              ref={walletScrollRef}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: "100%",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                border: "1px solid #3a2b16",
+                borderRadius: "14px",
+                padding: "16px",
+                paddingTop: "26px",
+                background: "#050505",
+                boxShadow: "0 18px 60px rgba(0,0,0,0.85)",
+                fontFamily:
+                  '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
+                color: "#f5eedc",
+                fontSize: "13px",
+                position: "relative",
+              }}
+            >
+              {/* Modal header */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "8px",
+                  position: "relative",
+                  paddingTop: "4px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "18px",
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  PATRON WALLET
+                </div>
+
+                <button
+                  onClick={closeWallet}
+                  aria-label="Close wallet"
+                  title="Close"
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: "56px",
+                    height: "56px",
+                    border: "none",
+                    background: "transparent",
+                    color: "#e3bf72",
+                    fontSize: "38px",
+                    lineHeight: 1,
+                    cursor: "pointer",
+                    padding: 0,
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* Explanatory copy under title (ONLY when not signed in) */}
+              {!account && (
+                <p
+                  style={{
+                    margin: "0 0 14px",
+                    fontSize: "12px",
+                    lineHeight: 1.5,
+                    textAlign: "center",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "#dec89a",
+                  }}
+                >
+                  Sign up with your email to create your Cowboy Polo Patron
+                  Wallet. After you sign in, you&apos;ll receive an email with
+                  the Cowboy Polo Circuit signup details.
+                </p>
+              )}
+
+              {/* Connect or account view */}
+              {!account ? (
+                <div style={{ marginBottom: "14px" }}>
+                  <ConnectEmbed
+                    client={client}
+                    wallets={wallets}
+                    chain={BASE}
+                    theme={cowboyWalletTheme}
+                  />
+                </div>
+              ) : (
+                <div style={{ marginBottom: "14px", textAlign: "center" }}>
+                  {/* Address + copy */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: "10px",
+                      marginTop: "2px",
+                    }}
+                  >
+                    <div style={{ fontFamily: "monospace", fontSize: "13px" }}>
+                      {shortAddress}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCopyAddress}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        color: "#e3bf72",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                      }}
+                      aria-label="Copy wallet address"
+                    >
+                      📋
+                    </button>
+                  </div>
+
+                  {/* Balances */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "28px",
+                      marginBottom: "10px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "#9f8a64",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Gas
+                      </div>
+                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
+                        {baseBalance?.displayValue || "0"}{" "}
+                        {baseBalance?.symbol || "ETH"}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "#9f8a64",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        USDC
+                      </div>
+                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
+                        {usdcBalance?.displayValue || "0"}{" "}
+                        {usdcBalance?.symbol || "USDC"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "12px" }}>
+                    <div
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.18em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Patronium Balance
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "18px",
+                        letterSpacing: "0.02em",
+                        color: "#f5eedc",
+                      }}
+                    >
+                      {patronBalance?.displayValue || "0"}{" "}
+                      {patronBalance?.symbol || "PATRON"}
+                    </div>
+                  </div>
+
+                  <button
+                    className="btn btn-outline"
+                    style={{
+                      minWidth: "auto",
+                      padding: "6px 18px",
+                      fontSize: "11px",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                    }}
+                    onClick={handleSignOut}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+
+              {/* Small note */}
+              <p
+                style={{
+                  marginTop: "10px",
+                  fontSize: "11px",
+                  lineHeight: 1.5,
+                  color: "#c7b08a",
+                  textAlign: "center",
+                }}
+              >
+                This Patron Wallet works across the Cowboy Polo Circuit and the
+                Polo Patronium site on Base.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* RESULTS / NETLIFY FORM (GATED) */}
       <section id="results">
