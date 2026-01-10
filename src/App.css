@@ -1,513 +1,572 @@
-/* ---------------------------------------
-   Base layout / typography
---------------------------------------- */
 :root {
-  --bg: #050505;
-  --ink: #f5eedc;
-  --muted: #c7b08a;
-  --gold: #e3bf72;
-  --line: rgba(246, 241, 230, 0.16);
-  --glass: rgba(5, 5, 5, 0.86);
+  --bg: #000000;
+  --fg: #ffffff;
+  --muted: #c7c7c7;
+  --ink: #111111;
+  --border: #333333;
+  --accent: #ffffff;
+  --max-width: 900px;
+
+  /* vertical spacing between parallax bands + sections */
+  --section-gap: 56px;
 }
 
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
 }
 
-html,
 body {
   margin: 0;
-  padding: 0;
-  background: radial-gradient(circle at top, #15110c 0%, #050505 52%, #020202 100%);
-  color: var(--ink);
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
-}
-
-body {
-  -webkit-font-smoothing: antialiased;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "EB Garamond", serif;
+  line-height: 1.65;
 }
 
 .page {
-  min-height: 100vh;
-  max-width: 1040px;
+  max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 16px 40px;
+  padding: 36px 18px 96px;
 }
 
-/* ---------------------------------------
-   Buttons
---------------------------------------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  border: 1px solid var(--gold);
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 8px 24px;
-  background: transparent;
-  color: var(--gold);
-  cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease,
-    transform 0.12s ease;
+/* Full-bleed helper for 100vw bands inside centered page */
+.full-bleed {
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 
-.btn:active {
-  transform: translateY(1px);
-}
+/* -----------------------------
+   Parallax / zoom photo bands
+   ----------------------------- */
 
-.btn-outline {
-  background: transparent;
-}
-
-.btn-outline:hover {
-  background: rgba(227, 191, 114, 0.08);
-  border-color: #f0cf7c;
-}
-
-.btn-primary {
-  background: var(--gold);
-  color: #181210;
-  border-color: var(--gold);
-}
-
-.btn-primary:hover {
-  background: #f0cf7c;
-  border-color: #f0cf7c;
-}
-
-/* ---------------------------------------
-   Hero Poster
---------------------------------------- */
-.hero {
-  text-align: center;
-  padding: 28px 6px 40px;
-  margin-bottom: 10px;
-  position: relative;
-}
-
-.hero-topline {
-  font-family: "Cinzel", "EB Garamond", serif;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.hero-rule,
-.hero-rule-2 {
-  height: 1px;
-  width: 140px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(246, 241, 230, 0.6),
-    transparent
-  );
-  margin: 10px auto;
-  opacity: 0.9;
-}
-
-.hero-presents {
-  font-size: 10px;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  margin-top: 6px;
-  color: rgba(246, 241, 230, 0.7);
-}
-
-.hero-main {
-  margin-top: 22px;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-word {
-  display: inline-block;
-  font-family: "Cinzel", serif;
-  text-transform: uppercase;
-  letter-spacing: 0.32em;
-}
-
-.hero-word.cowboy {
-  font-size: 1.6rem;
-}
-
-.hero-word.polo {
-  font-size: 2.1rem;
-}
-
-.hero-word.circuit {
-  font-size: 1.3rem;
-}
-
-.hero-tagline {
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(246, 241, 230, 0.75);
-  margin-top: 8px;
-  line-height: 1.7;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.hero-badges {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  margin-top: 20px;
-}
-
-.hero-badge-intro {
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.three-sevens-mark {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.three-sevens-numeral {
-  font-family: "Cinzel", serif;
-  font-size: 1.3rem;
-  letter-spacing: 0.42em;
-}
-
-.three-sevens-text {
-  font-size: 11px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-}
-
-.hero-cta-row {
-  margin-top: 20px;
-}
-
-/* ---------------------------------------
-   Parallax / zoom bands
---------------------------------------- */
 .parallax-band {
   position: relative;
-  min-height: 100vh;
   overflow: hidden;
+  background: #000;
+  margin-top: var(--section-gap);
 }
 
-/* Make them full-bleed horizontally */
-.full-bleed {
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-}
-
+/* First band sits a bit closer to the hero */
 .parallax-band-first {
-  margin-top: 4px;
+  margin-top: 32px;
 }
 
+/* Image layer */
 .parallax-media {
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  background: #000;
+  z-index: 0;
 }
 
+/* Centered image; zoom transform applied in JS */
 .parallax-img {
   position: absolute;
-  top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 0) scale(3.5);
-  width: auto;
-  height: 130%;
-  min-width: 100%;
-  object-fit: cover;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: translate3d(-50%, -50%, 0) scale(1);
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
 }
 
-/* Gentle vignette so we don't kill the photos */
+/* Feather edges into black; slightly softened vs ultra-dark */
 .parallax-vignette {
   position: absolute;
   inset: 0;
+  pointer-events: none;
   background:
-    radial-gradient(circle at center, rgba(0, 0, 0, 0.0) 0%, rgba(0, 0, 0, 0.55) 70%),
     linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.65) 0%,
-      rgba(0, 0, 0, 0.35) 35%,
-      rgba(0, 0, 0, 0.85) 100%
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.15) 25%,
+      rgba(0, 0, 0, 0.22) 60%,
+      rgba(0, 0, 0, 0.9) 100%
     );
-  pointer-events: none;
 }
 
-/* Content sits over bottom portion of band */
+/* Content in the band:
+   - empty space at top (~full viewport) to see the photo
+   - then text rides over the lower part / fade
+*/
 .parallax-content {
   position: relative;
   z-index: 2;
-  display: flex;
-  justify-content: center;
+  padding: 0 18px clamp(64px, 9vh, 120px); /* bottom padding */
+  padding-top: calc(100vh + clamp(24px, 4vh, 56px));
+  max-width: var(--max-width);
+  margin: 0 auto;
 }
 
-/* ---------------------------------------
-   Sections that follow each photo band
---------------------------------------- */
+/* Inside parallax bands we don't want extra top section margin */
 .band-section {
-  position: relative;
-  max-width: 1040px;
-  margin: -40px auto 40px; /* overlap the title slightly over the bottom of the photo */
-  padding: 56px 16px 72px;
-  background: #050505;
+  margin-top: 0;
+}
+
+/* Strong text shadow on light text over photos */
+.parallax-band .section-title,
+.parallax-band .section-kicker,
+.parallax-band .board-title,
+.parallax-band .board-sub,
+.parallax-band .board-header,
+.parallax-band .board-row {
+  text-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.95),
+    0 0 4px rgba(0, 0, 0, 0.95);
+}
+
+/* -----------------------------
+   HERO POSTER (Tall & Centered)
+   ----------------------------- */
+
+.hero {
+  text-align: center;
+  padding: 56px 18px 64px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 30% 10%, #333333 0, #000000 50%),
+    linear-gradient(to bottom, #111111, #000000 55%, #121212 100%);
+}
+
+.hero-topline {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.hero-rule {
+  width: 260px;
+  margin: 16px auto 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.hero-presents {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.hero-main {
+  margin-top: 24px;
+}
+
+.hero-main .the {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+
+.hero-word {
+  display: block;
+  text-transform: uppercase;
+  font-family: "Cormorant Garamond", serif;
+  line-height: 0.92;
+  letter-spacing: 0.2em;
+}
+
+.hero-word.cowboy {
+  font-size: clamp(2.6rem, 7vw, 3.4rem);
+  font-weight: 700;
+}
+
+.hero-word.polo {
+  font-size: clamp(2.1rem, 6vw, 2.8rem);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.hero-word.circuit {
+  font-size: clamp(1.7rem, 5vw, 2.2rem);
+  font-weight: 600;
+  margin-top: 6px;
+  letter-spacing: 0.28em;
+}
+
+.hero-tagline {
+  margin-top: 26px;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.hero-rule-2 {
+  width: 190px;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  margin: 20px auto 22px;
+}
+
+/* INTRODUCING + THREE SEVENS */
+.hero-badges {
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.hero-badges span {
+  display: inline-block;
+  margin: 0 8px;
+}
+
+.hero-badge-intro {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+
+/* STREAMING ON · THE POLO WAY */
+.hero-streaming {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.hero-streaming-mark {
+  margin-top: 4px;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+
+/* HERO CTA */
+.hero-cta-row {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* little explanatory line under wallet button */
+.hero-wallet-copy {
+  margin-top: 16px;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--fg);
+  color: #000;
+  border-color: var(--fg);
+}
+
+.btn-primary:hover {
+  background: #fefefe;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+}
+
+/* SECTION SHARED */
+section {
+  margin-top: var(--section-gap);
 }
 
 .section-header {
-  text-align: left;
-  margin-bottom: 16px;
+  text-align: center;
+  margin-bottom: 26px;
 }
 
 .section-kicker {
-  font-size: 11px;
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.8rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 6px;
 }
 
-.section-title {
-  font-family: "Cinzel", serif;
-  font-size: 1.35rem;
-  letter-spacing: 0.12em;
+/* Three Sevens wordmark */
+.three-sevens-mark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.three-sevens-numeral {
+  font-family: "Cormorant Garamond", serif;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  margin: 0;
+}
+
+.three-sevens-text {
+  font-family: "IM Fell English SC", serif;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+/* Size tuning by context */
+.hero-badges .three-sevens-numeral {
+  font-size: 1.3rem;
+}
+
+.hero-badges .three-sevens-text {
+  font-size: 0.72rem;
+  opacity: 0.9;
+}
+
+.section-kicker .three-sevens-numeral {
+  font-size: 1rem;
+}
+
+.section-kicker .three-sevens-text {
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+/* WORDMARK-STYLE TITLES */
+.section-title {
+  position: relative;
+  display: inline-block;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  padding: 6px 22px;
+}
+
+.section-title::before,
+.section-title::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.section-title::before {
+  right: 100%;
+  margin-right: 12px;
+}
+
+.section-title::after {
+  left: 100%;
+  margin-left: 12px;
 }
 
 .section-rule {
-  height: 1px;
-  width: 120px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(246, 241, 230, 0.6),
-    transparent
-  );
-  margin-top: 10px;
+  width: 180px;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  margin: 16px auto 0;
+  opacity: 0.6;
 }
 
 .section-body {
-  font-size: 14px;
-  line-height: 1.7;
-  color: rgba(246, 241, 230, 0.9);
-  max-width: 680px;
+  max-width: 720px;
+  margin: 20px auto 0;
+  color: var(--muted);
+  font-size: 0.98rem;
 }
 
 .section-body p {
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin: 0 0 14px;
+  text-align: justify;
 }
 
-/* ---------------------------------------
-   Boards / tables
---------------------------------------- */
+/* Leaderboard tables */
 .board {
-  margin-top: 18px;
-  padding: 14px 14px 16px;
-  border-radius: 10px;
-  border: 1px solid rgba(227, 191, 114, 0.3);
-  background: radial-gradient(
-      circle at top left,
-      rgba(227, 191, 114, 0.18),
-      transparent 60%
-    ),
-    rgba(5, 5, 5, 0.96);
-  font-size: 13px;
+  max-width: 720px;
+  margin: 22px auto 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #080808;
+  padding: 18px 16px 14px;
+  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.7);
 }
 
 .board-title {
-  font-family: "Cinzel", serif;
-  font-size: 14px;
-  letter-spacing: 0.08em;
+  font-family: "Cormorant Garamond", serif;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  letter-spacing: 0.18em;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
 }
 
 .board-sub {
-  font-size: 11px;
-  color: rgba(246, 241, 230, 0.75);
-  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 8px;
 }
 
 .board-header,
 .board-row {
   display: grid;
-  grid-template-columns: 1.3fr 1.1fr 0.7fr;
-  column-gap: 8px;
-  padding: 5px 0;
-  align-items: center;
+  grid-template-columns: 2fr 1fr 1fr;
+  column-gap: 12px;
+  font-size: 0.9rem;
 }
 
 .board-header {
-  border-bottom: 1px solid rgba(246, 241, 230, 0.15);
-  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: rgba(246, 241, 230, 0.7);
-}
-
-.board-row + .board-row {
-  border-top: 1px solid rgba(246, 241, 230, 0.06);
-}
-
-.handicap-value {
-  display: inline-flex;
-  align-items: baseline;
-  justify-content: flex-end;
-}
-
-.handicap-value-main {
-  font-family: "Cinzel", serif;
-  font-size: 17px;
-}
-
-.handicap-value-decimal {
-  font-family: "Cinzel", serif;
-  font-size: 13px;
-  opacity: 0.9;
-}
-
-/* ---------------------------------------
-   Results form
---------------------------------------- */
-.results-form {
-  margin-top: 18px;
-  padding: 16px 14px 18px;
-  border-radius: 10px;
-  border: 1px solid rgba(246, 241, 230, 0.28);
-  background: rgba(5, 5, 5, 0.96);
-  font-size: 13px;
-}
-
-.results-form label {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.75rem;
   color: var(--muted);
+  border-bottom: 1px solid #262626;
+  padding-bottom: 6px;
   margin-bottom: 4px;
 }
 
+.board-row {
+  padding: 6px 0;
+  border-bottom: 1px dashed #202020;
+}
+
+.board-row:last-child {
+  border-bottom: 0;
+}
+
+.board-row span:last-child {
+  text-align: right;
+}
+
+.board-row span:nth-child(2) {
+  text-align: center;
+}
+
+/* Handicap formatting */
+.handicap-value {
+  white-space: nowrap;
+}
+
+.handicap-value-main {
+  font-size: 0.9rem;
+}
+
+.handicap-value-decimal {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+/* Results form */
+.results-form {
+  max-width: 720px;
+  margin: 26px auto 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 14px;
+}
+
+.results-form-row-inline {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.results-form-row-inline > div {
+  flex: 1 1 160px;
+}
+
+.results-form label {
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+}
+
 .results-form input,
-.results-form select,
-.results-form textarea {
+.results-form textarea,
+.results-form select {
   width: 100%;
-  padding: 7px 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(246, 241, 230, 0.22);
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
   background: #050505;
-  color: var(--ink);
-  font-size: 13px;
-  font-family: inherit;
+  color: var(--fg);
+  font-family: "EB Garamond", serif;
+  font-size: 0.95rem;
 }
 
 .results-form textarea {
   resize: vertical;
-}
-
-.results-form-row-inline {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 10px;
+  min-height: 110px;
 }
 
 .results-form small {
-  display: block;
-  margin-top: 3px;
-  font-size: 11px;
-  color: rgba(246, 241, 230, 0.75);
+  font-size: 0.78rem;
+  color: var(--muted);
 }
 
-/* ---------------------------------------
-   Footer
---------------------------------------- */
+/* Footer */
 footer {
-  margin-top: 36px;
-  font-size: 11px;
+  margin-top: var(--section-gap);
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
   text-align: center;
-  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(246, 241, 230, 0.7);
 }
 
-/* ---------------------------------------
-   Wallet modal (backdrop styled inline in JSX)
---------------------------------------- */
-.wallet-modal-backdrop {
-  /* left intentionally mostly blank - primary styles are inline */
-}
+/* -----------------------------
+   Mobile adjustments
+   ----------------------------- */
 
-/* ---------------------------------------
-   Responsiveness
---------------------------------------- */
-@media (max-width: 768px) {
-  .page {
-    padding: 0 10px 32px;
-  }
-
+@media (max-width: 640px) {
   .hero {
-    padding: 22px 4px 30px;
-  }
-
-  .hero-main {
-    margin-top: 18px;
-  }
-
-  .hero-word.cowboy {
-    font-size: 1.4rem;
-  }
-
-  .hero-word.polo {
-    font-size: 1.7rem;
-  }
-
-  .hero-word.circuit {
-    font-size: 1.1rem;
-  }
-
-  .section-body {
-    font-size: 13px;
-  }
-
-  .results-form-row-inline {
-    grid-template-columns: 1fr;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .board-header,
   .board-row {
-    grid-template-columns: 1.4fr 1fr 0.7fr;
+    grid-template-columns: 1.8fr 1fr 1.1fr;
   }
-}
 
-/* ---------------------------------------
-   EXTRA MOBILE TWEAK:
-   Pull text sections closer to photos on mobile
-   (Only change you asked for here)
---------------------------------------- */
-@media (max-width: 768px) {
-  #about.band-section,
-  #players.band-section,
-  #horses.band-section {
-    margin-top: -70px;  /* pull section further up into the bottom of the photo */
-    padding-top: 40px;  /* keep titles readable but closer to the band */
+  .section-title::before,
+  .section-title::after {
+    width: 24px;
+  }
+
+  /* Start the text lower on mobile, but not crazy far */
+  .parallax-content {
+    padding-top: calc(80vh + 32px);
+    padding-bottom: 72px;
+  }
+
+  /* First band closer to hero on mobile */
+  .parallax-band-first {
+    margin-top: 16px;
   }
 }
