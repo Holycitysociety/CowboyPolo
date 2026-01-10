@@ -72,8 +72,11 @@ const cowboyWalletTheme = darkTheme({
 
 // ---------------------------------------------
 // Pan + sticky image scene with overlay content
+// direction:
+//   "rtl" = pan from right ➜ left
+//   "ltr" = pan from left ➜ right
 // ---------------------------------------------
-function PanScene({ src, direction = "right", first = false, children }) {
+function PanScene({ src, direction = "ltr", first = false, children }) {
   const sceneRef = useRef(null);
   const stickyRef = useRef(null);
   const imgRef = useRef(null);
@@ -98,7 +101,7 @@ function PanScene({ src, direction = "right", first = false, children }) {
       const vh = window.innerHeight || 1;
       const totalScrollable = rect.height - vh;
 
-      if (totalScrollable <= 0) {
+      if (totalScrollable <= 0 || maxShift <= 0) {
         imgRef.current.style.transform = "translate3d(0,0,0)";
         return;
       }
@@ -106,8 +109,19 @@ function PanScene({ src, direction = "right", first = false, children }) {
       const raw = -rect.top / totalScrollable;
       const progress = Math.min(Math.max(raw, 0), 1);
 
-      const sign = direction === "left" ? 1 : -1;
-      const shift = sign * maxShift * progress;
+      let shift = 0;
+
+      // left-to-right: start left, end right
+      if (direction === "ltr") {
+        shift = -maxShift * progress;
+      }
+      // right-to-left: start right, end left
+      else if (direction === "rtl") {
+        shift = -maxShift * (1 - progress);
+      } else {
+        // default fallback
+        shift = -maxShift * progress;
+      }
 
       imgRef.current.style.transform = `translate3d(${shift}px,0,0)`;
     };
@@ -364,8 +378,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* SCENE 1: first photo + ABOUT text scrolling over it */}
-      <PanScene src="/images/cowboy-1.jpeg" direction="right" first>
+      {/* SCENE 1: first photo (right ➜ left) + ABOUT text */}
+      <PanScene src="/images/cowboy-1.jpeg" direction="rtl" first>
         <section id="about" ref={roadmapGateRef}>
           <div className="section-header">
             <div className="section-kicker">THE FORMAT</div>
@@ -413,8 +427,8 @@ export default function App() {
         </section>
       </PanScene>
 
-      {/* SCENE 2: second photo + PLAYER LEADERBOARD text overlay */}
-      <PanScene src="/images/cowboy-2.jpeg" direction="left">
+      {/* SCENE 2: second photo (left ➜ right) + PLAYER LEADERBOARD */}
+      <PanScene src="/images/cowboy-2.jpeg" direction="ltr">
         <section id="players">
           <div className="section-header">
             <div className="section-kicker">PLAYER STANDINGS</div>
@@ -541,8 +555,8 @@ export default function App() {
         </section>
       </PanScene>
 
-      {/* SCENE 3: third photo + HORSES text overlay */}
-      <PanScene src="/images/cowboy-3.jpeg" direction="right">
+      {/* SCENE 3: third photo (right ➜ left) + HORSES / REMUDA */}
+      <PanScene src="/images/cowboy-3.jpeg" direction="rtl">
         <section id="horses">
           <div className="section-header">
             <div className="section-kicker">
