@@ -80,8 +80,8 @@ function ParallaxBand({
   src,
   children,
   first = false,
-  zoom = 20,
-  speed = .3,
+  zoom = 3.5,
+  speed = 4,
   finishFactor = 2, // tuned so zoom-out feels right
 }) {
   const bandRef = useRef(null);
@@ -147,8 +147,7 @@ function ParallaxBand({
         <div className="parallax-vignette" />
       </div>
 
-      {/* We’re no longer using overlaid text here, but we keep the slot
-          in case you ever want to put small badges/labels on the photo. */}
+      {/* Reserved slot for badges if you ever want them */}
       <div className="parallax-content">{children}</div>
     </div>
   );
@@ -360,13 +359,12 @@ export default function App() {
       <ParallaxBand
         src="/images/cowboy-1.jpeg"
         first
-        zoom={20}
-        speed={.3}
+        zoom={3.5}
+        speed={4}
         finishFactor={2}
       />
 
-      {/* ABOUT / HOW IT FUNCTIONS section BELOW band
-          Slight negative margin so the header overlaps the bottom of the photo */}
+      {/* ABOUT / HOW IT FUNCTIONS section BELOW band */}
       <section
         id="about"
         ref={roadmapGateRef}
@@ -423,8 +421,8 @@ export default function App() {
       {/* PHOTO BAND 2 (image only) */}
       <ParallaxBand
         src="/images/cowboy-2.jpeg"
-        zoom={20}
-        speed={.3}
+        zoom={3.5}
+        speed={4}
         finishFactor={2}
       />
 
@@ -458,7 +456,7 @@ export default function App() {
                 position: "absolute",
                 inset: 0,
                 zIndex: 50,
-                background: "rgba(0,0,0,0.35)",
+                background: "rgba(0, 0, 0, 0.6)", // stronger dark overlay, no blur
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -562,8 +560,8 @@ export default function App() {
       {/* PHOTO BAND 3 (image only) */}
       <ParallaxBand
         src="/images/cowboy-3.jpeg"
-        zoom={20}
-        speed={.3}
+        zoom={3.8}
+        speed={4}
         finishFactor={2}
       />
 
@@ -602,7 +600,7 @@ export default function App() {
                 position: "absolute",
                 inset: 0,
                 zIndex: 50,
-                background: "rgba(0,0,0,0.35)",
+                background: "rgba(0, 0, 0, 0.6)", // stronger dark overlay, no blur
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -979,7 +977,7 @@ export default function App() {
                 position: "absolute",
                 inset: 0,
                 zIndex: 50,
-                background: "rgba(0,0,0,0.35)",
+                background: "rgba(0, 0, 0, 0.6)", // stronger dark overlay, no blur
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
