@@ -558,12 +558,12 @@ footer {
 
   /* On mobile, don't push text a full 100vh down; let it appear sooner */
   .parallax-content {
-    padding-top: clamp(100px, 50vh, 300px);
+    padding-top: clamp(500px, 50vh, 500px);
   }
 
   /* First band: kill the feeling of a huge gap before the first photo */
   .parallax-band-first {
-    margin-top: 32px;
+    margin-top: 10px;
   }
 
   /* Anchor the first photo a bit higher on mobile so you see it sooner */
