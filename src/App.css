@@ -47,7 +47,7 @@ body {
 
 /* Give the first band a slightly tighter link on some devices */
 .parallax-band-first {
-  margin-top: 56px;
+  margin-top: 20px;
 }
 
 /* Image layer */
