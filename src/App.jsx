@@ -901,8 +901,25 @@ export default function App() {
                   }}
                 >
                   Sign up with your email to create your Cowboy Polo Patron
-                  Wallet. This same wallet works on USPOLOPATRONS.org and Polo
-                  Patronium.
+                  Wallet. This same wallet works on{" "}
+                  <a
+                    href="https://uspolopatrons.org"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#e3bf72", textDecoration: "none" }}
+                  >
+                    USPOLOPATRONS.org
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://polopatronium.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#e3bf72", textDecoration: "none" }}
+                  >
+                    PoloPatronium.com
+                  </a>
+                  .
                 </p>
               )}
 
@@ -1134,8 +1151,25 @@ export default function App() {
                   textAlign: "center",
                 }}
               >
-                This Patron Wallet works across the Cowboy Polo Circuit, the
-                USPOLOPATRONS.org site, and the Polo Patronium site on Base.
+                This Patron Wallet works across the Cowboy Polo Circuit,{" "}
+                <a
+                  href="https://uspolopatrons.org"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#e3bf72", textDecoration: "none" }}
+                >
+                  USPOLOPATRONS.org
+                </a>{" "}
+                and{" "}
+                <a
+                  href="https://polopatronium.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#e3bf72", textDecoration: "none" }}
+                >
+                  PoloPatronium.com
+                </a>
+                .
               </p>
             </div>
           </div>
@@ -1302,7 +1336,24 @@ export default function App() {
 
       <footer>
         © <span>{year}</span> UNITED STATES POLO PATRONS ASSOCIATION · COWBOY
-        POLO CIRCUIT
+        POLO CIRCUIT ·{" "}
+        <a
+          href="https://uspolopatrons.org"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: "#e3bf72", textDecoration: "none" }}
+        >
+          USPOLOPATRONS.org
+        </a>{" "}
+        ·{" "}
+        <a
+          href="https://polopatronium.com"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: "#e3bf72", textDecoration: "none" }}
+        >
+          PoloPatronium.com
+        </a>
       </footer>
     </div>
   );
