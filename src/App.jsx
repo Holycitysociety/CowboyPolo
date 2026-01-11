@@ -111,7 +111,7 @@ function ParallaxBand({
   children,
   first = false,
   zoom = 30,
-  speed = 1,
+  speed = .1,
   finishFactor = 2,
 }) {
   const bandRef = useRef(null);
@@ -429,7 +429,7 @@ export default function App() {
         src="/images/cowboy-1.jpeg"
         first
         zoom={30}
-        speed={1}
+        speed={.1}
         finishFactor={2}
       />
 
@@ -492,7 +492,7 @@ export default function App() {
       <ParallaxBand
         src="/images/cowboy-2.jpeg"
         zoom={30}
-        speed={1}
+        speed={.1}
         finishFactor={2}
       />
 
@@ -631,7 +631,7 @@ export default function App() {
       <ParallaxBand
         src="/images/cowboy-3.jpeg"
         zoom={30}
-        speed={1}
+        speed={.1}
         finishFactor={2}
       />
 
