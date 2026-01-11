@@ -729,10 +729,9 @@ export default function App() {
                 life of an equine athlete — not just a single sale moment.
               </p>
               <p>
-                Over time, those records can be linked into the Patronium
+                Those records will be linked into the Polo Patronium
                 ecosystem so that the people who helped bring a horse along its
-                path can participate in its economic story, not only its final
-                ownership.
+                path can participate in its entire career life cycle.
               </p>
             </div>
 
