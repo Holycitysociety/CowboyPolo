@@ -449,8 +449,7 @@ export default function App() {
           <div className="section-rule" />
         </div>
 
-       
-                <div className="section-body">
+        <div className="section-body">
           <p>
             The Cowboy Polo Circuit is a national development league for
             players, ponies, &amp; patrons built on sanctioned and recorded
@@ -487,9 +486,6 @@ export default function App() {
             Circuit from anywhere.
           </p>
         </div>
-        
-        
-        
       </section>
 
       {/* PHOTO BAND 2 (image only) */}
@@ -713,25 +709,31 @@ export default function App() {
             <div className="section-body">
               <p>
                 The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
-                horses — tracked from their first Cowboy Polo chukker through
-                their entire competitive career.
+                horses — brought up inside the Cowboy Polo Circuit and tracked
+                from their first saddle miles to their final retirement. We
+                don&apos;t buy finished polo ponies; we make them. Every horse
+                that enters the 7̶7̶7̶ Remuda is a training project, and riders
+                in the Circuit learn not only how to play, but how to help
+                produce a polo horse.
               </p>
               <p>
-                Every sanctioned appearance adds to a horse’s trace: chukkers
-                played, riders carried, contribution to wins, and awards earned
-                across chapters and seasons. The same horse might be bred in one
-                place, started by another, developed by a pro, and later carry
-                juniors and patrons.
+                Every sanctioned appearance adds to a horse&apos;s career
+                record: chukkers played, riders carried, contribution to wins,
+                and awards earned across chapters and seasons. The same horse
+                might be bred in one place, started by another, developed by a
+                pro, and later carry juniors, patrons, and finally step down
+                into lesson, therapy, or pasture retirement.
               </p>
               <p>
                 By keeping a single, living record for each Remuda horse,
-                breeders, trainers, players, and patrons can all see the full
-                life of an equine athlete — not just a single sale moment.
+                breeders, trainers, players, and patrons can see the whole life
+                cycle of an equine athlete — not just a single sale moment.
               </p>
               <p>
-                Those records will be linked into the Polo Patronium
-                ecosystem so that the people who helped bring a horse along its
-                path can participate in its entire career life cycle.
+                Those records will be linked into the Polo Patronium ecosystem
+                so that the people who helped bring a horse along its path can
+                participate in its economic story across its working life and
+                into retirement.
               </p>
             </div>
 
