@@ -186,8 +186,9 @@ export default function App() {
   const [usdAmount, setUsdAmount] = useState("1");
   const walletScrollRef = useRef(null);
 
-  // NEW: Circuit signup modal
+  // Circuit interest modal inside wallet
   const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
+  const [circuitIntent, setCircuitIntent] = useState("");
 
   // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
@@ -223,6 +224,17 @@ export default function App() {
   const openWallet = () => setIsWalletOpen(true);
   const closeWallet = () => setIsWalletOpen(false);
 
+  const openCircuitModal = (intent) => {
+    if (!isConnected) return; // show hint text instead
+    setCircuitIntent(intent);
+    setIsCircuitModalOpen(true);
+  };
+
+  const closeCircuitModal = () => {
+    setIsCircuitModalOpen(false);
+    setCircuitIntent("");
+  };
+
   const shortAddress = account?.address
     ? `${account.address.slice(0, 6)}…${account.address.slice(-4)}`
     : "";
@@ -244,17 +256,6 @@ export default function App() {
     } catch (err) {
       console.error("Error disconnecting wallet:", err);
     }
-  };
-
-  // NEW: open / close Circuit signup modal
-  const openCircuitSignup = () => {
-    if (!isConnected) return;
-    setIsWalletOpen(false);
-    setIsCircuitModalOpen(true);
-  };
-
-  const closeCircuitSignup = () => {
-    setIsCircuitModalOpen(false);
   };
 
   // ✅ CheckoutWidget amount expects a NUMBER (not a string)
@@ -303,19 +304,15 @@ export default function App() {
     }
   };
 
-  // Lock body scroll when ANY modal open (wallet OR signup)
-  const anyModalOpen = isWalletOpen || isCircuitModalOpen;
-
+  // Lock body scroll when modal open
   useEffect(() => {
-    if (anyModalOpen) {
+    if (isWalletOpen || isCircuitModalOpen) {
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
 
-      if (isWalletOpen) {
-        requestAnimationFrame(() => {
-          if (walletScrollRef.current) walletScrollRef.current.scrollTop = 0;
-        });
-      }
+      requestAnimationFrame(() => {
+        if (walletScrollRef.current) walletScrollRef.current.scrollTop = 0;
+      });
 
       return () => {
         document.documentElement.style.overflow = "";
@@ -325,23 +322,22 @@ export default function App() {
 
     document.documentElement.style.overflow = "";
     document.body.style.overflow = "";
-  }, [anyModalOpen, isWalletOpen]);
+  }, [isWalletOpen, isCircuitModalOpen]);
 
-  // ESC closes whichever modal is open (signup first, then wallet)
+  // ESC closes modals
   useEffect(() => {
-    if (!anyModalOpen) return;
     const onKeyDown = (e) => {
       if (e.key === "Escape") {
         if (isCircuitModalOpen) {
-          setIsCircuitModalOpen(false);
+          closeCircuitModal();
         } else if (isWalletOpen) {
-          setIsWalletOpen(false);
+          closeWallet();
         }
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [anyModalOpen, isWalletOpen, isCircuitModalOpen]);
+  }, [isWalletOpen, isCircuitModalOpen]);
 
   // Scroll gating: when ABOUT section bottom crosses near top, open wallet once
   useEffect(() => {
@@ -367,6 +363,8 @@ export default function App() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isConnected, hasTriggeredGate]);
+
+  const isCtaDisabled = !isConnected;
 
   return (
     <div className="page">
@@ -470,7 +468,6 @@ export default function App() {
         <div className="section-header">
           <div className="section-kicker">THE FORMAT</div>
           <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
-          <div className="section-rule" />
         </div>
 
         <div className="section-body">
@@ -532,7 +529,6 @@ export default function App() {
         <div className="section-header">
           <div className="section-kicker">PLAYER STANDINGS</div>
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
-          <div className="section-rule" />
         </div>
 
         <div
@@ -677,7 +673,6 @@ export default function App() {
           </div>
         </div>
         <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
-        <div className="section-rule" />
 
         <div
           style={{
@@ -1085,64 +1080,84 @@ export default function App() {
                 </div>
               )}
 
-              {/* NEXT STEPS CTA (visible even when not signed in, disabled until connected) */}
+              {/* Next Steps CTA block */}
               <div
                 style={{
-                  marginBottom: "16px",
-                  marginTop: "4px",
-                  padding: "10px 10px 12px",
-                  borderRadius: "10px",
-                  border: "1px solid rgba(234,191,114,0.25)",
-                  background: "rgba(5,5,5,0.9)",
+                  marginTop: "18px",
+                  paddingTop: "14px",
+                  borderTop: "1px solid #3a2b16",
                 }}
               >
                 <div
                   style={{
                     fontSize: "10px",
-                    letterSpacing: "0.16em",
+                    letterSpacing: "0.14em",
                     textTransform: "uppercase",
                     color: "#c7b08a",
-                    marginBottom: "6px",
+                    marginBottom: "4px",
                     textAlign: "center",
                   }}
                 >
-                  Next Steps
+                  NEXT STEPS · COWBOY POLO CIRCUIT
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-outline"
-                  onClick={openCircuitSignup}
-                  disabled={!isConnected}
+                <p
                   style={{
-                    width: "100%",
-                    padding: "8px 20px",
-                    fontSize: "11px",
-                    letterSpacing: "0.16em",
-                    textTransform: "uppercase",
-                    opacity: isConnected ? 1 : 0.45,
-                    cursor: isConnected ? "pointer" : "not-allowed",
+                    margin: 0,
+                    fontSize: "12px",
+                    lineHeight: 1.5,
+                    color: "#d9c59d",
+                    textAlign: "center",
                   }}
                 >
-                  Join the Cowboy Polo Circuit
-                </button>
+                  Choose how you want to plug into the Circuit. We’ll match you
+                  to chapters, horses, or patron opportunities.
+                </p>
+
+                <div className="wallet-cta-grid">
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-small"
+                    disabled={isCtaDisabled}
+                    onClick={() => openCircuitModal("player")}
+                  >
+                    Start Playing
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-small"
+                    disabled={isCtaDisabled}
+                    onClick={() => openCircuitModal("chapter")}
+                  >
+                    Start a Local Chapter
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-small"
+                    disabled={isCtaDisabled}
+                    onClick={() => openCircuitModal("patron")}
+                  >
+                    Become a Patron
+                  </button>
+                </div>
+
                 {!isConnected && (
-                  <div
+                  <p
                     style={{
-                      marginTop: "6px",
+                      marginTop: "8px",
                       fontSize: "10px",
-                      lineHeight: 1.4,
-                      color: "#9f8a64",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
                       textAlign: "center",
+                      color: "#9f8a64",
                     }}
                   >
-                    Connect or create your Patron Wallet above to enable this
-                    step.
-                  </div>
+                    Sign in above to unlock these actions.
+                  </p>
                 )}
               </div>
 
               {/* Amount + Checkout (disabled visually until connected) */}
-              <div style={{ position: "relative" }}>
+              <div style={{ position: "relative", marginTop: "16px" }}>
                 {!isConnected && (
                   <button
                     type="button"
@@ -1202,27 +1217,29 @@ export default function App() {
                   </div>
 
                   <CheckoutBoundary>
-                    <CheckoutWidget
-                      client={client}
-                      name={"POLO PATRONIUM"}
-                      description={
-                        "USPPA PATRONAGE UTILITY TOKEN · THREE SEVENS 7̶7̶7̶ REMUDA · COWBOY POLO CIRCUIT · THE POLO WAY · CHARLESTON POLO"
-                      }
-                      currency={"USD"}
-                      chain={BASE}
-                      amount={normalizedAmountNumber}
-                      tokenAddress={
-                        "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
-                      }
-                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
-                      buttonLabel={"BUY PATRON (USDC on Base)"}
-                      theme={patronCheckoutTheme}
-                      onSuccess={handleCheckoutSuccess}
-                      onError={(err) => {
-                        console.error("Checkout error:", err);
-                        alert(err?.message || String(err));
-                      }}
-                    />
+                    <div className="checkout-shell">
+                      <CheckoutWidget
+                        client={client}
+                        name={"POLO PATRONIUM"}
+                        description={
+                          "USPPA PATRONAGE UTILITY TOKEN · THREE SEVENS 7̶7̶7̶ REMUDA · COWBOY POLO CIRCUIT · THE POLO WAY · CHARLESTON POLO"
+                        }
+                        currency={"USD"}
+                        chain={BASE}
+                        amount={normalizedAmountNumber}
+                        tokenAddress={
+                          "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+                        }
+                        seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
+                        buttonLabel={"BUY PATRON (USDC on Base)"}
+                        theme={patronCheckoutTheme}
+                        onSuccess={handleCheckoutSuccess}
+                        onError={(err) => {
+                          console.error("Checkout error:", err);
+                          alert(err?.message || String(err));
+                        }}
+                      />
+                    </div>
                   </CheckoutBoundary>
                 </div>
               </div>
@@ -1262,11 +1279,11 @@ export default function App() {
         </div>
       )}
 
-      {/* CIRCUIT SIGNUP MODAL (Netlify form, wallet-linked) */}
+      {/* CIRCUIT INTEREST MODAL (inside wallet flow) */}
       {isCircuitModalOpen && (
         <div
           className="wallet-modal-backdrop"
-          onClick={closeCircuitSignup}
+          onClick={closeCircuitModal}
           style={{
             position: "fixed",
             inset: 0,
@@ -1278,361 +1295,301 @@ export default function App() {
             padding: "14px",
           }}
         >
-          <div style={{ width: "100%", maxWidth: "420px" }}>
-            <div
-              onClick={(e) => e.stopPropagation()}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: "380px",
+              border: "1px solid #3a2b16",
+              borderRadius: "14px",
+              padding: "18px 16px 16px",
+              background: "#050505",
+              boxShadow: "0 18px 60px rgba(0,0,0,0.9)",
+              color: "#f5eedc",
+              fontFamily:
+                '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
+              fontSize: "13px",
+              position: "relative",
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
+          >
+            <button
+              onClick={closeCircuitModal}
+              aria-label="Close"
+              title="Close"
               style={{
-                width: "100%",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                border: "1px solid #3a2b16",
-                borderRadius: "14px",
-                padding: "18px 18px 16px",
-                background: "#050505",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.9)",
-                fontFamily:
-                  '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-                color: "#f5eedc",
-                fontSize: "13px",
-                position: "relative",
+                position: "absolute",
+                right: 4,
+                top: 4,
+                width: "40px",
+                height: "40px",
+                border: "none",
+                background: "transparent",
+                color: "#e3bf72",
+                fontSize: "28px",
+                lineHeight: 1,
+                cursor: "pointer",
+                padding: 0,
               }}
             >
-              {/* Header */}
+              ×
+            </button>
+
+            <div style={{ textAlign: "center", marginBottom: "10px" }}>
               <div
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "10px",
-                  position: "relative",
-                  paddingTop: "2px",
+                  fontSize: "10px",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "#c7b08a",
+                  marginBottom: "4px",
                 }}
               >
-                <div
-                  style={{
-                    textAlign: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.2em",
-                      textTransform: "uppercase",
-                      color: "#9f8a64",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Cowboy Polo Circuit
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "15px",
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      color: "#f5eedc",
-                    }}
-                  >
-                    Join the Circuit
-                  </div>
-                </div>
+                CIRCUIT SIGN-UP
+              </div>
+              <div
+                style={{
+                  fontSize: "15px",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Tell us how to plug you in
+              </div>
+            </div>
 
-                <button
-                  onClick={closeCircuitSignup}
-                  aria-label="Close signup"
-                  title="Close"
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert(
+                  "Thank you — we’ve recorded your interest for the Cowboy Polo Circuit."
+                );
+                closeCircuitModal();
+              }}
+            >
+              <div style={{ marginBottom: "10px" }}>
+                <label
                   style={{
-                    position: "absolute",
-                    right: 0,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "48px",
-                    height: "48px",
-                    border: "none",
-                    background: "transparent",
-                    color: "#e3bf72",
-                    fontSize: "32px",
-                    lineHeight: 1,
-                    cursor: "pointer",
-                    padding: 0,
-                    WebkitTapHighlightColor: "transparent",
+                    display: "block",
+                    fontSize: "10px",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "4px",
                   }}
                 >
-                  ×
-                </button>
+                  Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "8px 10px",
+                    borderRadius: 8,
+                    border: "1px solid #3a2b16",
+                    background: "#050505",
+                    color: "#f5eedc",
+                    fontFamily: '"EB Garamond", serif',
+                    fontSize: "0.95rem",
+                  }}
+                />
               </div>
 
-              <p
-                style={{
-                  margin: "0 0 12px",
-                  fontSize: "12px",
-                  lineHeight: 1.6,
-                  color: "#dec89a",
-                  textAlign: "center",
-                }}
-              >
-                This form links your Cowboy Polo interest to your Patron Wallet
-                so we can connect riders, parents, and arenas with the right
-                chapters and rewards.
-              </p>
-
-              <form
-                name="circuit-signup"
-                method="POST"
-                data-netlify="true"
-                data-netlify-honeypot="bot-field"
-              >
-                {/* Netlify hidden form name */}
-                <input
-                  type="hidden"
-                  name="form-name"
-                  value="circuit-signup"
-                />
-                {/* Honeypot */}
-                <p style={{ display: "none" }}>
-                  <label>
-                    Don’t fill this out if you're human:
-                    <input name="bot-field" />
-                  </label>
-                </p>
-
-                <div style={{ marginBottom: "10px" }}>
-                  <label
-                    htmlFor="cs-name"
-                    style={{
-                      fontSize: "10px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Name
-                  </label>
-                  <input
-                    id="cs-name"
-                    name="name"
-                    type="text"
-                    required
-                    style={{
-                      width: "100%",
-                      padding: "8px 10px",
-                      borderRadius: 8,
-                      border: "1px solid #333333",
-                      background: "#050505",
-                      color: "#f5eedc",
-                      fontFamily: '"EB Garamond", serif',
-                      fontSize: "0.95rem",
-                    }}
-                  />
-                </div>
-
-                <div style={{ marginBottom: "10px" }}>
-                  <label
-                    htmlFor="cs-email"
-                    style={{
-                      fontSize: "10px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="cs-email"
-                    name="email"
-                    type="email"
-                    required
-                    style={{
-                      width: "100%",
-                      padding: "8px 10px",
-                      borderRadius: 8,
-                      border: "1px solid #333333",
-                      background: "#050505",
-                      color: "#f5eedc",
-                      fontFamily: '"EB Garamond", serif',
-                      fontSize: "0.95rem",
-                    }}
-                  />
-                </div>
-
-                <div style={{ marginBottom: "10px" }}>
-                  <label
-                    htmlFor="cs-role"
-                    style={{
-                      fontSize: "10px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    I&apos;m Interested As
-                  </label>
-                  <select
-                    id="cs-role"
-                    name="role"
-                    required
-                    style={{
-                      width: "100%",
-                      padding: "8px 10px",
-                      borderRadius: 8,
-                      border: "1px solid #333333",
-                      background: "#050505",
-                      color: "#f5eedc",
-                      fontFamily: '"EB Garamond", serif',
-                      fontSize: "0.95rem",
-                    }}
-                  >
-                    <option value="">Select one</option>
-                    <option>Rider</option>
-                    <option>Parent / Guardian</option>
-                    <option>Patron</option>
-                    <option>Arena / Program</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-
-                <div style={{ marginBottom: "10px" }}>
-                  <label
-                    htmlFor="cs-chapter"
-                    style={{
-                      fontSize: "10px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Chapter / City / Arena
-                  </label>
-                  <input
-                    id="cs-chapter"
-                    name="chapter"
-                    type="text"
-                    placeholder="Charleston, SC · Creek Plantation, etc."
-                    style={{
-                      width: "100%",
-                      padding: "8px 10px",
-                      borderRadius: 8,
-                      border: "1px solid #333333",
-                      background: "#050505",
-                      color: "#f5eedc",
-                      fontFamily: '"EB Garamond", serif',
-                      fontSize: "0.95rem",
-                    }}
-                  />
-                </div>
-
-                <div style={{ marginBottom: "10px" }}>
-                  <label
-                    htmlFor="cs-notes"
-                    style={{
-                      fontSize: "10px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Notes
-                  </label>
-                  <textarea
-                    id="cs-notes"
-                    name="notes"
-                    rows={3}
-                    placeholder="Tell us about your experience, horses, or program."
-                    style={{
-                      width: "100%",
-                      padding: "8px 10px",
-                      borderRadius: 8,
-                      border: "1px solid #333333",
-                      background: "#050505",
-                      color: "#f5eedc",
-                      fontFamily: '"EB Garamond", serif',
-                      fontSize: "0.95rem",
-                      resize: "vertical",
-                      minHeight: "80px",
-                    }}
-                  />
-                </div>
-
-                {/* Wallet address – visible + hidden copy for Netlify */}
-                <div style={{ marginBottom: "10px" }}>
-                  <label
-                    htmlFor="cs-wallet"
-                    style={{
-                      fontSize: "10px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#c7b08a",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Linked Wallet
-                  </label>
-                  <input
-                    id="cs-wallet"
-                    type="text"
-                    value={account?.address || ""}
-                    readOnly
-                    style={{
-                      width: "100%",
-                      padding: "8px 10px",
-                      borderRadius: 8,
-                      border: "1px solid #333333",
-                      background: "#050505",
-                      color: "#f5eedc",
-                      fontFamily: "monospace",
-                      fontSize: "0.9rem",
-                    }}
-                  />
-                  <input
-                    type="hidden"
-                    name="walletAddress"
-                    value={account?.address || ""}
-                  />
-                  <small
-                    style={{
-                      display: "block",
-                      marginTop: "4px",
-                      fontSize: "10px",
-                      color: "#9f8a64",
-                    }}
-                  >
-                    This links your Circuit interest to your Patron Wallet
-                    profile.
-                  </small>
-                </div>
-
-                <div
+              <div style={{ marginBottom: "10px" }}>
+                <label
                   style={{
-                    marginTop: "12px",
-                    textAlign: "right",
+                    display: "block",
+                    fontSize: "10px",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "4px",
                   }}
                 >
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    style={{
-                      padding: "8px 22px",
-                      fontSize: "11px",
-                      letterSpacing: "0.16em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Submit Circuit Signup
-                  </button>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "8px 10px",
+                    borderRadius: 8,
+                    border: "1px solid #3a2b16",
+                    background: "#050505",
+                    color: "#f5eedc",
+                    fontFamily: '"EB Garamond", serif',
+                    fontSize: "0.95rem",
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "10px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "10px",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "4px",
+                  }}
+                >
+                  Home Chapter / Arena (if any)
+                </label>
+                <input
+                  type="text"
+                  name="chapter"
+                  placeholder="City, barn, or program name"
+                  style={{
+                    width: "100%",
+                    padding: "8px 10px",
+                    borderRadius: 8,
+                    border: "1px solid #3a2b16",
+                    background: "#050505",
+                    color: "#f5eedc",
+                    fontFamily: '"EB Garamond", serif',
+                    fontSize: "0.95rem",
+                  }}
+                />
+              </div>
+
+              {/* Hidden wallet address hook */}
+              <input
+                type="hidden"
+                name="walletAddress"
+                value={account?.address || ""}
+              />
+
+              <div style={{ marginBottom: "12px" }}>
+                <div
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "6px",
+                  }}
+                >
+                  I&apos;m interested in (select all that apply)
                 </div>
-              </form>
-            </div>
+
+                <div className="interest-grid">
+                  <label className="interest-chip">
+                    <input
+                      type="checkbox"
+                      name="interest"
+                      value="Riding / playing chukkers"
+                      defaultChecked={circuitIntent === "player"}
+                    />
+                    <span>Riding / playing chukkers</span>
+                  </label>
+                  <label className="interest-chip">
+                    <input
+                      type="checkbox"
+                      name="interest"
+                      value="Hosting / running a chapter"
+                      defaultChecked={circuitIntent === "chapter"}
+                    />
+                    <span>Hosting / running a chapter</span>
+                  </label>
+                  <label className="interest-chip">
+                    <input
+                      type="checkbox"
+                      name="interest"
+                      value="Patron / sponsor opportunities"
+                      defaultChecked={circuitIntent === "patron"}
+                    />
+                    <span>Patron / sponsor opportunities</span>
+                  </label>
+                  <label className="interest-chip">
+                    <input
+                      type="checkbox"
+                      name="interest"
+                      value="Horse provider / training pipeline"
+                    />
+                    <span>Horse provider / training pipeline</span>
+                  </label>
+                  <label className="interest-chip">
+                    <input
+                      type="checkbox"
+                      name="interest"
+                      value="Coaching / instruction"
+                    />
+                    <span>Coaching / instruction</span>
+                  </label>
+                  <label className="interest-chip">
+                    <input
+                      type="checkbox"
+                      name="interest"
+                      value="VR capture / media"
+                    />
+                    <span>VR capture / media</span>
+                  </label>
+                  <label className="interest-chip">
+                    <input
+                      type="checkbox"
+                      name="interest"
+                      value="Volunteering / stewarding"
+                    />
+                    <span>Volunteering / stewarding</span>
+                  </label>
+                  <label className="interest-chip">
+                    <input
+                      type="checkbox"
+                      name="interest"
+                      value="Other / tell us below"
+                    />
+                    <span>Other / tell us below</span>
+                  </label>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "12px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "10px",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "4px",
+                  }}
+                >
+                  Anything we should know?
+                </label>
+                <textarea
+                  name="notes"
+                  rows={3}
+                  placeholder="Experience level, horses available, chapter ideas, or timing."
+                  style={{
+                    width: "100%",
+                    padding: "8px 10px",
+                    borderRadius: 8,
+                    border: "1px solid #3a2b16",
+                    background: "#050505",
+                    color: "#f5eedc",
+                    fontFamily: '"EB Garamond", serif',
+                    fontSize: "0.95rem",
+                    resize: "vertical",
+                  }}
+                />
+              </div>
+
+              <div style={{ textAlign: "right", marginTop: "10px" }}>
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-small"
+                  style={{ minWidth: "auto" }}
+                >
+                  Send to USPPA
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -1644,7 +1601,6 @@ export default function App() {
           <h2 className="section-title">
             SANCTIONED CHUKKERS &amp; SEASON RECORD
           </h2>
-          <div className="section-rule" />
         </div>
 
         <div
@@ -1796,7 +1752,8 @@ export default function App() {
       </section>
 
       <footer>
-        © <span>{year}</span> USPPA · COWBOY POLO CIRCUIT ·{" "}
+        © <span>{year}</span> USPPA · COWBOY
+        POLO CIRCUIT ·{" "}
         <a
           href="https://uspolopatrons.org"
           target="_blank"
