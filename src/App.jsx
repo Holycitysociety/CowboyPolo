@@ -1252,7 +1252,7 @@ export default function App() {
                   <CheckoutBoundary>
                     <CheckoutWidget
                       client={client}
-                      name={"POLO PATRONIUM"}
+                      name={"BUY POLO PATRONIUM (PATRON)"}
                       description={
                         "USPPA PATRONAGE UTILITY TOKEN · THREE SEVENS 7̶7̶7̶ REMUDA · COWBOY POLO CIRCUIT · THE POLO WAY · CHARLESTON POLO"
                       }
