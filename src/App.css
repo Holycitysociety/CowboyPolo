@@ -614,3 +614,168 @@ footer {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+
+/* Make checkout "BUY PATRON" button pill-shaped inside our wrapper */
+.checkout-wrap button {
+  border-radius: 999px !important;
+}
+
+/* Circuit interest modal */
+
+.circuit-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.circuit-modal {
+  width: 100%;
+  max-width: 480px;
+  background: #050505;
+  border-radius: 16px;
+  border: 1px solid #3a2b16;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.9);
+  padding: 18px 18px 20px;
+  position: relative;
+  font-family: "EB Garamond", serif;
+  color: #f5eedc;
+}
+
+.circuit-modal-close {
+  position: absolute;
+  right: 10px;
+  top: 6px;
+  border: none;
+  background: transparent;
+  color: #e3bf72;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Title block */
+
+.modal-title-block {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.modal-kicker {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c7b08a;
+  margin-bottom: 4px;
+}
+
+.modal-title {
+  margin: 0 0 6px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.modal-subtitle {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: #c7b08a;
+}
+
+/* Form layout inside modal */
+
+.modal-form {
+  margin-top: 12px;
+  display: grid;
+  row-gap: 12px;
+}
+
+.modal-form-row-inline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.modal-form-row-inline > div {
+  flex: 1 1 160px;
+}
+
+.modal-form-row {
+  display: block;
+}
+
+.modal-form label {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+  color: #c7b08a;
+}
+
+.modal-form input,
+.modal-form select,
+.modal-form textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #333333;
+  background: #050505;
+  color: #ffffff;
+  font-family: "EB Garamond", serif;
+  font-size: 0.95rem;
+}
+
+.modal-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Multi-select chips */
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #3a2b16;
+  background: #050505;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.chip input {
+  margin: 0;
+}
+
+.chip span {
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+/* Submit button in modal */
+
+.modal-submit {
+  background: #e3bf72;
+  border-color: #e3bf72;
+  color: #181210;
+  border-radius: 999px;
+  padding-inline: 22px;
+}
