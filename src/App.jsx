@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
@@ -23,9 +22,6 @@ const client = createThirdwebClient({
 
 const BASE = defineChain(8453);
 
-// One-time initiation fee (USD)
-const MEMBERSHIP_FEE_USD = 150;
-
 // Embedded email wallets
 const wallets = [
   inAppWallet({
@@ -42,6 +38,8 @@ const wallets = [
 const patronCheckoutTheme = darkTheme({
   fontFamily:
     '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
+  // Make thirdweb buttons (including BUY PATRON) pill-shaped
+  borderRadius: 999,
   colors: {
     modalBg: "#050505",
     modalOverlayBg: "rgba(0,0,0,0.85)",
@@ -189,8 +187,8 @@ export default function App() {
   const [usdAmount, setUsdAmount] = useState("1");
   const walletScrollRef = useRef(null);
 
-  // Circuit signup modal state
-  const [isSignupOpen, setIsSignupOpen] = useState(false);
+  // Circuit signup modal
+  const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
 
   // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
@@ -226,17 +224,6 @@ export default function App() {
   const openWallet = () => setIsWalletOpen(true);
   const closeWallet = () => setIsWalletOpen(false);
 
-  const openSignup = () => {
-    // Only meaningful once a wallet exists, but we allow the button
-    // to be visible and just no-op if not connected.
-    if (!account?.address) return;
-    setIsSignupOpen(true);
-    // Optionally close wallet to avoid double-stacking modals
-    setIsWalletOpen(false);
-  };
-
-  const closeSignup = () => setIsSignupOpen(false);
-
   const shortAddress = account?.address
     ? `${account.address.slice(0, 6)}…${account.address.slice(-4)}`
     : "";
@@ -258,6 +245,16 @@ export default function App() {
     } catch (err) {
       console.error("Error disconnecting wallet:", err);
     }
+  };
+
+  const openCircuitSignup = () => {
+    if (!isConnected) return;
+    setIsWalletOpen(false);
+    setIsCircuitModalOpen(true);
+  };
+
+  const closeCircuitSignup = () => {
+    setIsCircuitModalOpen(false);
   };
 
   // ✅ CheckoutWidget amount expects a NUMBER (not a string)
@@ -306,15 +303,19 @@ export default function App() {
     }
   };
 
-  // Lock body scroll when wallet modal open
+  // Lock body scroll when ANY modal open
+  const anyModalOpen = isWalletOpen || isCircuitModalOpen;
+
   useEffect(() => {
-    if (isWalletOpen) {
+    if (anyModalOpen) {
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
 
-      requestAnimationFrame(() => {
-        if (walletScrollRef.current) walletScrollRef.current.scrollTop = 0;
-      });
+      if (isWalletOpen) {
+        requestAnimationFrame(() => {
+          if (walletScrollRef.current) walletScrollRef.current.scrollTop = 0;
+        });
+      }
 
       return () => {
         document.documentElement.style.overflow = "";
@@ -324,27 +325,23 @@ export default function App() {
 
     document.documentElement.style.overflow = "";
     document.body.style.overflow = "";
-  }, [isWalletOpen]);
+  }, [anyModalOpen, isWalletOpen]);
 
-  // ESC closes wallet modal
+  // ESC closes whichever modal is open (signup first, then wallet)
   useEffect(() => {
-    if (!isWalletOpen) return;
+    if (!anyModalOpen) return;
     const onKeyDown = (e) => {
-      if (e.key === "Escape") closeWallet();
+      if (e.key === "Escape") {
+        if (isCircuitModalOpen) {
+          setIsCircuitModalOpen(false);
+        } else if (isWalletOpen) {
+          setIsWalletOpen(false);
+        }
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isWalletOpen]);
-
-  // ESC closes signup modal
-  useEffect(() => {
-    if (!isSignupOpen) return;
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") closeSignup();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isSignupOpen]);
+  }, [anyModalOpen, isWalletOpen, isCircuitModalOpen]);
 
   // Scroll gating: when ABOUT section bottom crosses near top, open wallet once
   useEffect(() => {
@@ -507,7 +504,7 @@ export default function App() {
           </p>
           <p>
             Local chapters also feed into{" "}
-            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
+              <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
             and arenas submit 360° VR footage from sanctioned Cowboy Polo
             chukkers to thepoloway.com so patrons can follow and support the
             Circuit from anywhere.
@@ -1080,32 +1077,75 @@ export default function App() {
                       fontSize: "11px",
                       letterSpacing: "0.12em",
                       textTransform: "uppercase",
-                      marginBottom: "10px",
                     }}
                     onClick={handleSignOut}
                   >
                     Sign Out
                   </button>
-
-                  {/* Join Circuit CTA (visible always, enabled only when connected) */}
-                  <div style={{ marginTop: "6px" }}>
-                    <button
-                      type="button"
-                      className={`btn btn-cta-gold ${
-                        !account ? "btn-cta-disabled" : ""
-                      }`}
-                      onClick={account ? openSignup : undefined}
-                      disabled={!account}
-                      style={{ width: "100%", justifyContent: "center" }}
-                    >
-                      Join the Cowboy Polo Circuit
-                    </button>
-                  </div>
                 </div>
               )}
 
+              {/* NEXT STEPS CTA */}
+              <div
+                style={{
+                  marginBottom: "16px",
+                  marginTop: "4px",
+                  padding: "10px 10px 12px",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(234,191,114,0.25)",
+                  background: "rgba(5,5,5,0.9)",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "6px",
+                    textAlign: "center",
+                  }}
+                >
+                  Next Steps
+                </div>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={openCircuitSignup}
+                  disabled={!isConnected}
+                  style={{
+                    width: "100%",
+                    padding: "8px 20px",
+                    fontSize: "11px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    background: "#e3bf72",
+                    color: "#181210",
+                    borderColor: "#e3bf72",
+                    opacity: isConnected ? 1 : 0.45,
+                    cursor: isConnected ? "pointer" : "not-allowed",
+                  }}
+                >
+                  Join the Cowboy Polo Circuit
+                </button>
+                {!isConnected && (
+                  <div
+                    style={{
+                      marginTop: "6px",
+                      fontSize: "10px",
+                      lineHeight: 1.4,
+                      color: "#9f8a64",
+                      textAlign: "center",
+                    }}
+                  >
+                    Connect or create your Patron Wallet above to enable this
+                    step.
+                  </div>
+                )}
+              </div>
+
               {/* Amount + Checkout (disabled visually until connected) */}
-              <div style={{ position: "relative", marginTop: account ? 8 : 0 }}>
+              <div style={{ position: "relative" }}>
                 {!isConnected && (
                   <button
                     type="button"
@@ -1153,7 +1193,7 @@ export default function App() {
                       style={{
                         width: "100%",
                         padding: "10px 12px",
-                        borderRadius: 999, // pill shape
+                        borderRadius: 10,
                         border: "1px solid #3a2b16",
                         background: "#050505",
                         color: "#f5eedc",
@@ -1225,46 +1265,128 @@ export default function App() {
         </div>
       )}
 
-      {/* CIRCUIT SIGNUP MODAL (Option B: Form + Initiation Checkout) */}
-      {isSignupOpen && (
+      {/* CIRCUIT SIGNUP MODAL (Netlify form, wallet-linked, mobile-first) */}
+      {isCircuitModalOpen && (
         <div
-          className="signup-modal-backdrop"
-          onClick={closeSignup}
+          className="wallet-modal-backdrop"
+          onClick={closeCircuitSignup}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.86)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 10000,
+            padding: "14px",
+          }}
         >
-          <div
-            className="signup-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="signup-close"
-              onClick={closeSignup}
-              aria-label="Close"
-              title="Close"
+          <div style={{ width: "100%", maxWidth: "420px" }}>
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: "100%",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                border: "1px solid #3a2b16",
+                borderRadius: "14px",
+                padding: "18px 16px 16px",
+                background: "#050505",
+                boxShadow: "0 18px 60px rgba(0,0,0,0.9)",
+                fontFamily:
+                  '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
+                color: "#f5eedc",
+                fontSize: "13px",
+                position: "relative",
+              }}
             >
-              ×
-            </button>
+              {/* Header */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "10px",
+                  position: "relative",
+                  paddingTop: "2px",
+                }}
+              >
+                <div style={{ textAlign: "center" }}>
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      letterSpacing: "0.2em",
+                      textTransform: "uppercase",
+                      color: "#9f8a64",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    Cowboy Polo Circuit
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "15px",
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: "#f5eedc",
+                    }}
+                  >
+                    Join the Circuit
+                  </div>
+                </div>
 
-            <div className="signup-header">
-              <div className="signup-kicker">Cowboy Polo Circuit</div>
-              <h2 className="signup-title">Join the Circuit</h2>
-              <p className="signup-sub">
-                Tell us who you are and complete your one-time USPPA / Cowboy
-                Polo Circuit initiation.
+                <button
+                  onClick={closeCircuitSignup}
+                  aria-label="Close signup"
+                  title="Close"
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: "48px",
+                    height: "48px",
+                    border: "none",
+                    background: "transparent",
+                    color: "#e3bf72",
+                    fontSize: "32px",
+                    lineHeight: 1,
+                    cursor: "pointer",
+                    padding: 0,
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+
+              <p
+                style={{
+                  margin: "0 0 12px",
+                  fontSize: "12px",
+                  lineHeight: 1.6,
+                  color: "#dec89a",
+                  textAlign: "center",
+                }}
+              >
+                This form links your Cowboy Polo interest to your Patron Wallet
+                so we can connect riders, parents, and arenas with the right
+                chapters and rewards.
               </p>
-            </div>
 
-            {/* Step 1: Membership info (Netlify form) */}
-            <div className="signup-step">
-              <div className="signup-step-label">Step 1 &mdash; Member details</div>
               <form
-                className="signup-form"
                 name="circuit-signup"
                 method="POST"
                 data-netlify="true"
                 data-netlify-honeypot="bot-field"
               >
-                <input type="hidden" name="form-name" value="circuit-signup" />
-                {/* Honeypot field */}
+                {/* Netlify hidden form name */}
+                <input
+                  type="hidden"
+                  name="form-name"
+                  value="circuit-signup"
+                />
+                {/* Honeypot */}
                 <p style={{ display: "none" }}>
                   <label>
                     Don’t fill this out if you're human:
@@ -1272,223 +1394,262 @@ export default function App() {
                   </label>
                 </p>
 
-                {/* Wallet address for correlation */}
-                <input
-                  type="hidden"
-                  name="walletAddress"
-                  value={account?.address || ""}
-                />
-
-                <div className="signup-row">
-                  <div className="signup-field">
-                    <label htmlFor="member-name">Full Name</label>
-                    <input
-                      id="member-name"
-                      name="name"
-                      type="text"
-                      required
-                    />
-                  </div>
+                <div style={{ marginBottom: "10px" }}>
+                  <label
+                    htmlFor="cs-name"
+                    style={{
+                      fontSize: "10px",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                      display: "block",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    Name
+                  </label>
+                  <input
+                    id="cs-name"
+                    name="name"
+                    type="text"
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "8px 10px",
+                      borderRadius: 8,
+                      border: "1px solid #333333",
+                      background: "#050505",
+                      color: "#f5eedc",
+                      fontFamily: '"EB Garamond", serif',
+                      fontSize: "0.95rem",
+                    }}
+                  />
                 </div>
 
-                <div className="signup-row">
-                  <div className="signup-field">
-                    <label htmlFor="member-email">Email</label>
-                    <input
-                      id="member-email"
-                      name="email"
-                      type="email"
-                      required
-                    />
-                  </div>
-                  <div className="signup-field">
-                    <label htmlFor="member-phone">Phone</label>
-                    <input
-                      id="member-phone"
-                      name="phone"
-                      type="tel"
-                    />
-                  </div>
+                <div style={{ marginBottom: "10px" }}>
+                  <label
+                    htmlFor="cs-email"
+                    style={{
+                      fontSize: "10px",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                      display: "block",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="cs-email"
+                    name="email"
+                    type="email"
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "8px 10px",
+                      borderRadius: 8,
+                      border: "1px solid #333333",
+                      background: "#050505",
+                      color: "#f5eedc",
+                      fontFamily: '"EB Garamond", serif',
+                      fontSize: "0.95rem",
+                    }}
+                  />
                 </div>
 
-                <div className="signup-row">
-                  <div className="signup-field">
-                    <label htmlFor="member-location">
-                      City / State / Country
-                    </label>
-                    <input
-                      id="member-location"
-                      name="location"
-                      type="text"
-                      placeholder="e.g. Summerville, SC · USA"
-                    />
+                {/* Multi-select: Interested In (check all that apply) */}
+                <div style={{ marginBottom: "10px" }}>
+                  <div
+                    style={{
+                      fontSize: "10px",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                      display: "block",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    Interested In{" "}
+                    <span style={{ fontSize: "9px", opacity: 0.8 }}>
+                      (check all that apply)
+                    </span>
                   </div>
-                </div>
-
-                <div className="signup-row">
-                  <div className="signup-field">
-                    <label htmlFor="member-type">Membership Type</label>
-                    <select id="member-type" name="membershipType" required>
-                      <option value="">Select type</option>
-                      <option>Player</option>
-                      <option>Patron</option>
-                      <option>Junior (Under 18)</option>
-                      <option>Coach / Instructor</option>
-                      <option>Arena / Chapter Contact</option>
-                      <option>Supporter / Friend of the Circuit</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="signup-row">
-                  <div className="signup-field">
-                    <label>Interested In (select all that apply)</label>
-                    <div className="signup-checkbox-grid">
-                      <label className="signup-checkbox">
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {[
+                      "Rider",
+                      "Parent / Guardian",
+                      "Patron",
+                      "Arena / Program",
+                      "Other",
+                    ].map((label) => (
+                      <label
+                        key={label}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          cursor: "pointer",
+                        }}
+                      >
                         <input
                           type="checkbox"
-                          name="interests"
-                          value="Playing Cowboy Polo"
+                          name="interest"
+                          value={label}
+                          style={{
+                            width: 16,
+                            height: 16,
+                            accentColor: "#e3bf72",
+                          }}
                         />
-                        <span>Playing Cowboy Polo</span>
+                        <span>{label}</span>
                       </label>
-                      <label className="signup-checkbox">
-                        <input
-                          type="checkbox"
-                          name="interests"
-                          value="Training horses / colt-starting"
-                        />
-                        <span>Training horses / colt-starting</span>
-                      </label>
-                      <label className="signup-checkbox">
-                        <input
-                          type="checkbox"
-                          name="interests"
-                          value="Hosting games at my barn"
-                        />
-                        <span>Hosting games at my barn</span>
-                      </label>
-                      <label className="signup-checkbox">
-                        <input
-                          type="checkbox"
-                          name="interests"
-                          value="Joining or starting a local chapter"
-                        />
-                        <span>Joining / starting a local chapter</span>
-                      </label>
-                      <label className="signup-checkbox">
-                        <input
-                          type="checkbox"
-                          name="interests"
-                          value="Filming / VR & media"
-                        />
-                        <span>Filming / VR &amp; media</span>
-                      </label>
-                      <label className="signup-checkbox">
-                        <input
-                          type="checkbox"
-                          name="interests"
-                          value="Supporting as a patron"
-                        />
-                        <span>Supporting as a patron</span>
-                      </label>
-                    </div>
+                    ))}
                   </div>
                 </div>
 
-                <div className="signup-row">
-                  <div className="signup-field">
-                    <label htmlFor="member-notes">
-                      Riding / polo experience or notes
-                    </label>
-                    <textarea
-                      id="member-notes"
-                      name="notes"
-                      rows={3}
-                      placeholder="Share a bit about your background, horses, or goals."
-                    />
-                  </div>
+                <div style={{ marginBottom: "10px" }}>
+                  <label
+                    htmlFor="cs-chapter"
+                    style={{
+                      fontSize: "10px",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                      display: "block",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    Chapter / City / Arena
+                  </label>
+                  <input
+                    id="cs-chapter"
+                    name="chapter"
+                    type="text"
+                    placeholder="Charleston, SC · Creek Plantation, etc."
+                    style={{
+                      width: "100%",
+                      padding: "8px 10px",
+                      borderRadius: 8,
+                      border: "1px solid #333333",
+                      background: "#050505",
+                      color: "#f5eedc",
+                      fontFamily: '"EB Garamond", serif',
+                      fontSize: "0.95rem",
+                    }}
+                  />
                 </div>
 
-                <div className="signup-submit-row">
-                  <button type="submit" className="btn btn-cta-gold">
-                    Submit Member Details
-                  </button>
+                <div style={{ marginBottom: "10px" }}>
+                  <label
+                    htmlFor="cs-notes"
+                    style={{
+                      fontSize: "10px",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                      display: "block",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    Notes
+                  </label>
+                  <textarea
+                    id="cs-notes"
+                    name="notes"
+                    rows={3}
+                    placeholder="Tell us about your experience, horses, or program."
+                    style={{
+                      width: "100%",
+                      padding: "8px 10px",
+                      borderRadius: 8,
+                      border: "1px solid #333333",
+                      background: "#050505",
+                      color: "#f5eedc",
+                      fontFamily: '"EB Garamond", serif',
+                      fontSize: "0.95rem",
+                      resize: "vertical",
+                      minHeight: "80px",
+                    }}
+                  />
                 </div>
-              </form>
-            </div>
 
-            {/* Step 2: One-time initiation payment */}
-            <div className="signup-step signup-step-bottom">
-              <div className="signup-step-label">
-                Step 2 &mdash; One-time initiation (${MEMBERSHIP_FEE_USD} USD)
-              </div>
-              <p className="signup-step-copy">
-                This one-time fee creates your lifetime USPPA / Cowboy Polo
-                Circuit initiation for this wallet. Annual dues or local chapter
-                fees can be added later.
-              </p>
-
-              <div
-                style={{
-                  position: "relative",
-                  marginTop: "8px",
-                }}
-              >
-                {!isConnected && (
-                  <div className="signup-pay-overlay">
-                    <div>
-                      <div className="signup-pay-overlay-kicker">
-                        Wallet Required
-                      </div>
-                      <div className="signup-pay-overlay-text">
-                        Connect or create your Patron Wallet first, then return
-                        here to complete your initiation.
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {/* Wallet address – visible + hidden copy for Netlify */}
+                <div style={{ marginBottom: "10px" }}>
+                  <label
+                    htmlFor="cs-wallet"
+                    style={{
+                      fontSize: "10px",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                      display: "block",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    Linked Wallet
+                  </label>
+                  <input
+                    id="cs-wallet"
+                    type="text"
+                    value={account?.address || ""}
+                    readOnly
+                    style={{
+                      width: "100%",
+                      padding: "8px 10px",
+                      borderRadius: 8,
+                      border: "1px solid #333333",
+                      background: "#050505",
+                      color: "#f5eedc",
+                      fontFamily: "monospace",
+                      fontSize: "0.9rem",
+                    }}
+                  />
+                  <input
+                    type="hidden"
+                    name="walletAddress"
+                    value={account?.address || ""}
+                  />
+                  <small
+                    style={{
+                      display: "block",
+                      marginTop: "4px",
+                      fontSize: "10px",
+                      color: "#9f8a64",
+                    }}
+                  >
+                    This links your Circuit interest to your Patron Wallet
+                    profile.
+                  </small>
+                </div>
 
                 <div
                   style={{
-                    opacity: !isConnected ? 0.6 : 1,
-                    pointerEvents: isConnected ? "auto" : "none",
-                    transition: "opacity 160ms ease",
+                    marginTop: "12px",
+                    textAlign: "right",
                   }}
                 >
-                  <CheckoutBoundary>
-                    <CheckoutWidget
-                      client={client}
-                      name={"USPPA / Cowboy Polo Initiation"}
-                      description={
-                        "One-time membership initiation fee for the United States Polo Patrons Association and Cowboy Polo Circuit (per wallet)."
-                      }
-                      currency={"USD"}
-                      chain={BASE}
-                      amount={MEMBERSHIP_FEE_USD}
-                      tokenAddress={
-                        "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
-                      }
-                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
-                      buttonLabel={"Pay Initiation Fee (USDC on Base)"}
-                      theme={patronCheckoutTheme}
-                      onSuccess={(result) => {
-                        console.log("Membership initiation success:", result);
-                        alert(
-                          "Thank you — your one-time initiation payment was received.\n\nWe’ll mark this wallet as a Cowboy Polo Circuit member in your profile."
-                        );
-                      }}
-                      onError={(err) => {
-                        console.error("Initiation checkout error:", err);
-                        alert(
-                          err?.message ||
-                            "There was a problem processing the initiation payment."
-                        );
-                      }}
-                    />
-                  </CheckoutBoundary>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    style={{
+                      padding: "8px 22px",
+                      fontSize: "11px",
+                      letterSpacing: "0.16em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Submit Circuit Signup
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
