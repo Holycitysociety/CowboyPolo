@@ -249,7 +249,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* little explanatory line under wallet button */
 .hero-wallet-copy {
   margin-top: 16px;
   font-size: 0.82rem;
@@ -273,7 +272,8 @@ body {
   color: var(--fg);
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    opacity 0.2s ease, transform 0.08s ease;
 }
 
 .btn-primary {
@@ -468,7 +468,7 @@ section {
 }
 
 .cp-mark .cp-sub {
-  font-size: 1em;            /* full size */
+  font-size: 1em; /* full size */
   transform: translateY(0.18em);
 }
 
@@ -536,76 +536,6 @@ footer {
 }
 
 /* -----------------------------
-   Modal forms: Circuit signup
-   ----------------------------- */
-
-.modal-form {
-  display: grid;
-  grid-template-columns: 1fr;
-  row-gap: 12px;
-}
-
-.modal-form-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.modal-form label,
-.modal-form .modal-form-label {
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.modal-form input,
-.modal-form textarea,
-.modal-form select {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: #050505;
-  color: var(--fg);
-  font-family: "EB Garamond", serif;
-  font-size: 0.95rem;
-}
-
-.modal-form textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-/* Chip-style checkbox row */
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 999px;
-  border: 1px solid #333333;
-  padding: 4px 10px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  background: #050505;
-}
-
-.chip input {
-  accent-color: #e3bf72;
-}
-
-.chip span {
-  white-space: nowrap;
-}
-
-/* -----------------------------
    Mobile adjustments
    ----------------------------- */
 
@@ -633,11 +563,201 @@ footer {
 }
 
 /* -----------------------------
-   Thirdweb button rounding
+   Wallet actions + CTA buttons
    ----------------------------- */
 
-/* Try to give thirdweb-powered buttons a pill shape,
-   including the BUY PATRON button. */
-button[class*="tw-"] {
+.wallet-actions-block {
+  border-top: 1px solid #2b2416;
+  padding-top: 14px;
+  margin-top: 10px;
+  margin-bottom: 14px;
+}
+
+.wallet-actions-title {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c7b08a;
+  margin-bottom: 4px;
+}
+
+.wallet-actions-sub {
+  font-size: 11px;
+  color: #b5a27f;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.wallet-actions-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.wallet-actions-note {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8e7a58;
+}
+
+/* Gold CTA button: same color as Buy PATRON */
+.btn-cta {
+  background: #e3bf72;
+  color: #181210;
+  border-color: #e3bf72;
+}
+
+.btn-cta:hover {
+  background: #f0cd81;
+  border-color: #f0cd81;
+  color: #181210;
+}
+
+/* Smaller outline variant */
+.btn-small {
+  padding: 8px 18px;
+  font-size: 0.72rem;
+}
+
+/* Disabled state */
+.btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Pill-shaped buy button inside checkout widget */
+.checkout-wrapper button {
   border-radius: 999px !important;
+}
+
+/* -----------------------------
+   Signup Modal (mobile-first)
+   ----------------------------- */
+
+.signup-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 14px;
+}
+
+.signup-modal {
+  width: 100%;
+  max-width: 420px;
+  background: #050505;
+  border-radius: 14px;
+  border: 1px solid #3a2b16;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.9);
+  padding: 18px 16px 16px;
+  font-family: "EB Garamond", serif;
+  color: #f5eedc;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.signup-modal-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.signup-kicker {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c7b08a;
+  margin-bottom: 4px;
+}
+
+.signup-title {
+  margin: 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.signup-intro {
+  font-size: 0.9rem;
+  color: #d2c29c;
+  line-height: 1.5;
+  margin: 8px 0 14px;
+  text-align: left;
+}
+
+/* mobile-first: stacked fields */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.signup-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.signup-form label,
+.signup-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c7b08a;
+}
+
+.signup-form input,
+.signup-form textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #3a2b16;
+  background: #050505;
+  color: #f5eedc;
+  font-family: "EB Garamond", serif;
+  font-size: 0.95rem;
+}
+
+.signup-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.signup-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.signup-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #d2c29c;
+}
+
+.signup-checkbox input {
+  margin-top: 3px;
+}
+
+.signup-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+@media (min-width: 640px) {
+  .signup-modal {
+    padding: 20px 20px 18px;
+  }
 }
