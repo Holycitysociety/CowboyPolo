@@ -1,675 +1,82 @@
-:root {
-  --bg: #000000;
-  --fg: #ffffff;
-  --muted: #c7c7c7;
-  --ink: #111111;
-  --border: #333333;
-  --accent: #ffffff;
-  --max-width: 900px;
-
-  /* vertical spacing between parallax bands + sections */
-  --section-gap: 56px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: "EB Garamond", serif;
-  line-height: 1.65;
-}
-
-.page {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 36px 18px 96px;
-}
-
-/* Full-bleed helper for 100vw bands inside centered page */
-.full-bleed {
-  width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
-}
-
-/* -----------------------------
-   Parallax / zoom photo bands
-   ----------------------------- */
-
-.parallax-band {
-  position: relative;
-  overflow: hidden;
-  background: #000;
-  margin-top: var(--section-gap);
-}
-
-/* First band sits a bit closer to the hero */
-.parallax-band-first {
-  margin-top: 32px;
-}
-
-/* Image layer */
-.parallax-media {
-  position: absolute;
-  inset: 0;
-  background: #000;
-  z-index: 0;
-}
-
-/* Centered image; zoom transform applied in JS */
-.parallax-img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transform: translate3d(-50%, -50%, 0) scale(1);
-  will-change: transform;
-  pointer-events: none;
-  user-select: none;
-}
-
-.parallax-vignette {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  /* Edge-only vignette: center stays clean, corners darken */
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0) 55%,
-      rgba(0, 0, 0, 0.75) 100%
-    );
-}
-
-/* Content in the band */
-.parallax-content {
-  position: relative;
-  z-index: 2;
-  padding: 0 18px clamp(64px, 9vh, 120px); /* bottom padding */
-  padding-top: calc(100vh + clamp(24px, 4vh, 56px));
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-
-/* Inside parallax bands we don't want extra top section margin */
-.band-section {
-  margin-top: 0;
-}
-
-/* Strong text shadow on light text over photos */
-.parallax-band .section-title,
-.parallax-band .section-kicker,
-.parallax-band .board-title,
-.parallax-band .board-sub,
-.parallax-band .board-header,
-.parallax-band .board-row {
-  text-shadow:
-    0 2px 16px rgba(0, 0, 0, 0.95),
-    0 0 4px rgba(0, 0, 0, 0.95);
-}
-
-/* -----------------------------
-   HERO POSTER (Tall & Centered)
-   ----------------------------- */
-
-.hero {
-  text-align: center;
-  padding: 56px 18px 64px;
-  border: 1px solid var(--border);
-  background:
-    radial-gradient(circle at 30% 10%, #333333 0, #000000 50%),
-    linear-gradient(to bottom, #111111, #000000 55%, #121212 100%);
-}
-
-.hero-topline {
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-.hero-rule {
-  width: 260px;
-  margin: 16px auto 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.45);
-}
-
-.hero-presents {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 0.8rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  opacity: 0.9;
-}
-
-.hero-main {
-  margin-top: 24px;
-}
-
-.hero-main .the {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  opacity: 0.7;
-  margin-bottom: 6px;
-}
-
-.hero-word {
-  display: block;
-  text-transform: uppercase;
-  font-family: "Cormorant Garamond", serif;
-  line-height: 0.92;
-  letter-spacing: 0.2em;
-}
-
-.hero-word.cowboy {
-  font-size: clamp(2.6rem, 7vw, 3.4rem);
-  font-weight: 700;
-}
-
-.hero-word.polo {
-  font-size: clamp(2.1rem, 6vw, 2.8rem);
-  font-weight: 600;
-  margin-top: 4px;
-}
-
-.hero-word.circuit {
-  font-size: clamp(1.7rem, 5vw, 2.2rem);
-  font-weight: 600;
-  margin-top: 6px;
-  letter-spacing: 0.28em;
-}
-
-.hero-tagline {
-  margin-top: 26px;
-  font-size: 0.9rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  opacity: 0.78;
-}
-
-.hero-rule-2 {
-  width: 190px;
-  border-top: 1px solid rgba(255, 255, 255, 0.28);
-  margin: 20px auto 22px;
-}
-
-/* INTRODUCING + THREE SEVENS */
-.hero-badges {
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.8;
-}
-
-.hero-badges span {
-  display: inline-block;
-  margin: 0 8px;
-}
-
-.hero-badge-intro {
-  display: block;
-  font-size: 0.7rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-  opacity: 0.85;
-}
-
-/* STREAMING ON · THE POLO WAY */
-.hero-streaming {
-  margin-top: 14px;
-  text-align: center;
-}
-
-.hero-streaming-mark {
-  margin-top: 4px;
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  opacity: 0.95;
-}
-
-/* HERO CTA */
-.hero-cta-row {
-  margin-top: 32px;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.hero-wallet-copy {
-  margin-top: 16px;
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.8;
-}
-
-.btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12px 28px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  font-family: "Cormorant Garamond", serif;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  background: transparent;
-  color: var(--fg);
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
-    opacity 0.2s ease, transform 0.08s ease;
-}
-
-.btn-primary {
-  background: var(--fg);
-  color: #000;
-  border-color: var(--fg);
-}
-
-.btn-primary:hover {
-  background: #fefefe;
-}
-
-.btn-outline:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: #ffffff;
-}
-
-/* SECTION SHARED */
-section {
-  margin-top: var(--section-gap);
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 26px;
-}
-
-.section-kicker {
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.8rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-
-/* Three Sevens wordmark */
-.three-sevens-mark {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.three-sevens-numeral {
-  font-family: "Cormorant Garamond", serif;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-}
-
-.three-sevens-text {
-  font-family: "IM Fell English SC", serif;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-}
-
-/* Size tuning by context */
-.hero-badges .three-sevens-numeral {
-  font-size: 1.3rem;
-}
-
-.hero-badges .three-sevens-text {
-  font-size: 0.72rem;
-  opacity: 0.9;
-}
-
-.section-kicker .three-sevens-numeral {
-  font-size: 1rem;
-}
-
-.section-kicker .three-sevens-text {
-  font-size: 0.7rem;
-  opacity: 0.9;
-}
-
-/* WORDMARK-STYLE TITLES (no lines) */
-.section-title {
-  position: relative;
-  display: inline-block;
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.35rem;
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  padding: 6px 22px;
-  text-align: center;
-}
-
-/* Kill the fine lines around titles */
-.section-title::before,
-.section-title::after {
-  content: none;
-}
-
-/* Also remove the underline rule under section titles */
-.section-rule {
-  display: none;
-}
-
-.section-body {
-  max-width: 720px;
-  margin: 20px auto 0;
-  color: var(--muted);
-  font-size: 0.98rem;
-}
-
-.section-body p {
-  margin: 0 0 14px;
-  text-align: justify;
-}
-
-/* Leaderboard tables */
-.board {
-  max-width: 720px;
-  margin: 22px auto 0;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: #080808;
-  padding: 18px 16px 14px;
-  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.7);
-}
-
-.board-title {
-  font-family: "Cormorant Garamond", serif;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.95rem;
-  margin-bottom: 10px;
-}
-
-.board-sub {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.board-header,
-.board-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  column-gap: 12px;
-  font-size: 0.9rem;
-}
-
-.board-header {
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.75rem;
-  color: var(--muted);
-  border-bottom: 1px solid #262626;
-  padding-bottom: 6px;
-  margin-bottom: 4px;
-}
-
-.board-row {
-  padding: 6px 0;
-  border-bottom: 1px dashed #202020;
-}
-
-.board-row:last-child {
-  border-bottom: 0;
-}
-
-.board-row span:last-child {
-  text-align: right;
-}
-
-.board-row span:nth-child(2) {
-  text-align: center;
-}
-
-/* Handicap formatting */
-.handicap-value {
-  white-space: nowrap;
-}
-
-.handicap-value-main {
-  font-size: 0.9rem;
-}
-
-.handicap-value-decimal {
-  font-size: 0.75rem;
-  opacity: 0.9;
-}
-
-/* CP mark with full-size P in subscript */
-.cp-mark {
-  display: inline-flex;
-  align-items: flex-end;
-  font-family: "Cormorant Garamond", serif;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.cp-mark .cp-sub {
-  font-size: 1em; /* full size */
-  transform: translateY(0.18em);
-}
-
-/* Results form */
-.results-form {
-  max-width: 720px;
-  margin: 26px auto 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  row-gap: 14px;
-}
-
-.results-form-row-inline {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.results-form-row-inline > div {
-  flex: 1 1 160px;
-}
-
-.results-form label {
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 4px;
-  color: var(--muted);
-}
-
-.results-form input,
-.results-form textarea,
-.results-form select {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: #050505;
-  color: var(--fg);
-  font-family: "EB Garamond", serif;
-  font-size: 0.95rem;
-}
-
-.results-form textarea {
-  resize: vertical;
-  min-height: 110px;
-}
-
-.results-form small {
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-
-/* Footer */
-footer {
-  margin-top: var(--section-gap);
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
-  text-align: center;
-  font-size: 0.78rem;
-  color: var(--muted);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-/* -----------------------------
-   Mobile adjustments
-   ----------------------------- */
-
-@media (max-width: 640px) {
-  .hero {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .board-header,
-  .board-row {
-    grid-template-columns: 1.8fr 1fr 1.1fr;
-  }
-
-  /* Start the text much closer to the photo on mobile */
-  .parallax-content {
-    padding-top: calc(35vh + 24px);
-    padding-bottom: 64px;
-  }
-
-  /* First band closer to hero on mobile */
-  .parallax-band-first {
-    margin-top: 16px;
-  }
-}
-
-/* -----------------------------
-   Wallet actions + CTA buttons
-   ----------------------------- */
-
-.wallet-actions-block {
-  border-top: 1px solid #2b2416;
-  padding-top: 14px;
-  margin-top: 10px;
-  margin-bottom: 14px;
-}
-
-.wallet-actions-title {
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #c7b08a;
-  margin-bottom: 4px;
-}
-
-.wallet-actions-sub {
-  font-size: 11px;
-  color: #b5a27f;
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-
-.wallet-actions-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.wallet-actions-note {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #8e7a58;
-}
-
-/* Gold CTA button: same color as Buy PATRON */
-.btn-cta {
+/* ---------------------------------
+   Gold CTA button (same as Buy)
+   --------------------------------- */
+
+.btn-cta-gold {
   background: #e3bf72;
   color: #181210;
   border-color: #e3bf72;
+  border-radius: 999px; /* pill */
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.btn-cta:hover {
-  background: #f0cd81;
-  border-color: #f0cd81;
+.btn-cta-gold:hover {
+  background: #f1cb7c;
+  border-color: #f1cb7c;
   color: #181210;
 }
 
-/* Smaller outline variant */
-.btn-small {
-  padding: 8px 18px;
-  font-size: 0.72rem;
-}
-
-/* Disabled state */
-.btn[disabled] {
-  opacity: 0.4;
+.btn-cta-disabled {
+  opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
 }
 
-/* Pill-shaped buy button inside checkout widget */
-.checkout-wrapper button {
-  border-radius: 999px !important;
-}
-
-/* -----------------------------
-   Signup Modal (mobile-first)
-   ----------------------------- */
+/* ---------------------------------
+   Circuit Signup Modal (mobile-first)
+   --------------------------------- */
 
 .signup-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.88);
+  background: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding: 18px 14px;
   z-index: 10000;
-  padding: 14px;
-}
-
-.signup-modal {
-  width: 100%;
-  max-width: 420px;
-  background: #050505;
-  border-radius: 14px;
-  border: 1px solid #3a2b16;
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.9);
-  padding: 18px 16px 16px;
-  font-family: "EB Garamond", serif;
-  color: #f5eedc;
-  max-height: 90vh;
   overflow-y: auto;
 }
 
-.signup-modal-header {
+.signup-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  background: #050505;
+  border-radius: 16px;
+  border: 1px solid #3a2b16;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.9);
+  padding: 18px 16px 18px;
+  font-family: "EB Garamond", serif;
+  color: #f5eedc;
+}
+
+.signup-close {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: #e3bf72;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  WebkitTapHighlightColor: transparent;
+}
+
+.signup-header {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .signup-kicker {
   font-family: "IM Fell English SC", serif;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #c7b08a;
@@ -677,47 +84,74 @@ footer {
 }
 
 .signup-title {
-  margin: 0;
   font-family: "Cormorant Garamond", serif;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
+  margin: 0 0 4px;
 }
 
-.signup-intro {
-  font-size: 0.9rem;
-  color: #d2c29c;
-  line-height: 1.5;
-  margin: 8px 0 14px;
-  text-align: left;
+.signup-sub {
+  font-size: 0.86rem;
+  color: #c7b08a;
+  margin: 0;
 }
 
-/* mobile-first: stacked fields */
+.signup-step {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #262626;
+}
+
+.signup-step-bottom {
+  margin-top: 16px;
+}
+
+.signup-step-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #dec89a;
+  margin-bottom: 8px;
+}
+
+.signup-step-copy {
+  font-size: 0.86rem;
+  color: #c7b08a;
+  margin: 0 0 6px;
+}
+
 .signup-form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.signup-form-row {
+.signup-row {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.signup-form label,
-.signup-label {
+.signup-field {
+  flex: 1 1 100%;
+}
+
+.signup-field label {
+  display: block;
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #c7b08a;
+  margin-bottom: 4px;
 }
 
-.signup-form input,
-.signup-form textarea {
+.signup-field input,
+.signup-field select,
+.signup-field textarea {
   width: 100%;
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #3a2b16;
   background: #050505;
   color: #f5eedc;
@@ -725,39 +159,82 @@ footer {
   font-size: 0.95rem;
 }
 
-.signup-form textarea {
+.signup-field textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 90px;
 }
 
-.signup-checkbox-group {
-  display: flex;
-  flex-direction: column;
+.signup-checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 6px;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .signup-checkbox {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
   font-size: 0.9rem;
-  color: #d2c29c;
+  color: #f5eedc;
 }
 
-.signup-checkbox input {
-  margin-top: 3px;
+.signup-checkbox input[type="checkbox"] {
+  margin-top: 2px;
 }
 
-.signup-form-actions {
+.signup-submit-row {
+  margin-top: 6px;
+  text-align: right;
+}
+
+/* Membership payment overlay when not connected */
+.signup-pay-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 12px;
+  border: 1px dashed #3a2b16;
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 4px;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  text-align: center;
+  z-index: 5;
 }
 
-@media (min-width: 640px) {
+.signup-pay-overlay-kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c7b08a;
+  margin-bottom: 4px;
+}
+
+.signup-pay-overlay-text {
+  font-size: 0.86rem;
+  color: #f5eedc;
+}
+
+/* Small layout tweaks on wider screens */
+@media (min-width: 480px) {
   .signup-modal {
-    padding: 20px 20px 18px;
+    padding: 20px 18px 20px;
+  }
+
+  .signup-row {
+    gap: 12px;
+  }
+
+  .signup-field {
+    flex: 1 1 48%;
+  }
+
+  .signup-field.full-width {
+    flex-basis: 100%;
+  }
+
+  .signup-checkbox-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
