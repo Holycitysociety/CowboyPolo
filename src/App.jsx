@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 
@@ -188,6 +187,10 @@ export default function App() {
   // Circuit signup modal
   const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
 
+  // Netlify form statuses
+  const [circuitSubmitStatus, setCircuitSubmitStatus] = useState("idle"); // idle | submitting | success | error
+  const [resultsSubmitStatus, setResultsSubmitStatus] = useState("idle"); // idle | submitting | success | error
+
   // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
   const roadmapGateRef = useRef(null);
@@ -248,11 +251,13 @@ export default function App() {
   const openCircuitSignup = () => {
     if (!isConnected) return;
     setIsWalletOpen(false);
+    setCircuitSubmitStatus("idle"); // reset per open
     setIsCircuitModalOpen(true);
   };
 
   const closeCircuitSignup = () => {
     setIsCircuitModalOpen(false);
+    setCircuitSubmitStatus("idle");
   };
 
   // ✅ CheckoutWidget amount expects a NUMBER (not a string)
@@ -301,6 +306,52 @@ export default function App() {
     }
   };
 
+  // --- Netlify form handlers (keep / for POST so Netlify sees them) ----
+
+  const handleCircuitSubmit = async (e) => {
+    e.preventDefault();
+    setCircuitSubmitStatus("submitting");
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString(),
+      });
+
+      setCircuitSubmitStatus("success");
+      form.reset();
+    } catch (err) {
+      console.error("Circuit signup submission error:", err);
+      setCircuitSubmitStatus("error");
+    }
+  };
+
+  const handleResultsSubmit = async (e) => {
+    e.preventDefault();
+    setResultsSubmitStatus("submitting");
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString(),
+      });
+
+      setResultsSubmitStatus("success");
+      form.reset();
+    } catch (err) {
+      console.error("Chukker results submission error:", err);
+      setResultsSubmitStatus("error");
+    }
+  };
+
   // Lock body scroll when ANY modal open
   const anyModalOpen = isWalletOpen || isCircuitModalOpen;
 
@@ -332,6 +383,7 @@ export default function App() {
       if (e.key === "Escape") {
         if (isCircuitModalOpen) {
           setIsCircuitModalOpen(false);
+          setCircuitSubmitStatus("idle");
         } else if (isWalletOpen) {
           setIsWalletOpen(false);
         }
@@ -480,9 +532,8 @@ export default function App() {
           <p>
             Games are played 3 on 3 in arenas or campitos, with teams of up to 12
             riders. The key is that a player does not need a full string to play
-            and attract patrons: a rider can progress by playing as little as
-            one chukker, on one good horse, and still build a real Circuit
-            handicap.
+            and attract patrons: a rider can progress by playing as little as one
+            chukker, on one good horse, and still build a real Circuit handicap.
           </p>
           <p>
             Cowboy Polo chukkers can be hosted by any stable, arena, or program
@@ -496,9 +547,9 @@ export default function App() {
             are rated, and how their teams are performing.
           </p>
           <p>
-            Over the course of a Circuit season, those two tables are the
-            backbone of the standings: player handicaps and team records together
-            define how the season is read.
+            Over the course of a Circuit season, those two tables are the backbone
+            of the standings: player handicaps and team records together define
+            how the season is read.
           </p>
           <p>
             Local chapters also feed into{" "}
@@ -731,10 +782,10 @@ export default function App() {
                 The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
                 horses — brought up inside the Cowboy Polo Circuit and tracked
                 from their first saddle miles to their final retirement. We
-                don&apos;t buy finished polo ponies; we make them. Every horse
-                that enters the 7̶7̶7̶ Remuda is a training project, and riders
-                in the Circuit learn not only how to play, but how to help
-                produce a polo horse.
+                don&apos;t buy finished polo ponies; we make them. Every horse that
+                enters the 7̶7̶7̶ Remuda is a training project, and riders in the
+                Circuit learn not only how to play, but how to help produce a
+                polo horse.
               </p>
               <p>
                 Every sanctioned appearance adds to a horse&apos;s career record:
@@ -752,8 +803,8 @@ export default function App() {
               <p>
                 Those records will be linked into the Polo Patronium ecosystem so
                 that the people who helped bring a horse along its path can
-                participate in its economic story across its working life and
-                into retirement.
+                participate in its economic story across its working life and into
+                retirement.
               </p>
             </div>
 
@@ -1371,6 +1422,7 @@ export default function App() {
                 method="POST"
                 data-netlify="true"
                 data-netlify-honeypot="bot-field"
+                onSubmit={handleCircuitSubmit}
               >
                 {/* Netlify hidden form name */}
                 <input type="hidden" name="form-name" value="circuit-signup" />
@@ -1618,7 +1670,12 @@ export default function App() {
                   </small>
                 </div>
 
-                <div style={{ marginTop: "12px", textAlign: "right" }}>
+                <div
+                  style={{
+                    marginTop: "12px",
+                    textAlign: "right",
+                  }}
+                >
                   <button
                     type="submit"
                     className="btn btn-primary"
@@ -1627,11 +1684,44 @@ export default function App() {
                       fontSize: "11px",
                       letterSpacing: "0.16em",
                       textTransform: "uppercase",
+                      opacity: circuitSubmitStatus === "submitting" ? 0.7 : 1,
+                      cursor:
+                        circuitSubmitStatus === "submitting"
+                          ? "wait"
+                          : "pointer",
                     }}
+                    disabled={circuitSubmitStatus === "submitting"}
                   >
-                    Submit Circuit Signup
+                    {circuitSubmitStatus === "submitting"
+                      ? "Submitting…"
+                      : "Submit Circuit Signup"}
                   </button>
                 </div>
+
+                {circuitSubmitStatus === "success" && (
+                  <p
+                    style={{
+                      marginTop: "8px",
+                      fontSize: "11px",
+                      color: "#4ade80",
+                      textAlign: "center",
+                    }}
+                  >
+                    Thank you — your Circuit signup was received.
+                  </p>
+                )}
+                {circuitSubmitStatus === "error" && (
+                  <p
+                    style={{
+                      marginTop: "8px",
+                      fontSize: "11px",
+                      color: "#f97373",
+                      textAlign: "center",
+                    }}
+                  >
+                    Something went wrong submitting the form. Please try again.
+                  </p>
+                )}
               </form>
             </div>
           </div>
@@ -1642,7 +1732,9 @@ export default function App() {
       <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
-          <h2 className="section-title">SANCTIONED CHUKKERS &amp; SEASON RECORD</h2>
+          <h2 className="section-title">
+            SANCTIONED CHUKKERS &amp; SEASON RECORD
+          </h2>
           <div className="section-rule" />
         </div>
 
@@ -1689,8 +1781,8 @@ export default function App() {
                     color: "#f5eedc",
                   }}
                 >
-                  Sign into your Patron Wallet to submit official chukker results
-                  and season records.
+                  Sign into your Patron Wallet to submit official chukker
+                  results and season records.
                 </div>
               </div>
             </div>
@@ -1699,10 +1791,10 @@ export default function App() {
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
-                Match captains or appointed officials submit chukker sheets: teams,
-                scorelines, rider combinations, and notable horse usage. Those
-                sheets become the official record that updates handicaps and team
-                standings across the Circuit.
+                Match captains or appointed officials submit chukker sheets:
+                teams, scorelines, rider combinations, and notable horse usage.
+                Those sheets become the official record that updates handicaps
+                and team standings across the Circuit.
               </p>
               <p>
                 In the live system, this is where results will be uploaded and
@@ -1719,6 +1811,7 @@ export default function App() {
               data-netlify="true"
               data-netlify-honeypot="bot-field"
               encType="multipart/form-data"
+              onSubmit={handleResultsSubmit}
             >
               <input type="hidden" name="form-name" value="chukker-results" />
               <p style={{ display: "none" }}>
@@ -1728,7 +1821,7 @@ export default function App() {
                 </label>
               </p>
 
-              {/* ✅ Linked wallet – visible + hidden copy for Netlify (added, no other changes) */}
+              {/* Wallet address – visible + hidden copy for Netlify */}
               <div>
                 <label htmlFor="cr-wallet">Linked Wallet</label>
                 <input
@@ -1753,7 +1846,7 @@ export default function App() {
                 <div>
                   <label htmlFor="role">Role</label>
                   <select id="role" name="role" required>
-                    <option value=">Select role">Select role</option>
+                    <option value="">Select role</option>
                     <option>Coach / Instructor</option>
                     <option>Team Captain</option>
                     <option>Arena Steward</option>
@@ -1802,10 +1895,48 @@ export default function App() {
               </div>
 
               <div style={{ marginTop: "12px", textAlign: "right" }}>
-                <button type="submit" className="btn btn-outline">
-                  SUBMIT CHUKKER RESULTS
+                <button
+                  type="submit"
+                  className="btn btn-outline"
+                  disabled={resultsSubmitStatus === "submitting"}
+                  style={{
+                    opacity: resultsSubmitStatus === "submitting" ? 0.7 : 1,
+                    cursor:
+                      resultsSubmitStatus === "submitting"
+                        ? "wait"
+                        : "pointer",
+                  }}
+                >
+                  {resultsSubmitStatus === "submitting"
+                    ? "Submitting…"
+                    : "SUBMIT CHUKKER RESULTS"}
                 </button>
               </div>
+
+              {resultsSubmitStatus === "success" && (
+                <p
+                  style={{
+                    marginTop: "8px",
+                    fontSize: "11px",
+                    color: "#4ade80",
+                    textAlign: "right",
+                  }}
+                >
+                  Chukker results submitted. Thank you.
+                </p>
+              )}
+              {resultsSubmitStatus === "error" && (
+                <p
+                  style={{
+                    marginTop: "8px",
+                    fontSize: "11px",
+                    color: "#f97373",
+                    textAlign: "right",
+                  }}
+                >
+                  There was a problem submitting results. Please try again.
+                </p>
+              )}
             </form>
           </div>
         </div>
