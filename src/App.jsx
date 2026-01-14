@@ -261,7 +261,7 @@ export default function App() {
     setCircuitSubmitStatus("idle");
   };
 
-  // ✅ Use number for internal math, but string for CheckoutWidget (this thirdweb build calls .includes on it)
+  // Use number for math, but keep a string copy for CheckoutWidget (this build calls .includes on amount)
   const normalizedAmountNumber =
     usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
   const normalizedAmount = String(normalizedAmountNumber);
@@ -270,15 +270,25 @@ export default function App() {
     try {
       if (!account?.address) return;
 
+      // Prefer the actual paid amount from Checkout; fall back to the requested amount
+      const paidRaw =
+        result?.amountPaid ??
+        result?.buyAmount ??
+        result?.pricePaid ??
+        normalizedAmountNumber;
+
+      const paidNumber = Number(paidRaw) || normalizedAmountNumber;
+      const usdAmountForMint = String(paidNumber);
+
       const resp = await fetch("/.netlify/functions/mint-patron", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           address: account.address,
-          usdAmount: normalizedAmount,
+          usdAmount: usdAmountForMint,
           checkout: {
             id: result?.id,
-            amountPaid: result?.amountPaid ?? normalizedAmount,
+            amountPaid: usdAmountForMint,
             currency: result?.currency ?? "USD",
           },
         }),
