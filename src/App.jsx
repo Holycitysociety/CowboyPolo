@@ -261,7 +261,7 @@ export default function App() {
     setCircuitSubmitStatus("idle");
   };
 
-  // Use number for math, but keep a string copy for CheckoutWidget (this build calls .includes on amount)
+  // ✅ Use number for internal math, but string for CheckoutWidget (this thirdweb build calls .includes on it)
   const normalizedAmountNumber =
     usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
   const normalizedAmount = String(normalizedAmountNumber);
@@ -270,25 +270,27 @@ export default function App() {
     try {
       if (!account?.address) return;
 
-      // Prefer the actual paid amount from Checkout; fall back to the requested amount
-      const paidRaw =
-        result?.amountPaid ??
-        result?.buyAmount ??
-        result?.pricePaid ??
-        normalizedAmountNumber;
+      // Prefer the *actual* amount paid reported by Checkout,
+      // fall back to whatever was requested if missing.
+      let paidAmount = normalizedAmountNumber;
+      if (result && typeof result.amountPaid !== "undefined") {
+        const parsed = Number(result.amountPaid);
+        if (parsed > 0) {
+          paidAmount = parsed;
+        }
+      }
 
-      const paidNumber = Number(paidRaw) || normalizedAmountNumber;
-      const usdAmountForMint = String(paidNumber);
+      const paidAmountStr = String(paidAmount);
 
       const resp = await fetch("/.netlify/functions/mint-patron", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           address: account.address,
-          usdAmount: usdAmountForMint,
+          usdAmount: paidAmountStr, // <- what the server uses to compute PATRON
           checkout: {
             id: result?.id,
-            amountPaid: usdAmountForMint,
+            amountPaid: paidAmountStr, // <- canonical paid USD for logging / fallback
             currency: result?.currency ?? "USD",
           },
         }),
