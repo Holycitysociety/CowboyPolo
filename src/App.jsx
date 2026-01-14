@@ -162,7 +162,9 @@ function ParallaxBand({
   return (
     <div
       ref={bandRef}
-      className={`parallax-band full-bleed ${first ? "parallax-band-first" : ""}`}
+      className={`parallax-band full-bleed ${
+        first ? "parallax-band-first" : ""
+      }`}
     >
       <div className="parallax-media" aria-hidden="true">
         <img ref={imgRef} className="parallax-img" src={src} alt="" />
@@ -266,58 +268,20 @@ export default function App() {
     usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
   const normalizedAmount = String(normalizedAmountNumber);
 
+  /**
+   * CANONICAL CHANGE:
+   * - Do NOT call your mint/transfer Netlify function from the client.
+   * - Fulfillment should happen server-side from thirdweb webhook data (destinationAmount),
+   *   so you always transfer exactly what was actually paid.
+   */
   const handleCheckoutSuccess = async (result) => {
-    try {
-      if (!account?.address) return;
+    console.log("Checkout success:", result);
 
-      // Prefer the *actual* amount paid reported by Checkout,
-      // fall back to whatever was requested if missing.
-      let paidAmount = normalizedAmountNumber;
-      if (result && typeof result.amountPaid !== "undefined") {
-        const parsed = Number(result.amountPaid);
-        if (parsed > 0) {
-          paidAmount = parsed;
-        }
-      }
-
-      const paidAmountStr = String(paidAmount);
-
-      const resp = await fetch("/.netlify/functions/mint-patron", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          address: account.address,
-          usdAmount: paidAmountStr, // <- what the server uses to compute PATRON
-          checkout: {
-            id: result?.id,
-            amountPaid: paidAmountStr, // <- canonical paid USD for logging / fallback
-            currency: result?.currency ?? "USD",
-          },
-        }),
-      });
-
-      if (!resp.ok) {
-        const text = await resp.text();
-        console.error("mint-patron error:", text);
-        alert(
-          "Payment succeeded, but we could not mint PATRON automatically.\n" +
-            "We’ll review your transaction and credit you manually if needed."
-        );
-        return;
-      }
-
-      await resp.json();
-      alert(
-        "Thank you — your patronage payment was received.\n\n" +
-          "PATRON is being credited to your wallet."
-      );
-    } catch (err) {
-      console.error("Error in handleCheckoutSuccess:", err);
-      alert(
-        "Payment completed, but there was an error minting PATRON.\n" +
-          "We’ll review and fix this on our side."
-      );
-    }
+    alert(
+      "Payment received.\n\n" +
+        "PATRON will be credited to your wallet automatically (usually within moments).\n" +
+        "If you do not see it shortly, contact support with your wallet address."
+    );
   };
 
   // --- Netlify form handlers (keep / for POST so Netlify sees them) ----
@@ -539,49 +503,45 @@ export default function App() {
 
         <div className="section-body">
           <p>
-            The Cowboy Polo Circuit is a national development league for players,
-            ponies, &amp; patrons built on sanctioned and recorded Cowboy Polo
-            chukkers.
+            The Cowboy Polo Circuit is a national development league for
+            players, ponies, &amp; patrons built on sanctioned and recorded
+            Cowboy Polo chukkers.
           </p>
           <p>
-            Games are played 3 on 3 in arenas or campitos, with teams of up to 12
-            riders. The key is that a player does not need a full string to play
-            and attract patrons: a rider can progress by playing as little as one
-            chukker, on one good horse, and still build a real Circuit handicap.
+            Games are played 3 on 3 in arenas or campitos, with teams of up to
+            12 riders. The key is that a player does not need a full string to
+            play and attract patrons: a rider can progress by playing as little
+            as one chukker, on one good horse, and still build a real Circuit
+            handicap.
           </p>
           <p>
             Cowboy Polo chukkers can be hosted by any stable, arena, or program
-            that signs on to the Circuit. A local coach, instructor, or appointed
-            captains run the game, then submit the chukker sheet feeding two
-            tables: the individual handicap table for each rider, and the game
-            results table for teams.
+            that signs on to the Circuit. A local coach, instructor, or
+            appointed captains run the game, then submit the chukker sheet
+            feeding two tables: the individual handicap table for each rider,
+            and the game results table for teams.
           </p>
           <p>
             Each sanctioned chukker updates both sides of the story: how riders
             are rated, and how their teams are performing.
           </p>
           <p>
-            Over the course of a Circuit season, those two tables are the backbone
-            of the standings: player handicaps and team records together define
-            how the season is read.
+            Over the course of a Circuit season, those two tables are the
+            backbone of the standings: player handicaps and team records
+            together define how the season is read.
           </p>
           <p>
             Local chapters also feed into{" "}
-            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders and
-            arenas submit 360° VR footage from sanctioned Cowboy Polo chukkers to
-            thepoloway.com so patrons can follow and support the Circuit from
-            anywhere.
+            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
+            and arenas submit 360° VR footage from sanctioned Cowboy Polo
+            chukkers to thepoloway.com so patrons can follow and support the
+            Circuit from anywhere.
           </p>
         </div>
       </section>
 
       {/* PHOTO BAND 2 (image only) */}
-      <ParallaxBand
-        src="/images/cowboy-2.jpeg"
-        zoom={30}
-        speed={0.1}
-        finishFactor={2}
-      />
+      <ParallaxBand src="/images/cowboy-2.jpeg" zoom={30} speed={0.1} finishFactor={2} />
 
       {/* PLAYER LEADERBOARD BELOW band */}
       <section
@@ -713,12 +673,7 @@ export default function App() {
       </section>
 
       {/* PHOTO BAND 3 (image only) */}
-      <ParallaxBand
-        src="/images/cowboy-3.jpeg"
-        zoom={30}
-        speed={0.1}
-        finishFactor={2}
-      />
+      <ParallaxBand src="/images/cowboy-3.jpeg" zoom={30} speed={0.1} finishFactor={2} />
 
       {/* HORSE & REMUDA SECTION BELOW band */}
       <section
@@ -796,18 +751,18 @@ export default function App() {
                 The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
                 horses — brought up inside the Cowboy Polo Circuit and tracked
                 from their first saddle miles to their final retirement. We
-                don&apos;t buy finished polo ponies; we make them. Every horse that
-                enters the 7̶7̶7̶ Remuda is a training project, and riders in the
-                Circuit learn not only how to play, but how to help produce a
-                polo horse.
+                don&apos;t buy finished polo ponies; we make them. Every horse
+                that enters the 7̶7̶7̶ Remuda is a training project, and riders in
+                the Circuit learn not only how to play, but how to help produce
+                a polo horse.
               </p>
               <p>
                 Every sanctioned appearance adds to a horse&apos;s career record:
-                chukkers played, riders carried, contribution to wins, and awards
-                earned across chapters and seasons. The same horse might be bred
-                in one place, started by another, developed by a pro, and later
-                carry juniors, patrons, and finally step down into lesson,
-                therapy, or pasture retirement.
+                chukkers played, riders carried, contribution to wins, and
+                awards earned across chapters and seasons. The same horse might
+                be bred in one place, started by another, developed by a pro,
+                and later carry juniors, patrons, and finally step down into
+                lesson, therapy, or pasture retirement.
               </p>
               <p>
                 By keeping a single, living record for each Remuda horse,
@@ -815,10 +770,10 @@ export default function App() {
                 cycle of an equine athlete — not just a single sale moment.
               </p>
               <p>
-                Those records will be linked into the Polo Patronium ecosystem so
-                that the people who helped bring a horse along its path can
-                participate in its economic story across its working life and into
-                retirement.
+                Those records will be linked into the Polo Patronium ecosystem
+                so that the people who helped bring a horse along its path can
+                participate in its economic story across its working life and
+                into retirement.
               </p>
             </div>
 
@@ -1264,6 +1219,20 @@ export default function App() {
                     />
                   </div>
 
+                  {/* Canonical note (optional but recommended) */}
+                  <p
+                    style={{
+                      margin: "0 0 10px",
+                      fontSize: 11,
+                      lineHeight: 1.45,
+                      color: "#c7b08a",
+                      textAlign: "center",
+                    }}
+                  >
+                    Patron fulfillment is processed automatically from the
+                    confirmed on-chain payment amount.
+                  </p>
+
                   <CheckoutBoundary>
                     <CheckoutWidget
                       client={client}
@@ -1274,7 +1243,9 @@ export default function App() {
                       currency={"USD"}
                       chain={BASE}
                       amount={normalizedAmount} // string for this thirdweb build
-                      tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"}
+                      tokenAddress={
+                        "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+                      }
                       seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
                       buttonLabel={"BUY PATRON (USDC on Base)"}
                       theme={patronCheckoutTheme}
@@ -1305,7 +1276,7 @@ export default function App() {
                   rel="noreferrer"
                   style={{ color: "#e3bf72", textDecoration: "none" }}
                 >
-                  USPoloPatrons.org
+                  USPOLOPATRO NS.org
                 </a>{" "}
                 and{" "}
                 <a
