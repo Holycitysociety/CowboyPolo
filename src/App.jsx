@@ -260,43 +260,23 @@ export default function App() {
     setCircuitSubmitStatus("idle");
   };
 
-  // Use number for internal math, but string for CheckoutWidget (this thirdweb build calls .includes on it)
+  // ✅ CheckoutWidget amount expects a NUMBER (not a string)
   const normalizedAmountNumber =
     usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
-  const normalizedAmount = String(normalizedAmountNumber);
 
   const handleCheckoutSuccess = async (result) => {
     try {
       if (!account?.address) return;
-
-      // Actual amount charged by Coinbase / processor, if provided
-      const rawPaid =
-        result?.amountPaid !== undefined && result.amountPaid !== null
-          ? result.amountPaid
-          : normalizedAmount;
-
-      const paidAmount = String(rawPaid);
-
-      // Optional: log if what we requested != what was actually charged
-      if (paidAmount !== normalizedAmount) {
-        console.warn(
-          "Checkout amount mismatch (requested vs charged):",
-          normalizedAmount,
-          "→",
-          paidAmount
-        );
-      }
 
       const resp = await fetch("/.netlify/functions/mint-patron", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           address: account.address,
-          // Use the actual paid amount for minting / transfer
-          usdAmount: paidAmount,
+          usdAmount: String(normalizedAmountNumber),
           checkout: {
             id: result?.id,
-            amountPaid: paidAmount,
+            amountPaid: result?.amountPaid ?? String(normalizedAmountNumber),
             currency: result?.currency ?? "USD",
           },
         }),
@@ -860,8 +840,7 @@ export default function App() {
               <div className="board-row">
                 <span>River Scout</span>
                 <span>
-                  C
-                  <span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>
+                  C<span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>
                     P
                   </span>
                 </span>
@@ -1279,7 +1258,7 @@ export default function App() {
                       }
                       currency={"USD"}
                       chain={BASE}
-                      amount={normalizedAmount} // string for this thirdweb build
+                      amount={normalizedAmountNumber}
                       tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"}
                       seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
                       buttonLabel={"BUY PATRON (USDC on Base)"}
