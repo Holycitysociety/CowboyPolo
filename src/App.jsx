@@ -260,7 +260,7 @@ export default function App() {
     setCircuitSubmitStatus("idle");
   };
 
-  // ✅ Use number for internal math, but string for CheckoutWidget (this thirdweb build calls .includes on it)
+  // Use number for internal math, but string for CheckoutWidget (this thirdweb build calls .includes on it)
   const normalizedAmountNumber =
     usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
   const normalizedAmount = String(normalizedAmountNumber);
@@ -269,15 +269,34 @@ export default function App() {
     try {
       if (!account?.address) return;
 
+      // Actual amount charged by Coinbase / processor, if provided
+      const rawPaid =
+        result?.amountPaid !== undefined && result.amountPaid !== null
+          ? result.amountPaid
+          : normalizedAmount;
+
+      const paidAmount = String(rawPaid);
+
+      // Optional: log if what we requested != what was actually charged
+      if (paidAmount !== normalizedAmount) {
+        console.warn(
+          "Checkout amount mismatch (requested vs charged):",
+          normalizedAmount,
+          "→",
+          paidAmount
+        );
+      }
+
       const resp = await fetch("/.netlify/functions/mint-patron", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           address: account.address,
-          usdAmount: normalizedAmount,
+          // Use the actual paid amount for minting / transfer
+          usdAmount: paidAmount,
           checkout: {
             id: result?.id,
-            amountPaid: result?.amountPaid ?? normalizedAmount,
+            amountPaid: paidAmount,
             currency: result?.currency ?? "USD",
           },
         }),
