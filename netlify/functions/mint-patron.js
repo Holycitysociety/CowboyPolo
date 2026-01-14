@@ -27,7 +27,9 @@ function isAddress(addr) {
 
 function parseUnits(value, decimals) {
   if (ethers.parseUnits) return ethers.parseUnits(value, decimals); // v6
-  if (ethers.utils && ethers.utils.parseUnits) return ethers.utils.parseUnits(value, decimals); // v5
+  if (ethers.utils && ethers.utils.parseUnits) {
+    return ethers.utils.parseUnits(value, decimals); // v5
+  }
   throw new Error("No parseUnits helper on ethers");
 }
 
@@ -66,8 +68,15 @@ exports.handler = async (event) => {
       };
     }
 
-    const usdNum = Number(usdAmount);
+    // Prefer the *actual paid* amount from checkout, fall back to usdAmount
+    const rawUsd =
+      checkout && typeof checkout.amountPaid !== "undefined"
+        ? checkout.amountPaid
+        : usdAmount;
+
+    const usdNum = Number(rawUsd);
     if (!usdNum || usdNum <= 0) {
+      console.error("Invalid USD amount received:", rawUsd);
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "Invalid usdAmount" }),
@@ -82,7 +91,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // 1 USD = PATRON_PER_USD tokens (you’ve set this to 1)
+    // 1 USD = PATRON_PER_USD tokens
     const patronAmount = usdNum * PATRON_PER_USD;
     const amountWei = parseUnits(String(patronAmount), DECIMALS);
 
@@ -91,7 +100,7 @@ exports.handler = async (event) => {
 
     // Minimal ABI – we only need transfer() for treasury distribution
     const patronAbi = [
-      "function transfer(address to, uint256 amount) public returns (bool)"
+      "function transfer(address to, uint256 amount) public returns (bool)",
     ];
 
     const patron = new ethers.Contract(TOKEN_ADDRESS, patronAbi, signer);
@@ -101,7 +110,8 @@ exports.handler = async (event) => {
 
     console.log(
       `Transferring ${patronAmount} PATRON from treasury ${signer.address} to ${address}` +
-        (paymentRef ? ` for payment ref ${paymentRef}` : "")
+        (paymentRef ? ` for payment ref ${paymentRef}` : "") +
+        ` (usd paid = ${usdNum})`
     );
 
     const tx = await patron.transfer(address, amountWei);
@@ -114,7 +124,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         ok: true,
         to: address,
-        usdAmount,
+        usdAmount: usdNum,
         patronAmount,
         mintedAmountHuman: `${patronAmount} PATRON`,
         fromTreasury: signer.address,
