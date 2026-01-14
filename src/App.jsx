@@ -260,9 +260,10 @@ export default function App() {
     setCircuitSubmitStatus("idle");
   };
 
-  // ✅ CheckoutWidget amount expects a NUMBER (not a string)
+  // ✅ Use number for internal math, but string for CheckoutWidget (this thirdweb build calls .includes on it)
   const normalizedAmountNumber =
     usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
+  const normalizedAmount = String(normalizedAmountNumber);
 
   const handleCheckoutSuccess = async (result) => {
     try {
@@ -273,10 +274,10 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           address: account.address,
-          usdAmount: String(normalizedAmountNumber),
+          usdAmount: normalizedAmount,
           checkout: {
             id: result?.id,
-            amountPaid: result?.amountPaid ?? String(normalizedAmountNumber),
+            amountPaid: result?.amountPaid ?? normalizedAmount,
             currency: result?.currency ?? "USD",
           },
         }),
@@ -840,7 +841,8 @@ export default function App() {
               <div className="board-row">
                 <span>River Scout</span>
                 <span>
-                  C<span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>
+                  C
+                  <span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>
                     P
                   </span>
                 </span>
@@ -1258,7 +1260,7 @@ export default function App() {
                       }
                       currency={"USD"}
                       chain={BASE}
-                      amount={normalizedAmountNumber}
+                      amount={normalizedAmount} // string for this thirdweb build
                       tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"}
                       seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
                       buttonLabel={"BUY PATRON (USDC on Base)"}
