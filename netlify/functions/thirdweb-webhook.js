@@ -11,8 +11,9 @@ const { ethers } = require("ethers");
 function getProvider(rpcUrl) {
   if (!rpcUrl) throw new Error("RPC_URL env var is missing");
   if (ethers.JsonRpcProvider) return new ethers.JsonRpcProvider(rpcUrl); // v6
-  if (ethers.providers?.JsonRpcProvider)
+  if (ethers.providers?.JsonRpcProvider) {
     return new ethers.providers.JsonRpcProvider(rpcUrl); // v5
+  }
   throw new Error("No JsonRpcProvider found on ethers");
 }
 
@@ -29,14 +30,10 @@ function normalizeAddress(addr) {
 // -----------------------------
 // Webhook signature verification (HMAC SHA-256)
 // Per thirdweb docs: signature over `${timestamp}.${rawBody}`
-// Headers may be x-payload-signature or x-pay-signature; timestamp x-timestamp or x-pay-timestamp
+// Headers may be x-payload-signature or x-pay-signature;
+// timestamp x-timestamp or x-pay-timestamp.
 // -----------------------------
-function verifyThirdwebWebhook(
-  rawBody,
-  headers,
-  secret,
-  toleranceSeconds = 300
-) {
+function verifyThirdwebWebhook(rawBody, headers, secret, toleranceSeconds = 300) {
   if (!secret) throw new Error("Missing THIRDWEB_WEBHOOK_SECRET env var");
 
   const signature =
@@ -80,7 +77,6 @@ function verifyThirdwebWebhook(
 
 // -----------------------------
 // Minimal in-memory idempotency
-// NOTE: best-effort only. For production, persist paymentIds in a store.
 // -----------------------------
 const processed = global.__PROCESSED_PAYMENTS__ || new Set();
 global.__PROCESSED_PAYMENTS__ = processed;
@@ -113,7 +109,7 @@ exports.handler = async (event) => {
   const USDC_DECIMALS = Number(process.env.USDC_DECIMALS || "6");
   const PATRON_PER_USDC = process.env.PATRON_PER_USDC
     ? String(process.env.PATRON_PER_USDC)
-    : "1"; // can be integer or decimal string
+    : "1"; // string, can be decimal
 
   try {
     const rawBody = event.body || "";
@@ -125,22 +121,17 @@ exports.handler = async (event) => {
     // 2) Parse payload
     const payload = JSON.parse(rawBody);
 
-    // Example from dashboard: type: "pay.onramp-transaction", data.status: "COMPLETED"
+    // Accept both onramp and onchain transaction events
     const type = payload?.type;
     const data = payload?.data;
 
-    // Accept onramp events (and tolerate possible onchain ones)
-    const isOnramp =
-      type === "pay.onramp-transaction" ||
-      type === "pay.onramp-transaction.completed";
-    const isOnchain =
-      type === "pay.onchain-transaction" ||
-      type === "pay.onchain-transaction.completed";
+    const VALID_TYPES = ["pay.onchain-transaction", "pay.onramp-transaction"];
 
-    if (!data || (!isOnramp && !isOnchain)) {
+    if (!VALID_TYPES.includes(type) || !data) {
+      // Ignore other event types but return 200 so thirdweb is happy
       return {
         statusCode: 200,
-        body: JSON.stringify({ ok: true, ignored: true, reason: "type" }),
+        body: JSON.stringify({ ok: true, ignored: true, type }),
       };
     }
 
@@ -159,7 +150,7 @@ exports.handler = async (event) => {
     const receiver = data.receiver;
     const sender = data.sender; // buyer wallet
     const destToken = data.destinationToken;
-    const destinationAmount = data.destinationAmount; // string in smallest units
+    const destinationAmount = data.destinationAmount; // string (base units)
 
     if (!isAddress(sender) || !isAddress(receiver)) {
       throw new Error(
@@ -195,7 +186,7 @@ exports.handler = async (event) => {
       throw new Error(`Invalid destinationAmount: ${destinationAmount}`);
     }
 
-    // 4) Idempotency key (prefer paymentId, fall back to transactionId)
+    // 4) Idempotency key
     const paymentId = data.paymentId || data.transactionId || null;
     if (paymentId) {
       if (processed.has(paymentId)) {
@@ -219,14 +210,14 @@ exports.handler = async (event) => {
         "PATRON_DECIMALS must be >= USDC_DECIMALS for this fulfillment math"
       );
     }
+
     const scale = 10n ** BigInt(PATRON_DECIMALS - USDC_DECIMALS);
     const usdcAsPatronDecimals = usdcBase * scale;
 
-    // Multiply by rate (PATRON_PER_USDC) using 18-dec fixed-point
     const RATE_DECIMALS = 18;
     const rateWei = ethers.parseUnits
-      ? ethers.parseUnits(PATRON_PER_USDC, RATE_DECIMALS) // v6
-      : ethers.utils.parseUnits(PATRON_PER_USDC, RATE_DECIMALS); // v5
+      ? ethers.parseUnits(PATRON_PER_USDC, RATE_DECIMALS)
+      : ethers.utils.parseUnits(PATRON_PER_USDC, RATE_DECIMALS);
 
     const rateWeiBig = BigInt(rateWei.toString());
     const patronWei =
@@ -256,15 +247,20 @@ exports.handler = async (event) => {
       "function balanceOf(address owner) view returns (uint256)",
     ];
 
-    const patron = new ethers.Contract(PATRON_TOKEN_ADDRESS, patronAbi, signer);
+    const patron = new ethers.Contract(
+      PATRON_TOKEN_ADDRESS,
+      patronAbi,
+      signer
+    );
 
-    const signerAddress =
-      (await signer.getAddress?.()) || signer.address || null;
-    const treasuryBal = await patron.balanceOf(signerAddress);
+    const treasuryAddress =
+      (await signer.getAddress?.()) || signer.address || (await signer.getAddress());
+
+    const treasuryBal = await patron.balanceOf(treasuryAddress);
     const treasuryBalBig = BigInt(treasuryBal.toString());
     if (treasuryBalBig < patronWei) {
       throw new Error(
-        "Treasury insufficient PATRON balance for fulfillment"
+        `Treasury insufficient PATRON balance. Have ${treasuryBalBig}, need ${patronWei}`
       );
     }
 
@@ -284,6 +280,7 @@ exports.handler = async (event) => {
     };
   } catch (err) {
     console.error("thirdweb-webhook fulfillment error:", err);
+
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Webhook processing failed" }),
