@@ -15,7 +15,7 @@ import { createThirdwebClient, defineChain } from "thirdweb";
 import { inAppWallet } from "thirdweb/wallets";
 
 // ---------------------------------------------
-// Thirdweb client + chain (same as Patronium / USPPA)
+// Thirdweb client + chain
 // ---------------------------------------------
 const client = createThirdwebClient({
   clientId: "f58c0bfc6e6a2c00092cc3c35db1eed8",
@@ -26,20 +26,16 @@ const BASE = defineChain(8453);
 // Embedded email wallets
 const wallets = [
   inAppWallet({
-    auth: {
-      options: ["email"],
-    },
+    auth: { options: ["email"] },
   }),
 ];
 
 // ---------------------------------------------
-// Shared Patron Wallet / Checkout theme
-// (same spec as USPOLOPATRONS & PoloPatronium)
+// Theme
 // ---------------------------------------------
 const patronCheckoutTheme = darkTheme({
   fontFamily:
     '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-  // Make thirdweb buttons (including BUY PATRON) pill-shaped
   borderRadius: 999,
   colors: {
     modalBg: "#050505",
@@ -48,12 +44,10 @@ const patronCheckoutTheme = darkTheme({
     separatorLine: "#3a2b16",
     mutedBg: "#050505",
     skeletonBg: "#111111",
-
     primaryText: "#f5eedc",
     secondaryText: "#c7b08a",
     selectedTextColor: "#111111",
     selectedTextBg: "#f5eedc",
-
     primaryButtonBg: "#e3bf72",
     primaryButtonText: "#181210",
     secondaryButtonBg: "#050505",
@@ -63,7 +57,6 @@ const patronCheckoutTheme = darkTheme({
     accentButtonText: "#181210",
     connectedButtonBg: "#050505",
     connectedButtonHoverBg: "#111111",
-
     secondaryIconColor: "#c7b08a",
     secondaryIconHoverColor: "#f5eedc",
     secondaryIconHoverBg: "#111111",
@@ -77,22 +70,19 @@ const patronCheckoutTheme = darkTheme({
 });
 
 // ---------------------------------------------
-// Simple error boundary for CheckoutWidget
+// Error boundary for CheckoutWidget
 // ---------------------------------------------
 class CheckoutBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
   }
-
   static getDerivedStateFromError() {
     return { hasError: true };
   }
-
   componentDidCatch(error, info) {
     console.error("CheckoutWidget crashed:", error, info);
   }
-
   render() {
     if (this.state.hasError) {
       return (
@@ -106,16 +96,9 @@ class CheckoutBoundary extends React.Component {
 }
 
 // ---------------------------------------------
-// Zoom-on-scroll full-bleed photo band
+// Zoom-on-scroll photo band
 // ---------------------------------------------
-function ParallaxBand({
-  src,
-  children,
-  first = false,
-  zoom = 30,
-  speed = 0.1,
-  finishFactor = 2,
-}) {
+function ParallaxBand({ src, children, first = false, zoom = 30, speed = 0.1, finishFactor = 2 }) {
   const bandRef = useRef(null);
   const imgRef = useRef(null);
 
@@ -130,7 +113,6 @@ function ParallaxBand({
 
       const total = vh + rect.height;
       let raw = (vh - rect.top) / total;
-
       raw *= finishFactor;
 
       const progress = Math.min(1, Math.max(0, raw));
@@ -160,17 +142,11 @@ function ParallaxBand({
   }, [zoom, speed, finishFactor]);
 
   return (
-    <div
-      ref={bandRef}
-      className={`parallax-band full-bleed ${
-        first ? "parallax-band-first" : ""
-      }`}
-    >
+    <div ref={bandRef} className={`parallax-band full-bleed ${first ? "parallax-band-first" : ""}`}>
       <div className="parallax-media" aria-hidden="true">
         <img ref={imgRef} className="parallax-img" src={src} alt="" />
         <div className="parallax-vignette" />
       </div>
-
       <div className="parallax-content">{children}</div>
     </div>
   );
@@ -191,8 +167,8 @@ export default function App() {
   const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
 
   // Netlify form statuses
-  const [circuitSubmitStatus, setCircuitSubmitStatus] = useState("idle"); // idle | submitting | success | error
-  const [resultsSubmitStatus, setResultsSubmitStatus] = useState("idle"); // idle | submitting | success | error
+  const [circuitSubmitStatus, setCircuitSubmitStatus] = useState("idle");
+  const [resultsSubmitStatus, setResultsSubmitStatus] = useState("idle");
 
   // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
@@ -254,7 +230,7 @@ export default function App() {
   const openCircuitSignup = () => {
     if (!isConnected) return;
     setIsWalletOpen(false);
-    setCircuitSubmitStatus("idle"); // reset per open
+    setCircuitSubmitStatus("idle");
     setIsCircuitModalOpen(true);
   };
 
@@ -263,29 +239,20 @@ export default function App() {
     setCircuitSubmitStatus("idle");
   };
 
-  // ✅ Use number for internal math, but string for CheckoutWidget (this thirdweb build calls .includes on it)
-  const normalizedAmountNumber =
-    usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
+  // Amount normalization (thirdweb build expects string in some versions)
+  const normalizedAmountNumber = usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
   const normalizedAmount = String(normalizedAmountNumber);
 
-  /**
-   * CANONICAL CHANGE:
-   * - Do NOT call your mint/transfer Netlify function from the client.
-   * - Fulfillment should happen server-side from thirdweb webhook data (destinationAmount),
-   *   so you always transfer exactly what was actually paid.
-   */
   const handleCheckoutSuccess = async (result) => {
     console.log("Checkout success:", result);
-
     alert(
       "Payment received.\n\n" +
-        "PATRON will be credited to your wallet automatically (usually within moments).\n" +
+        "PATRON will be credited to your wallet automatically.\n" +
         "If you do not see it shortly, contact support with your wallet address."
     );
   };
 
-  // --- Netlify form handlers (keep / for POST so Netlify sees them) ----
-
+  // --- Netlify form handlers ----
   const handleCircuitSubmit = async (e) => {
     e.preventDefault();
     setCircuitSubmitStatus("submitting");
@@ -354,7 +321,7 @@ export default function App() {
     document.body.style.overflow = "";
   }, [anyModalOpen, isWalletOpen]);
 
-  // ESC closes whichever modal is open (signup first, then wallet)
+  // ESC closes whichever modal is open
   useEffect(() => {
     if (!anyModalOpen) return;
     const onKeyDown = (e) => {
@@ -371,7 +338,7 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [anyModalOpen, isWalletOpen, isCircuitModalOpen]);
 
-  // Scroll gating: when ABOUT section bottom crosses near top, open wallet once
+  // Scroll gating: open wallet once after ABOUT passes
   useEffect(() => {
     if (isConnected) {
       setHasTriggeredGate(false);
@@ -384,7 +351,7 @@ export default function App() {
       if (!el) return;
 
       const rect = el.getBoundingClientRect();
-      const triggerY = 96; // px from top of viewport
+      const triggerY = 96;
 
       if (rect.bottom <= triggerY) {
         setHasTriggeredGate(true);
@@ -398,7 +365,7 @@ export default function App() {
 
   return (
     <div className="page">
-      {/* Top header with centered Patron Wallet button */}
+      {/* Top header */}
       <header
         style={{
           display: "flex",
@@ -417,7 +384,7 @@ export default function App() {
         </button>
       </header>
 
-      {/* HERO POSTER */}
+      {/* HERO */}
       <section className="hero">
         <div className="hero-topline">
           UNITED STATES POLO
@@ -439,7 +406,6 @@ export default function App() {
 
         <div className="hero-rule-2" />
 
-        {/* Streaming on THE POLO WAY first */}
         <div className="hero-badges" style={{ marginTop: "0" }}>
           <div className="hero-badge-intro">STREAMING ON</div>
           <div
@@ -454,13 +420,8 @@ export default function App() {
           </div>
         </div>
 
-        {/* Divider between Polo Way and Remuda */}
-        <div
-          className="hero-rule-2"
-          style={{ marginTop: "18px", marginBottom: "18px" }}
-        />
+        <div className="hero-rule-2" style={{ marginTop: "18px", marginBottom: "18px" }} />
 
-        {/* Then Introducing THREE SEVENS REMUDA */}
         <div className="hero-badges">
           <div className="hero-badge-intro">INTRODUCING</div>
           <div className="three-sevens-mark">
@@ -476,24 +437,14 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 1 (image only) */}
-      <ParallaxBand
-        src="/images/cowboy-1.jpeg"
-        first
-        zoom={30}
-        speed={0.1}
-        finishFactor={2}
-      />
+      <ParallaxBand src="/images/cowboy-1.jpeg" first zoom={30} speed={0.1} finishFactor={2} />
 
-      {/* ABOUT / HOW IT FUNCTIONS section BELOW band */}
+      {/* ABOUT */}
       <section
         id="about"
         ref={roadmapGateRef}
         className="band-section"
-        style={{
-          marginTop: "-20px",
-          paddingTop: "20px",
-        }}
+        style={{ marginTop: "-20px", paddingTop: "20px" }}
       >
         <div className="section-header">
           <div className="section-kicker">THE FORMAT</div>
@@ -503,67 +454,46 @@ export default function App() {
 
         <div className="section-body">
           <p>
-            The Cowboy Polo Circuit is a national development league for
-            players, ponies, &amp; patrons built on sanctioned and recorded
-            Cowboy Polo chukkers.
+            The Cowboy Polo Circuit is a national development league for players, ponies, &amp; patrons built on
+            sanctioned and recorded Cowboy Polo chukkers.
           </p>
           <p>
-            Games are played 3 on 3 in arenas or campitos, with teams of up to
-            12 riders. The key is that a player does not need a full string to
-            play and attract patrons: a rider can progress by playing as little
-            as one chukker, on one good horse, and still build a real Circuit
-            handicap.
+            Games are played 3 on 3 in arenas or campitos, with teams of up to 12 riders. The key is that a player
+            does not need a full string to play and attract patrons: a rider can progress by playing as little as one
+            chukker, on one good horse, and still build a real Circuit handicap.
           </p>
           <p>
-            Cowboy Polo chukkers can be hosted by any stable, arena, or program
-            that signs on to the Circuit. A local coach, instructor, or
-            appointed captains run the game, then submit the chukker sheet
-            feeding two tables: the individual handicap table for each rider,
-            and the game results table for teams.
+            Cowboy Polo chukkers can be hosted by any stable, arena, or program that signs on to the Circuit. A local
+            coach, instructor, or appointed captains run the game, then submit the chukker sheet feeding two tables:
+            the individual handicap table for each rider, and the game results table for teams.
           </p>
           <p>
-            Each sanctioned chukker updates both sides of the story: how riders
-            are rated, and how their teams are performing.
+            Each sanctioned chukker updates both sides of the story: how riders are rated, and how their teams are
+            performing.
           </p>
           <p>
-            Over the course of a Circuit season, those two tables are the
-            backbone of the standings: player handicaps and team records
-            together define how the season is read.
+            Over the course of a Circuit season, those two tables are the backbone of the standings: player handicaps
+            and team records together define how the season is read.
           </p>
           <p>
-            Local chapters also feed into{" "}
-            <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
-            and arenas submit 360° VR footage from sanctioned Cowboy Polo
-            chukkers to thepoloway.com so patrons can follow and support the
-            Circuit from anywhere.
+            Local chapters also feed into <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders and arenas
+            submit 360° VR footage from sanctioned Cowboy Polo chukkers to thepoloway.com so patrons can follow and
+            support the Circuit from anywhere.
           </p>
         </div>
       </section>
 
-      {/* PHOTO BAND 2 (image only) */}
       <ParallaxBand src="/images/cowboy-2.jpeg" zoom={30} speed={0.1} finishFactor={2} />
 
-      {/* PLAYER LEADERBOARD BELOW band */}
-      <section
-        id="players"
-        className="band-section"
-        style={{
-          marginTop: "-20px",
-          paddingTop: "20px",
-        }}
-      >
+      {/* PLAYER LEADERBOARD */}
+      <section id="players" className="band-section" style={{ marginTop: "-20px", paddingTop: "20px" }}>
         <div className="section-header">
           <div className="section-kicker">PLAYER STANDINGS</div>
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
           <div className="section-rule" />
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
@@ -594,15 +524,8 @@ export default function App() {
                 >
                   COWBOY POLO CIRCUIT STANDINGS
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
-                  Sign into your Patron Wallet to view live rider handicaps and
-                  Circuit tables.
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
+                  Sign into your Patron Wallet to view live rider handicaps and Circuit tables.
                 </div>
               </div>
             </div>
@@ -611,24 +534,19 @@ export default function App() {
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
-                Player handicaps in the Cowboy Polo Circuit are not just static
-                numbers. Each rider’s Cowboy Polo handicap is a statistically
-                calculated, ELO-style rating, updated after every sanctioned
-                chukker and displayed to two decimal places.
+                Player handicaps in the Cowboy Polo Circuit are not just static numbers. Each rider’s Cowboy Polo
+                handicap is a statistically calculated, ELO-style rating, updated after every sanctioned chukker and
+                displayed to two decimal places.
               </p>
               <p>
-                Ratings move with performance over time: goals scored, assists,
-                ride-offs won, and overall impact on the match all feed the same
-                underlying score. The table below shows how a leaderboard might
-                appear during mid-season.
+                Ratings move with performance over time: goals scored, assists, ride-offs won, and overall impact on
+                the match all feed the same underlying score.
               </p>
             </div>
 
             <div className="board">
               <div className="board-title">Top Riders — Mid-Season Snapshot</div>
-              <div className="board-sub">
-                Handicaps update as sanctioned results are submitted.
-              </div>
+              <div className="board-sub">Handicaps update as sanctioned results are submitted.</div>
 
               <div className="board-header">
                 <span>Rider</span>
@@ -672,18 +590,10 @@ export default function App() {
         </div>
       </section>
 
-      {/* PHOTO BAND 3 (image only) */}
       <ParallaxBand src="/images/cowboy-3.jpeg" zoom={30} speed={0.1} finishFactor={2} />
 
-      {/* HORSE & REMUDA SECTION BELOW band */}
-      <section
-        id="horses"
-        className="band-section"
-        style={{
-          marginTop: "-20px",
-          paddingTop: "20px",
-        }}
-      >
+      {/* HORSE & REMUDA */}
+      <section id="horses" className="band-section" style={{ marginTop: "-20px", paddingTop: "20px" }}>
         <div className="section-header">
           <div className="section-kicker">
             <div className="three-sevens-mark">
@@ -695,12 +605,7 @@ export default function App() {
         <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
         <div className="section-rule" />
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
@@ -731,15 +636,8 @@ export default function App() {
                 >
                   REMUDA &amp; HORSE PERFORMANCE
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
-                  Sign into your Patron Wallet to view tracked horses and Remuda
-                  performance.
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
+                  Sign into your Patron Wallet to view tracked horses and Remuda performance.
                 </div>
               </div>
             </div>
@@ -748,42 +646,19 @@ export default function App() {
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
-                The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA
-                horses — brought up inside the Cowboy Polo Circuit and tracked
-                from their first saddle miles to their final retirement. We
-                don&apos;t buy finished polo ponies; we make them. Every horse
-                that enters the 7̶7̶7̶ Remuda is a training project, and riders in
-                the Circuit learn not only how to play, but how to help produce
-                a polo horse.
+                The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA horses — brought up inside the Cowboy Polo
+                Circuit and tracked from their first saddle miles to their final retirement.
               </p>
               <p>
-                Every sanctioned appearance adds to a horse&apos;s career record:
-                chukkers played, riders carried, contribution to wins, and
-                awards earned across chapters and seasons. The same horse might
-                be bred in one place, started by another, developed by a pro,
-                and later carry juniors, patrons, and finally step down into
-                lesson, therapy, or pasture retirement.
-              </p>
-              <p>
-                By keeping a single, living record for each Remuda horse,
-                breeders, trainers, players, and patrons can see the whole life
-                cycle of an equine athlete — not just a single sale moment.
-              </p>
-              <p>
-                Those records will be linked into the Polo Patronium ecosystem
-                so that the people who helped bring a horse along its path can
-                participate in its economic story across its working life and
-                into retirement.
+                By keeping a single, living record for each Remuda horse, breeders, trainers, players, and patrons can
+                see the whole life cycle of an equine athlete — not just a single sale moment.
               </p>
             </div>
 
             <div className="board">
-              <div className="board-title">
-                Remuda Horses — Performance Snapshot
-              </div>
+              <div className="board-title">Remuda Horses — Performance Snapshot</div>
               <div className="board-sub">
-                Score blends chukker count, match impact, and rider feedback
-                across the season.
+                Score blends chukker count, match impact, and rider feedback across the season.
               </div>
 
               <div className="board-header">
@@ -809,10 +684,7 @@ export default function App() {
               <div className="board-row">
                 <span>River Scout</span>
                 <span>
-                  C
-                  <span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>
-                    P
-                  </span>
+                  C<span style={{ fontSize: "0.75em", verticalAlign: "sub" }}>P</span>
                 </span>
                 <span>79</span>
               </div>
@@ -858,7 +730,7 @@ export default function App() {
                 position: "relative",
               }}
             >
-              {/* Modal header: USPPA / Cowboy Polo Circuit / Patron Wallet */}
+              {/* Header */}
               <div
                 style={{
                   display: "flex",
@@ -869,14 +741,7 @@ export default function App() {
                   paddingTop: "4px",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 3,
-                  }}
-                >
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
                   <div
                     style={{
                       fontSize: "11px",
@@ -934,7 +799,7 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Explanatory copy under title (ONLY when not signed in) */}
+              {/* Explanatory copy under title */}
               {!account && (
                 <p
                   style={{
@@ -947,8 +812,7 @@ export default function App() {
                     color: "#dec89a",
                   }}
                 >
-                  Sign up with your email to create your Cowboy Polo Patron
-                  Wallet. This same wallet works on{" "}
+                  Sign up with your email to create your Cowboy Polo Patron Wallet. This same wallet works on{" "}
                   <a
                     href="https://uspolopatrons.org"
                     target="_blank"
@@ -973,12 +837,7 @@ export default function App() {
               {/* Connect or account view */}
               {!account ? (
                 <div style={{ marginBottom: "14px" }}>
-                  <ConnectEmbed
-                    client={client}
-                    wallets={wallets}
-                    chain={BASE}
-                    theme={patronCheckoutTheme}
-                  />
+                  <ConnectEmbed client={client} wallets={wallets} chain={BASE} theme={patronCheckoutTheme} />
                 </div>
               ) : (
                 <div style={{ marginBottom: "14px", textAlign: "center" }}>
@@ -993,9 +852,7 @@ export default function App() {
                       marginTop: "2px",
                     }}
                   >
-                    <div style={{ fontFamily: "monospace", fontSize: "13px" }}>
-                      {shortAddress}
-                    </div>
+                    <div style={{ fontFamily: "monospace", fontSize: "13px" }}>{shortAddress}</div>
                     <button
                       type="button"
                       onClick={handleCopyAddress}
@@ -1035,8 +892,7 @@ export default function App() {
                         Gas
                       </div>
                       <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                        {baseBalance?.displayValue || "0"}{" "}
-                        {baseBalance?.symbol || "ETH"}
+                        {baseBalance?.displayValue || "0"} {baseBalance?.symbol || "ETH"}
                       </div>
                     </div>
 
@@ -1053,8 +909,7 @@ export default function App() {
                         USDC
                       </div>
                       <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                        {usdcBalance?.displayValue || "0"}{" "}
-                        {usdcBalance?.symbol || "USDC"}
+                        {usdcBalance?.displayValue || "0"} {usdcBalance?.symbol || "USDC"}
                       </div>
                     </div>
                   </div>
@@ -1072,15 +927,8 @@ export default function App() {
                     >
                       Patronium Balance
                     </div>
-                    <div
-                      style={{
-                        fontSize: "18px",
-                        letterSpacing: "0.02em",
-                        color: "#f5eedc",
-                      }}
-                    >
-                      {patronBalance?.displayValue || "0"}{" "}
-                      {patronBalance?.symbol || "PATRON"}
+                    <div style={{ fontSize: "18px", letterSpacing: "0.02em", color: "#f5eedc" }}>
+                      {patronBalance?.displayValue || "0"} {patronBalance?.symbol || "PATRON"}
                     </div>
                   </div>
 
@@ -1153,13 +1001,12 @@ export default function App() {
                       textAlign: "center",
                     }}
                   >
-                    Connect or create your Patron Wallet above to enable this
-                    step.
+                    Connect or create your Patron Wallet above to enable this step.
                   </div>
                 )}
               </div>
 
-              {/* Amount + Checkout (disabled visually until connected) */}
+              {/* Amount + Checkout */}
               <div style={{ position: "relative" }}>
                 {!isConnected && (
                   <button
@@ -1219,7 +1066,6 @@ export default function App() {
                     />
                   </div>
 
-                  {/* Canonical note (optional but recommended) */}
                   <p
                     style={{
                       margin: "0 0 10px",
@@ -1229,8 +1075,7 @@ export default function App() {
                       textAlign: "center",
                     }}
                   >
-                    Patron fulfillment is processed automatically from the
-                    confirmed on-chain payment amount.
+                    Patron fulfillment is processed automatically from the confirmed payment amount.
                   </p>
 
                   <CheckoutBoundary>
@@ -1242,13 +1087,13 @@ export default function App() {
                       }
                       currency={"USD"}
                       chain={BASE}
-                      amount={normalizedAmount} // string for this thirdweb build
-                      tokenAddress={
-                        "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
-                      }
-                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
+                      amount={normalizedAmount}
+                      tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"} // USDC on Base
+                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"} // your seller/receiver
                       buttonLabel={"BUY PATRON (USDC on Base)"}
                       theme={patronCheckoutTheme}
+                      // ✅ CRITICAL FIX: pass buyer wallet to webhook via purchaseData
+                      purchaseData={{ walletAddress: account?.address }}
                       onSuccess={handleCheckoutSuccess}
                       onError={(err) => {
                         console.error("Checkout error:", err);
@@ -1259,16 +1104,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Small note */}
-              <p
-                style={{
-                  marginTop: "10px",
-                  fontSize: "11px",
-                  lineHeight: 1.5,
-                  color: "#c7b08a",
-                  textAlign: "center",
-                }}
-              >
+              <p style={{ marginTop: "10px", fontSize: "11px", lineHeight: 1.5, color: "#c7b08a", textAlign: "center" }}>
                 This Patron Wallet works across the Cowboy Polo Circuit,{" "}
                 <a
                   href="https://uspolopatrons.org"
@@ -1276,7 +1112,7 @@ export default function App() {
                   rel="noreferrer"
                   style={{ color: "#e3bf72", textDecoration: "none" }}
                 >
-                  USPOLOPATRO NS.org
+                  USPOLOPATRONS.org
                 </a>{" "}
                 and{" "}
                 <a
@@ -1294,7 +1130,7 @@ export default function App() {
         </div>
       )}
 
-      {/* CIRCUIT SIGNUP MODAL (Netlify form, wallet-linked, mobile-first) */}
+      {/* CIRCUIT SIGNUP MODAL */}
       {isCircuitModalOpen && (
         <div
           className="wallet-modal-backdrop"
@@ -1329,7 +1165,6 @@ export default function App() {
                 position: "relative",
               }}
             >
-              {/* Header */}
               <div
                 style={{
                   display: "flex",
@@ -1389,18 +1224,9 @@ export default function App() {
                 </button>
               </div>
 
-              <p
-                style={{
-                  margin: "0 0 12px",
-                  fontSize: "12px",
-                  lineHeight: 1.6,
-                  color: "#dec89a",
-                  textAlign: "center",
-                }}
-              >
-                This form links your Cowboy Polo interest to your Patron Wallet
-                so we can connect riders, parents, and arenas with the right
-                chapters and rewards.
+              <p style={{ margin: "0 0 12px", fontSize: "12px", lineHeight: 1.6, color: "#dec89a", textAlign: "center" }}>
+                This form links your Cowboy Polo interest to your Patron Wallet so we can connect riders, parents, and
+                arenas with the right chapters and rewards.
               </p>
 
               <form
@@ -1410,9 +1236,7 @@ export default function App() {
                 data-netlify-honeypot="bot-field"
                 onSubmit={handleCircuitSubmit}
               >
-                {/* Netlify hidden form name */}
                 <input type="hidden" name="form-name" value="circuit-signup" />
-                {/* Honeypot */}
                 <p style={{ display: "none" }}>
                   <label>
                     Don’t fill this out if you're human:
@@ -1484,7 +1308,6 @@ export default function App() {
                   />
                 </div>
 
-                {/* Multi-select: Interested In (check all that apply) */}
                 <div style={{ marginBottom: "10px" }}>
                   <div
                     style={{
@@ -1496,45 +1319,15 @@ export default function App() {
                       marginBottom: "4px",
                     }}
                   >
-                    Interested In{" "}
-                    <span style={{ fontSize: "9px", opacity: 0.8 }}>
-                      (check all that apply)
-                    </span>
+                    Interested In <span style={{ fontSize: "9px", opacity: 0.8 }}>(check all that apply)</span>
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "6px",
-                      fontSize: "12px",
-                    }}
-                  >
-                    {[
-                      "Rider",
-                      "Parent / Guardian",
-                      "Patron",
-                      "Arena / Program",
-                      "Other",
-                    ].map((label) => (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", fontSize: "12px" }}>
+                    {["Rider", "Parent / Guardian", "Patron", "Arena / Program", "Other"].map((label) => (
                       <label
                         key={label}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                          cursor: "pointer",
-                        }}
+                        style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}
                       >
-                        <input
-                          type="checkbox"
-                          name="interest"
-                          value={label}
-                          style={{
-                            width: 16,
-                            height: 16,
-                            accentColor: "#e3bf72",
-                          }}
-                        />
+                        <input type="checkbox" name="interest" value={label} style={{ width: 16, height: 16, accentColor: "#e3bf72" }} />
                         <span>{label}</span>
                       </label>
                     ))}
@@ -1607,7 +1400,6 @@ export default function App() {
                   />
                 </div>
 
-                {/* Wallet address – visible + hidden copy for Netlify */}
                 <div style={{ marginBottom: "10px" }}>
                   <label
                     htmlFor="cs-wallet"
@@ -1638,30 +1430,13 @@ export default function App() {
                       fontSize: "0.9rem",
                     }}
                   />
-                  <input
-                    type="hidden"
-                    name="walletAddress"
-                    value={account?.address || ""}
-                  />
-                  <small
-                    style={{
-                      display: "block",
-                      marginTop: "4px",
-                      fontSize: "10px",
-                      color: "#9f8a64",
-                    }}
-                  >
-                    This links your Circuit interest to your Patron Wallet
-                    profile.
+                  <input type="hidden" name="walletAddress" value={account?.address || ""} />
+                  <small style={{ display: "block", marginTop: "4px", fontSize: "10px", color: "#9f8a64" }}>
+                    This links your Circuit interest to your Patron Wallet profile.
                   </small>
                 </div>
 
-                <div
-                  style={{
-                    marginTop: "12px",
-                    textAlign: "right",
-                  }}
-                >
+                <div style={{ marginTop: "12px", textAlign: "right" }}>
                   <button
                     type="submit"
                     className="btn btn-primary"
@@ -1671,40 +1446,21 @@ export default function App() {
                       letterSpacing: "0.16em",
                       textTransform: "uppercase",
                       opacity: circuitSubmitStatus === "submitting" ? 0.7 : 1,
-                      cursor:
-                        circuitSubmitStatus === "submitting"
-                          ? "wait"
-                          : "pointer",
+                      cursor: circuitSubmitStatus === "submitting" ? "wait" : "pointer",
                     }}
                     disabled={circuitSubmitStatus === "submitting"}
                   >
-                    {circuitSubmitStatus === "submitting"
-                      ? "Submitting…"
-                      : "Submit Circuit Signup"}
+                    {circuitSubmitStatus === "submitting" ? "Submitting…" : "Submit Circuit Signup"}
                   </button>
                 </div>
 
                 {circuitSubmitStatus === "success" && (
-                  <p
-                    style={{
-                      marginTop: "8px",
-                      fontSize: "11px",
-                      color: "#4ade80",
-                      textAlign: "center",
-                    }}
-                  >
+                  <p style={{ marginTop: "8px", fontSize: "11px", color: "#4ade80", textAlign: "center" }}>
                     Thank you — your Circuit signup was received.
                   </p>
                 )}
                 {circuitSubmitStatus === "error" && (
-                  <p
-                    style={{
-                      marginTop: "8px",
-                      fontSize: "11px",
-                      color: "#f97373",
-                      textAlign: "center",
-                    }}
-                  >
+                  <p style={{ marginTop: "8px", fontSize: "11px", color: "#f97373", textAlign: "center" }}>
                     Something went wrong submitting the form. Please try again.
                   </p>
                 )}
@@ -1714,22 +1470,15 @@ export default function App() {
         </div>
       )}
 
-      {/* RESULTS / NETLIFY FORM (GATED) */}
+      {/* RESULTS */}
       <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
-          <h2 className="section-title">
-            SANCTIONED CHUKKERS &amp; SEASON RECORD
-          </h2>
+          <h2 className="section-title">SANCTIONED CHUKKERS &amp; SEASON RECORD</h2>
           <div className="section-rule" />
         </div>
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: "20px",
-          }}
-        >
+        <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
               onClick={openWallet}
@@ -1760,15 +1509,8 @@ export default function App() {
                 >
                   CIRCUIT RESULTS
                 </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
-                  Sign into your Patron Wallet to submit official chukker
-                  results and season records.
+                <div style={{ fontSize: "13px", lineHeight: 1.6, color: "#f5eedc" }}>
+                  Sign into your Patron Wallet to submit official chukker results and season records.
                 </div>
               </div>
             </div>
@@ -1777,16 +1519,8 @@ export default function App() {
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
-                Match captains or appointed officials submit chukker sheets:
-                teams, scorelines, rider combinations, and notable horse usage.
-                Those sheets become the official record that updates handicaps
-                and team standings across the Circuit.
-              </p>
-              <p>
-                In the live system, this is where results will be uploaded and
-                confirmed before they touch the leaderboards — and where each
-                season’s record can be prepared for on-chain archival inside the
-                Patronium ecosystem.
+                Match captains or appointed officials submit chukker sheets: teams, scorelines, rider combinations, and
+                notable horse usage.
               </p>
             </div>
 
@@ -1807,21 +1541,10 @@ export default function App() {
                 </label>
               </p>
 
-              {/* Wallet address – visible + hidden copy for Netlify */}
               <div>
                 <label htmlFor="cr-wallet">Linked Wallet</label>
-                <input
-                  id="cr-wallet"
-                  type="text"
-                  value={account?.address || ""}
-                  readOnly
-                  style={{ fontFamily: "monospace" }}
-                />
-                <input
-                  type="hidden"
-                  name="walletAddress"
-                  value={account?.address || ""}
-                />
+                <input id="cr-wallet" type="text" value={account?.address || ""} readOnly style={{ fontFamily: "monospace" }} />
+                <input type="hidden" name="walletAddress" value={account?.address || ""} />
               </div>
 
               <div className="results-form-row-inline">
@@ -1866,12 +1589,7 @@ export default function App() {
 
               <div>
                 <label htmlFor="details">Chukker Details</label>
-                <textarea
-                  id="details"
-                  name="details"
-                  rows={4}
-                  placeholder="Teams, riders, horses, scoreline, and any notes."
-                />
+                <textarea id="details" name="details" rows={4} placeholder="Teams, riders, horses, scoreline, and any notes." />
               </div>
 
               <div>
@@ -1887,39 +1605,20 @@ export default function App() {
                   disabled={resultsSubmitStatus === "submitting"}
                   style={{
                     opacity: resultsSubmitStatus === "submitting" ? 0.7 : 1,
-                    cursor:
-                      resultsSubmitStatus === "submitting"
-                        ? "wait"
-                        : "pointer",
+                    cursor: resultsSubmitStatus === "submitting" ? "wait" : "pointer",
                   }}
                 >
-                  {resultsSubmitStatus === "submitting"
-                    ? "Submitting…"
-                    : "SUBMIT CHUKKER RESULTS"}
+                  {resultsSubmitStatus === "submitting" ? "Submitting…" : "SUBMIT CHUKKER RESULTS"}
                 </button>
               </div>
 
               {resultsSubmitStatus === "success" && (
-                <p
-                  style={{
-                    marginTop: "8px",
-                    fontSize: "11px",
-                    color: "#4ade80",
-                    textAlign: "right",
-                  }}
-                >
+                <p style={{ marginTop: "8px", fontSize: "11px", color: "#4ade80", textAlign: "right" }}>
                   Chukker results submitted. Thank you.
                 </p>
               )}
               {resultsSubmitStatus === "error" && (
-                <p
-                  style={{
-                    marginTop: "8px",
-                    fontSize: "11px",
-                    color: "#f97373",
-                    textAlign: "right",
-                  }}
-                >
+                <p style={{ marginTop: "8px", fontSize: "11px", color: "#f97373", textAlign: "right" }}>
                   There was a problem submitting results. Please try again.
                 </p>
               )}
