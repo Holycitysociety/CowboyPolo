@@ -297,11 +297,16 @@ exports.handler = async (event) => {
         fulfillmentTxHash: receipt.transactionHash,
       }),
     };
-  } catch (err) {
+    } catch (err) {
     console.error("thirdweb-webhook fulfillment error:", err);
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Webhook processing failed" }),
+      body: JSON.stringify({
+        error: "Webhook processing failed",
+        message: err.message || String(err),
+        stack: err.stack || null,
+      }),
     };
   }
 };
