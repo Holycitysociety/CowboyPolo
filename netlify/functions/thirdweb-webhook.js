@@ -5,14 +5,14 @@
 const crypto = require("crypto");
 const { ethers } = require("ethers");
 
-
 // -----------------------------
 // Helpers (ethers v5/v6)
 // -----------------------------
 function getProvider(rpcUrl) {
   if (!rpcUrl) throw new Error("RPC_URL env var is missing");
   if (ethers.JsonRpcProvider) return new ethers.JsonRpcProvider(rpcUrl); // v6
-  if (ethers.providers?.JsonRpcProvider) return new ethers.providers.JsonRpcProvider(rpcUrl); // v5
+  if (ethers.providers?.JsonRpcProvider)
+    return new ethers.providers.JsonRpcProvider(rpcUrl); // v5
   throw new Error("No JsonRpcProvider found on ethers");
 }
 
@@ -29,7 +29,7 @@ function normalizeAddress(addr) {
 // -----------------------------
 // Webhook signature verification (HMAC SHA-256)
 // Per thirdweb docs: signature over `${timestamp}.${rawBody}`
-// Headers may be x-payload-signature or x-pay-signature; timestamp x-timestamp or x-pay-timestamp  [oai_citation:1‡thirdweb docs](https://portal.thirdweb.com/bridge/webhooks)
+// Headers may be x-payload-signature or x-pay-signature; timestamp x-timestamp or x-pay-timestamp
 // -----------------------------
 function verifyThirdwebWebhook(rawBody, headers, secret, toleranceSeconds = 300) {
   if (!secret) throw new Error("Missing THIRDWEB_WEBHOOK_SECRET env var");
@@ -56,7 +56,9 @@ function verifyThirdwebWebhook(rawBody, headers, secret, toleranceSeconds = 300)
 
   const diff = Math.abs(now - timestamp);
   if (diff > toleranceSeconds) {
-    throw new Error(`Webhook timestamp too old (diff=${diff}s, tol=${toleranceSeconds}s)`);
+    throw new Error(
+      `Webhook timestamp too old (diff=${diff}s, tol=${toleranceSeconds}s)`
+    );
   }
 
   const computed = crypto
@@ -73,8 +75,8 @@ function verifyThirdwebWebhook(rawBody, headers, secret, toleranceSeconds = 300)
 
 // -----------------------------
 // Minimal in-memory idempotency
-// NOTE: This is best-effort only (serverless instances can restart).
-// For production, persist processed paymentIds in a durable store.
+// NOTE: Best-effort only (serverless instances can restart).
+// For real production, persist processed paymentIds in a durable store.
 // -----------------------------
 const processed = global.__PROCESSED_PAYMENTS__ || new Set();
 global.__PROCESSED_PAYMENTS__ = processed;
@@ -84,7 +86,10 @@ global.__PROCESSED_PAYMENTS__ = processed;
 // -----------------------------
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" }),
+    };
   }
 
   const RPC_URL = process.env.RPC_URL;
@@ -93,7 +98,8 @@ exports.handler = async (event) => {
   // Destination verification (what you expect thirdweb to deliver)
   const DEST_CHAIN_ID = Number(process.env.DEST_CHAIN_ID || "8453"); // Base
   const USDC_ADDRESS =
-    process.env.USDC_TOKEN_ADDRESS || "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+    process.env.USDC_TOKEN_ADDRESS ||
+    "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
   const SELLER_ADDRESS = process.env.SELLER_ADDRESS; // should match CheckoutWidget seller
 
   // Fulfillment (what you send)
@@ -103,10 +109,14 @@ exports.handler = async (event) => {
   const USDC_DECIMALS = Number(process.env.USDC_DECIMALS || "6");
   const PATRON_PER_USDC = process.env.PATRON_PER_USDC
     ? String(process.env.PATRON_PER_USDC)
-    : "1"; // can be integer or decimal string, but we’ll treat as rational via parseUnits below
+    : "1"; // integer or decimal string
 
   try {
-    const rawBody = event.body || "";
+    // Netlify can base64-encode bodies; decode BEFORE signature verification.
+    const rawBody = event.isBase64Encoded
+      ? Buffer.from(event.body || "", "base64").toString("utf8")
+      : event.body || "";
+
     const headers = event.headers || {};
 
     // 1) Verify authenticity
@@ -115,38 +125,60 @@ exports.handler = async (event) => {
     // 2) Parse payload
     const payload = JSON.parse(rawBody);
 
-    // Expect a completed onchain transaction event
+    // Expect an onchain transaction event
     const type = payload?.type;
     const data = payload?.data;
 
+    // Ignore unrelated events
     if (type !== "pay.onchain-transaction" || !data) {
-      return { statusCode: 200, body: JSON.stringify({ ok: true, ignored: true }) };
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ ok: true, ignored: true }),
+      };
     }
 
+    // Only fulfill completed payments
     if (data.status !== "COMPLETED") {
-      return { statusCode: 200, body: JSON.stringify({ ok: true, ignored: true, status: data.status }) };
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ ok: true, ignored: true, status: data.status }),
+      };
     }
 
-    // 3) Verify destination constraints (recommended by thirdweb)  [oai_citation:2‡thirdweb docs](https://portal.thirdweb.com/bridge/webhooks)
+    // 3) Verify destination constraints
     const receiver = data.receiver;
-    const sender = data.sender; // this should be the buyer wallet
+    const sender = data.sender; // buyer wallet
     const destToken = data.destinationToken;
     const destinationAmount = data.destinationAmount; // string in smallest units
 
     if (!isAddress(sender) || !isAddress(receiver)) {
-      throw new Error(`Invalid sender/receiver in payload: sender=${sender} receiver=${receiver}`);
+      throw new Error(
+        `Invalid sender/receiver in payload: sender=${sender} receiver=${receiver}`
+      );
     }
 
-    if (SELLER_ADDRESS && normalizeAddress(receiver) !== normalizeAddress(SELLER_ADDRESS)) {
-      throw new Error(`Receiver mismatch. Got ${receiver}, expected ${SELLER_ADDRESS}`);
+    if (
+      SELLER_ADDRESS &&
+      normalizeAddress(receiver) !== normalizeAddress(SELLER_ADDRESS)
+    ) {
+      throw new Error(
+        `Receiver mismatch. Got ${receiver}, expected ${SELLER_ADDRESS}`
+      );
     }
 
-    if (!destToken?.address || normalizeAddress(destToken.address) !== normalizeAddress(USDC_ADDRESS)) {
-      throw new Error(`Destination token mismatch. Got ${destToken?.address}, expected ${USDC_ADDRESS}`);
+    if (
+      !destToken?.address ||
+      normalizeAddress(destToken.address) !== normalizeAddress(USDC_ADDRESS)
+    ) {
+      throw new Error(
+        `Destination token mismatch. Got ${destToken?.address}, expected ${USDC_ADDRESS}`
+      );
     }
 
     if (Number(destToken.chainId) !== DEST_CHAIN_ID) {
-      throw new Error(`Destination chain mismatch. Got ${destToken.chainId}, expected ${DEST_CHAIN_ID}`);
+      throw new Error(
+        `Destination chain mismatch. Got ${destToken.chainId}, expected ${DEST_CHAIN_ID}`
+      );
     }
 
     if (!destinationAmount || BigInt(destinationAmount) <= 0n) {
@@ -154,39 +186,40 @@ exports.handler = async (event) => {
     }
 
     // 4) Idempotency key (prefer paymentId, fall back to transactionId)
+    // IMPORTANT: only mark processed AFTER successful fulfillment.
     const paymentId = data.paymentId || data.transactionId || null;
-    if (paymentId) {
-      if (processed.has(paymentId)) {
-        return { statusCode: 200, body: JSON.stringify({ ok: true, duplicate: true, paymentId }) };
-      }
-      processed.add(paymentId);
+    if (paymentId && processed.has(paymentId)) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ ok: true, duplicate: true, paymentId }),
+      };
     }
 
     // 5) Compute PATRON amount from actual delivered USDC
-    // destinationAmount is USDC base units (6 decimals)
-    // PATRON = (USDC * PATRON_PER_USDC)
-    // We’ll compute:
-    // patronWei = destinationAmount * 10^(PATRON_DECIMALS-USDC_DECIMALS) * PATRON_PER_USDC
+    // destinationAmount is USDC base units (USDC_DECIMALS, typically 6)
+    // PATRON = USDC * PATRON_PER_USDC
     //
-    // If PATRON_PER_USDC is non-integer (e.g. "1.5"), we handle by scaling with 18 decimals.
+    // patronWei = destinationAmount * 10^(PATRON_DECIMALS-USDC_DECIMALS) * rate
+    // where rate is PATRON_PER_USDC expressed as 18-dec fixed-point.
     const usdcBase = BigInt(destinationAmount);
 
-    // scale USDC base units up to PATRON decimals
     if (PATRON_DECIMALS < USDC_DECIMALS) {
-      throw new Error("PATRON_DECIMALS must be >= USDC_DECIMALS for this fulfillment math");
+      throw new Error(
+        "PATRON_DECIMALS must be >= USDC_DECIMALS for this fulfillment math"
+      );
     }
+
     const scale = 10n ** BigInt(PATRON_DECIMALS - USDC_DECIMALS);
     const usdcAsPatronDecimals = usdcBase * scale;
 
-    // Multiply by rate (PATRON_PER_USDC) using 18-dec fixed-point
     const RATE_DECIMALS = 18;
-    const rateWei = (ethers.parseUnits
+    const rateWei = ethers.parseUnits
       ? ethers.parseUnits(PATRON_PER_USDC, RATE_DECIMALS) // v6
-      : ethers.utils.parseUnits(PATRON_PER_USDC, RATE_DECIMALS) // v5
-    );
+      : ethers.utils.parseUnits(PATRON_PER_USDC, RATE_DECIMALS); // v5
 
     const rateWeiBig = BigInt(rateWei.toString());
-    const patronWei = (usdcAsPatronDecimals * rateWeiBig) / (10n ** BigInt(RATE_DECIMALS));
+    const patronWei =
+      (usdcAsPatronDecimals * rateWeiBig) / (10n ** BigInt(RATE_DECIMALS));
 
     if (patronWei <= 0n) {
       throw new Error("Computed patronWei is zero");
@@ -194,7 +227,9 @@ exports.handler = async (event) => {
 
     // 6) Transfer PATRON from treasury → buyer (sender)
     if (!PATRON_TOKEN_ADDRESS || !TREASURY_PRIVATE_KEY) {
-      throw new Error("Server misconfigured: missing PATRON_TOKEN_ADDRESS or TREASURY_PRIVATE_KEY");
+      throw new Error(
+        "Server misconfigured: missing PATRON_TOKEN_ADDRESS or TREASURY_PRIVATE_KEY"
+      );
     }
 
     const provider = getProvider(RPC_URL);
@@ -213,7 +248,8 @@ exports.handler = async (event) => {
     const patron = new ethers.Contract(PATRON_TOKEN_ADDRESS, patronAbi, signer);
 
     // Optional safety: ensure treasury has balance
-    const treasuryBal = await patron.balanceOf(await signer.getAddress?.() || signer.address);
+    const treasuryAddress = (await signer.getAddress?.()) || signer.address;
+    const treasuryBal = await patron.balanceOf(treasuryAddress);
     const treasuryBalBig = BigInt(treasuryBal.toString());
     if (treasuryBalBig < patronWei) {
       throw new Error("Treasury insufficient PATRON balance for fulfillment");
@@ -221,6 +257,9 @@ exports.handler = async (event) => {
 
     const tx = await patron.transfer(sender, patronWei);
     const receipt = await tx.wait();
+
+    // Mark processed ONLY after successful fulfillment
+    if (paymentId) processed.add(paymentId);
 
     return {
       statusCode: 200,
@@ -236,10 +275,7 @@ exports.handler = async (event) => {
   } catch (err) {
     console.error("thirdweb-webhook fulfillment error:", err);
 
-    // IMPORTANT:
-    // If signature verified and we added to `processed`, we might have blocked retries.
-    // In production, store processed only AFTER successful fulfillment.
-    // For now, we return 500 so thirdweb can retry.
+    // Return 500 so thirdweb can retry (assuming your config retries on non-2xx).
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Webhook processing failed" }),
