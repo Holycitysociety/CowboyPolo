@@ -406,8 +406,6 @@ export default function App() {
           </p>
           <a
             href="https://uspolopatrons.org"
-            target="_blank"
-            rel="noreferrer"
             className="btn btn-footer"
           >
             Visit USPPA
@@ -425,8 +423,6 @@ export default function App() {
           </p>
           <a
             href="https://polopatronium.com"
-            target="_blank"
-            rel="noreferrer"
             className="btn btn-footer"
           >
             POLOPATRONIUM.COM
