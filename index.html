@@ -17,17 +17,45 @@
     <!-- Vite entry point -->
     <script type="module" src="/src/main.jsx"></script>
 
-    <!-- (Optional) hidden Netlify form definition for extra safety -->
+    <!-- Hidden Netlify form templates (for build-time detection) -->
+
+    <!-- Circuit signup -->
     <form
-      name="chukker-results"
-      netlify
+      name="circuit-signup"
+      method="POST"
+      data-netlify="true"
       netlify-honeypot="bot-field"
       hidden
     >
+      <input type="hidden" name="form-name" value="circuit-signup" />
       <input type="text" name="name" />
       <input type="email" name="email" />
+      <input type="text" name="chapter" />
+      <textarea name="notes"></textarea>
+      <input type="text" name="walletAddress" />
+      <input type="text" name="interest" />
+      <input type="text" name="bot-field" />
+    </form>
+
+    <!-- Chukker results -->
+    <form
+      name="chukker-results"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      enctype="multipart/form-data"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="chukker-results" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="chapter" />
+      <input type="date" name="match-date" />
+      <input type="text" name="location" />
       <textarea name="details"></textarea>
       <input type="file" name="file" />
+      <input type="text" name="walletAddress" />
+      <input type="text" name="bot-field" />
     </form>
   </body>
 </html>
