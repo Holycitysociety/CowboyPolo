@@ -529,8 +529,53 @@ footer {
   padding-top: 18px;
   border-top: 1px solid var(--border);
   text-align: center;
-  font-size: 0.78rem;
   color: var(--muted);
+}
+
+/* Footer brand row with wordmarks */
+.footer-brand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.footer-wordmark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: #f5eedc;
+  text-transform: uppercase;
+}
+
+.footer-wordmark-kicker {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.26em;
+  opacity: 0.9;
+}
+
+.footer-wordmark-main {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
+}
+
+.footer-wordmark:hover .footer-wordmark-main {
+  text-decoration: underline;
+}
+
+.footer-dot {
+  font-size: 1rem;
+  opacity: 0.65;
+}
+
+.footer-meta {
+  font-size: 0.78rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -559,6 +604,14 @@ footer {
   /* First band closer to hero on mobile */
   .parallax-band-first {
     margin-top: 16px;
+  }
+
+  .footer-brand {
+    gap: 12px;
+  }
+
+  .footer-wordmark-main {
+    font-size: 0.9rem;
   }
 }
 
