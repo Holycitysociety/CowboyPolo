@@ -817,20 +817,21 @@ export default function App() {
               href="https://uspolopatrons.org"
               target="_blank"
               rel="noreferrer"
-              className="footer-wordmark"
+              className="footer-wordmark footer-wordmark-primary"
             >
               <span className="footer-wordmark-kicker">United States Polo</span>
               <span className="footer-wordmark-main">Patrons Association</span>
+              <span className="footer-cta-pill">Learn more</span>
             </a>
-            <span className="footer-dot">•</span>
             <a
               href="https://polopatronium.com"
               target="_blank"
               rel="noreferrer"
-              className="footer-wordmark"
+              className="footer-wordmark footer-wordmark-secondary"
             >
               <span className="footer-wordmark-kicker">Polo</span>
               <span className="footer-wordmark-main">Patronium</span>
+              <span className="footer-cta-pill">Read more</span>
             </a>
           </div>
           <div className="footer-meta">
@@ -859,7 +860,10 @@ export default function App() {
         <button
           className="btn btn-outline"
           style={{ minWidth: "auto", padding: "6px 20px" }}
-          onClick={openWalletModal}
+          onClick={() => {
+            // Navigate to standalone wallet page
+            window.location.hash = "/wallet";
+          }}
         >
           PATRON WALLET
         </button>
@@ -2204,20 +2208,21 @@ export default function App() {
             href="https://uspolopatrons.org"
             target="_blank"
             rel="noreferrer"
-            className="footer-wordmark"
+            className="footer-wordmark footer-wordmark-primary"
           >
             <span className="footer-wordmark-kicker">United States Polo</span>
             <span className="footer-wordmark-main">Patrons Association</span>
+            <span className="footer-cta-pill">Learn more</span>
           </a>
-          <span className="footer-dot">•</span>
           <a
             href="https://polopatronium.com"
             target="_blank"
             rel="noreferrer"
-            className="footer-wordmark"
+            className="footer-wordmark footer-wordmark-secondary"
           >
             <span className="footer-wordmark-kicker">Polo</span>
             <span className="footer-wordmark-main">Patronium</span>
+            <span className="footer-cta-pill">Read more</span>
           </a>
         </div>
         <div className="footer-meta">
