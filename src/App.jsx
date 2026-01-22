@@ -823,24 +823,30 @@ export default function App() {
         </section>
 
         <footer>
-          © <span>{year}</span> USPPA · COWBOY POLO CIRCUIT ·{" "}
-          <a
-            href="https://uspolopatrons.org"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "#e3bf72", textDecoration: "none" }}
-          >
-            USPOLOPATRONS.org
-          </a>{" "}
-          ·{" "}
-          <a
-            href="https://polopatronium.com"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "#e3bf72", textDecoration: "none" }}
-          >
-            PoloPatronium.com
-          </a>
+          <div className="footer-brand">
+            <a
+              href="https://uspolopatrons.org"
+              target="_blank"
+              rel="noreferrer"
+              className="footer-wordmark"
+            >
+              <span className="footer-wordmark-kicker">United States Polo</span>
+              <span className="footer-wordmark-main">Patrons Association</span>
+            </a>
+            <span className="footer-dot">•</span>
+            <a
+              href="https://polopatronium.com"
+              target="_blank"
+              rel="noreferrer"
+              className="footer-wordmark"
+            >
+              <span className="footer-wordmark-kicker">Polo</span>
+              <span className="footer-wordmark-main">Patronium</span>
+            </a>
+          </div>
+          <div className="footer-meta">
+            © <span>{year}</span> USPPA · Cowboy Polo Circuit
+          </div>
         </footer>
       </div>
     );
@@ -2145,24 +2151,30 @@ export default function App() {
       </section>
 
       <footer>
-        © <span>{year}</span> USPPA · COWBOY POLO CIRCUIT ·{" "}
-        <a
-          href="https://uspolopatrons.org"
-          target="_blank"
-          rel="noreferrer"
-          style={{ color: "#e3bf72", textDecoration: "none" }}
-        >
-          USPOLOPATRONS.org
-        </a>{" "}
-        ·{" "}
-        <a
-          href="https://polopatronium.com"
-          target="_blank"
-          rel="noreferrer"
-          style={{ color: "#e3bf72", textDecoration: "none" }}
-        >
-          PoloPatronium.com
-        </a>
+        <div className="footer-brand">
+          <a
+            href="https://uspolopatrons.org"
+            target="_blank"
+            rel="noreferrer"
+            className="footer-wordmark"
+          >
+            <span className="footer-wordmark-kicker">United States Polo</span>
+            <span className="footer-wordmark-main">Patrons Association</span>
+          </a>
+          <span className="footer-dot">•</span>
+          <a
+            href="https://polopatronium.com"
+            target="_blank"
+            rel="noreferrer"
+            className="footer-wordmark"
+          >
+            <span className="footer-wordmark-kicker">Polo</span>
+            <span className="footer-wordmark-main">Patronium</span>
+          </a>
+        </div>
+        <div className="footer-meta">
+          © <span>{year}</span> USPPA · Cowboy Polo Circuit
+        </div>
       </footer>
     </div>
   );
