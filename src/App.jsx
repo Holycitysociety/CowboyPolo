@@ -387,6 +387,60 @@ export default function App() {
   }, [route, isConnected, hasTriggeredGate]);
 
   // ---------------------------------------------
+  // Shared footer (both routes)
+  // ---------------------------------------------
+  const renderFooter = () => (
+    <footer className="site-footer">
+      <div className="footer-panels">
+        {/* USPPA block */}
+        <div className="footer-panel">
+          <div className="footer-kicker">NATIONAL PATRON BODY</div>
+          <div className="footer-title">
+            UNITED STATES POLO
+            <br />
+            PATRONS ASSOCIATION
+          </div>
+          <p className="footer-copy">
+            The USPPA is a patrons&apos; association focused on building a broader base of support for players,
+            horses, and local clubs across the country.
+          </p>
+          <a
+            href="https://uspolopatrons.org"
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-footer"
+          >
+            Visit USPPA
+          </a>
+        </div>
+
+        {/* Polo Patronium block */}
+        <div className="footer-panel">
+          <div className="footer-kicker">OFFICIAL TOKEN</div>
+          <div className="footer-title">POLO PATRONIUM</div>
+          <div className="footer-subtitle">SYMBOL &quot;PATRON&quot; · BUILT ON BASE</div>
+          <p className="footer-copy">
+            A patronage utility token and membership initiative uniting patrons, players, and clubs in a shared
+            economy of sport.
+          </p>
+          <a
+            href="https://polopatronium.com"
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-footer"
+          >
+            POLOPATRONIUM.COM
+          </a>
+        </div>
+      </div>
+
+      <div className="footer-meta">
+        © <span>{year}</span> USPPA · Cowboy Polo Circuit
+      </div>
+    </footer>
+  );
+
+  // ---------------------------------------------
   // Standalone wallet page for #/wallet
   // ---------------------------------------------
   if (route === "wallet") {
@@ -402,7 +456,7 @@ export default function App() {
           }}
         >
           <button
-            className="btn btn-outline"
+            className="btn btn-outline btn-small"
             style={{ minWidth: "auto", padding: "6px 16px", fontSize: "0.7rem" }}
             onClick={() => {
               window.location.hash = "";
@@ -810,57 +864,7 @@ export default function App() {
           </div>
         </section>
 
-        <footer>
-          <div className="footer-brand">
-            <div className="footer-column">
-              <div className="footer-kicker">Official Association</div>
-              <a
-                href="https://uspolopatrons.org"
-                target="_blank"
-                rel="noreferrer"
-                className="footer-wordmark"
-              >
-                <span className="footer-wordmark-main">United States Polo</span>
-                <span className="footer-wordmark-main">Patrons Association</span>
-              </a>
-              <a
-                href="https://uspolopatrons.org"
-                target="_blank"
-                rel="noreferrer"
-                className="footer-cta-link"
-              >
-                Learn more
-              </a>
-            </div>
-
-            <div className="footer-column">
-              <div className="footer-kicker">Official Token</div>
-              <a
-                href="https://polopatronium.com"
-                target="_blank"
-                rel="noreferrer"
-                className="footer-wordmark"
-              >
-                <span className="footer-wordmark-main">Polo Patronium</span>
-                <span className="footer-wordmark-main-sub">
-                  Symbol “PATRON” · Built on Base
-                </span>
-              </a>
-              <a
-                href="https://polopatronium.com"
-                target="_blank"
-                rel="noreferrer"
-                className="footer-cta-link"
-              >
-                Read more
-              </a>
-            </div>
-          </div>
-
-          <div className="footer-meta">
-            © <span>{year}</span> USPPA · Cowboy Polo Circuit
-          </div>
-        </footer>
+        {renderFooter()}
       </div>
     );
   }
@@ -870,7 +874,7 @@ export default function App() {
   // ---------------------------------------------
   return (
     <div className="page">
-      {/* Top header */}
+      {/* Top header: now links to dedicated wallet page */}
       <header
         style={{
           display: "flex",
@@ -880,15 +884,13 @@ export default function App() {
           marginBottom: "8px",
         }}
       >
-        <button
+        <a
+          href="#/wallet"
           className="btn btn-outline"
           style={{ minWidth: "auto", padding: "6px 20px" }}
-          onClick={() => {
-            window.location.hash = "/wallet";
-          }}
         >
           PATRON WALLET
-        </button>
+        </a>
       </header>
 
       {/* HERO */}
@@ -938,12 +940,7 @@ export default function App() {
         </div>
 
         <div className="hero-cta-row">
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              window.location.hash = "/wallet";
-            }}
-          >
+          <button className="btn btn-primary" onClick={openWalletModal}>
             Sign up / Sign in
           </button>
         </div>
@@ -961,7 +958,6 @@ export default function App() {
         <div className="section-header">
           <div className="section-kicker">THE FORMAT</div>
           <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
-          <div className="section-rule" />
         </div>
 
         <div className="section-body">
@@ -1002,7 +998,6 @@ export default function App() {
         <div className="section-header">
           <div className="section-kicker">PLAYER STANDINGS</div>
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
-          <div className="section-rule" />
         </div>
 
         <div style={{ position: "relative", marginTop: "20px" }}>
@@ -1115,7 +1110,6 @@ export default function App() {
           </div>
         </div>
         <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
-        <div className="section-rule" />
 
         <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
@@ -2066,7 +2060,6 @@ export default function App() {
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
           <h2 className="section-title">SANCTIONED CHUKKERS &amp; SEASON RECORD</h2>
-          <div className="section-rule" />
         </div>
 
         <div style={{ position: "relative", marginTop: "20px" }}>
@@ -2229,27 +2222,7 @@ export default function App() {
         </div>
       </section>
 
-      <footer>
-        <div className="footer-brand">
-          <div className="footer-column">
-            <div className="footer-kicker">Official Association</div>
-            <a
-              href="https://uspolopatrons.org"
-              target="_blank"
-              rel="noreferrer"
-              className="footer-wordmark"
-            >
-              <span className="footer-wordmark-main">United States Polo</span>
-              <span className="footer-wordmark-main">Patrons Association</span>
-            </a>
-            <a
-              href="https://uspolopatrons.org"
-              target="_blank"
-              rel="noreferrer"
-              className="footer-cta-link"
-            >
-              Learn more
-            </a>
-          </div>
-
-          <div className
+      {renderFooter()}
+    </div>
+  );
+}
