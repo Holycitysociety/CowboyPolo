@@ -363,6 +363,472 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isConnected, hasTriggeredGate]);
 
+  // ---------------------------------------------
+  // Standalone wallet page toggle
+  // ---------------------------------------------
+  const isWalletStandalonePage =
+    typeof window !== "undefined" && window.location.pathname === "/wallet";
+
+  if (isWalletStandalonePage) {
+    // Standalone Patron Wallet page at /wallet
+    return (
+      <div className="page">
+        <header
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "8px 0 0",
+            marginBottom: "12px",
+          }}
+        >
+          <button
+            className="btn btn-outline"
+            style={{ minWidth: "auto", padding: "6px 16px", fontSize: "0.7rem" }}
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          >
+            ← Back to Cowboy Polo
+          </button>
+          <div
+            style={{
+              fontFamily: '"IM Fell English SC", serif',
+              fontSize: "0.75rem",
+              letterSpacing: "0.24em",
+              textTransform: "uppercase",
+              opacity: 0.8,
+            }}
+          >
+            Patron Wallet
+          </div>
+        </header>
+
+        <section>
+          <div style={{ maxWidth: 420, margin: "18px auto 0" }}>
+            <div
+              ref={walletScrollRef}
+              style={{
+                width: "100%",
+                maxHeight: "none",
+                overflowY: "visible",
+                border: "1px solid #3a2b16",
+                borderRadius: "14px",
+                padding: "16px",
+                paddingTop: "26px",
+                background: "#050505",
+                boxShadow: "0 18px 60px rgba(0,0,0,0.85)",
+                fontFamily:
+                  '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
+                color: "#f5eedc",
+                fontSize: "13px",
+                position: "relative",
+              }}
+            >
+              {/* Header (no close button here) */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "8px",
+                  position: "relative",
+                  paddingTop: "4px",
+                }}
+              >
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      letterSpacing: "0.28em",
+                      textTransform: "uppercase",
+                      color: "#9f8a64",
+                    }}
+                  >
+                    U&nbsp;S&nbsp;P&nbsp;P&nbsp;A
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "16px",
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: "#f5eedc",
+                    }}
+                  >
+                    Cowboy Polo Circuit
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      letterSpacing: "0.26em",
+                      textTransform: "uppercase",
+                      color: "#c7b08a",
+                    }}
+                  >
+                    Patron Wallet
+                  </div>
+                </div>
+              </div>
+
+              {/* Explanatory copy under title */}
+              {!account && (
+                <p
+                  style={{
+                    margin: "0 0 14px",
+                    fontSize: "12px",
+                    lineHeight: 1.5,
+                    textAlign: "center",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "#dec89a",
+                  }}
+                >
+                  Sign up with your email to create your Cowboy Polo Patron Wallet. This same wallet works on{" "}
+                  <a
+                    href="https://uspolopatrons.org"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#e3bf72", textDecoration: "none" }}
+                  >
+                    USPoloPatrons.org
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://polopatronium.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "#e3bf72", textDecoration: "none" }}
+                  >
+                    PoloPatronium.com
+                  </a>
+                  .
+                </p>
+              )}
+
+              {/* Connect or account view */}
+              {!account ? (
+                <div style={{ marginBottom: "14px" }}>
+                  <ConnectEmbed client={client} wallets={wallets} chain={BASE} theme={patronCheckoutTheme} />
+                </div>
+              ) : (
+                <div style={{ marginBottom: "14px", textAlign: "center" }}>
+                  {/* Address + copy */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: "10px",
+                      marginTop: "2px",
+                    }}
+                  >
+                    <div style={{ fontFamily: "monospace", fontSize: "13px" }}>{shortAddress}</div>
+                    <button
+                      type="button"
+                      onClick={handleCopyAddress}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        color: "#e3bf72",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                      }}
+                      aria-label="Copy wallet address"
+                    >
+                      📋
+                    </button>
+                  </div>
+
+                  {/* Gas + USDC */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "28px",
+                      marginBottom: "10px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "#9f8a64",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Gas
+                      </div>
+                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
+                        {baseBalance?.displayValue || "0"} {baseBalance?.symbol || "ETH"}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "#9f8a64",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        USDC
+                      </div>
+                      <div style={{ color: "#f5eedc", fontSize: "13px" }}>
+                        {usdcBalance?.displayValue || "0"} {usdcBalance?.symbol || "USDC"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Patron balance */}
+                  <div style={{ marginBottom: "12px" }}>
+                    <div
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.18em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Patronium Balance
+                    </div>
+                    <div style={{ fontSize: "18px", letterSpacing: "0.02em", color: "#f5eedc" }}>
+                      {patronBalance?.displayValue || "0"} {patronBalance?.symbol || "PATRON"}
+                    </div>
+                  </div>
+
+                  <button
+                    className="btn btn-outline"
+                    style={{
+                      minWidth: "auto",
+                      padding: "6px 18px",
+                      fontSize: "11px",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                    }}
+                    onClick={handleSignOut}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+
+              {/* NEXT STEPS CTA */}
+              <div
+                style={{
+                  marginBottom: "16px",
+                  marginTop: "4px",
+                  padding: "10px 10px 12px",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(234,191,114,0.25)",
+                  background: "rgba(5,5,5,0.9)",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    color: "#c7b08a",
+                    marginBottom: "6px",
+                    textAlign: "center",
+                  }}
+                >
+                  Next Steps
+                </div>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={openCircuitSignup}
+                  disabled={!isConnected}
+                  style={{
+                    width: "100%",
+                    padding: "8px 20px",
+                    fontSize: "11px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    background: "#e3bf72",
+                    color: "#181210",
+                    borderColor: "#e3bf72",
+                    opacity: isConnected ? 1 : 0.45,
+                    cursor: isConnected ? "pointer" : "not-allowed",
+                  }}
+                >
+                  Join the Cowboy Polo Circuit
+                </button>
+                {!isConnected && (
+                  <div
+                    style={{
+                      marginTop: "6px",
+                      fontSize: "10px",
+                      lineHeight: 1.4,
+                      color: "#9f8a64",
+                      textAlign: "center",
+                    }}
+                  >
+                    Connect or create your Patron Wallet above to enable this step.
+                  </div>
+                )}
+              </div>
+
+              {/* Amount + Checkout */}
+              <div style={{ position: "relative" }}>
+                {!isConnected && (
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "rgba(0,0,0,0.68)",
+                      zIndex: 10,
+                      borderRadius: 12,
+                    }}
+                  />
+                )}
+
+                <div
+                  style={{
+                    opacity: !isConnected ? 0.75 : 1,
+                    pointerEvents: isConnected ? "auto" : "none",
+                    transition: "opacity 160ms ease",
+                  }}
+                >
+                  <div style={{ marginBottom: 12 }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: 10,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        marginBottom: 6,
+                      }}
+                    >
+                      Choose Your Patronage (USD)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={usdAmount}
+                      onChange={(e) => setUsdAmount(e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        border: "1px solid #3a2b16",
+                        background: "#050505",
+                        color: "#f5eedc",
+                        fontSize: 16,
+                        outline: "none",
+                        boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
+                      }}
+                    />
+                  </div>
+
+                  <p
+                    style={{
+                      margin: "0 0 10px",
+                      fontSize: 11,
+                      lineHeight: 1.45,
+                      color: "#c7b08a",
+                      textAlign: "center",
+                    }}
+                  >
+                    Patron fulfillment is processed automatically from the confirmed payment amount.
+                  </p>
+
+                  <CheckoutBoundary>
+                    <CheckoutWidget
+                      client={client}
+                      name={"BUY POLO PATRONIUM (PATRON)"}
+                      description={
+                        "USPPA PATRONAGE UTILITY TOKEN · THREE SEVENS 7̶7̶7̶ REMUDA · COWBOY POLO CIRCUIT · THE POLO WAY · CHARLESTON POLO"
+                      }
+                      currency={"USD"}
+                      chain={BASE}
+                      amount={normalizedAmount}
+                      tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"} // USDC on Base
+                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"} // your seller/receiver
+                      buttonLabel={"BUY PATRON (USDC on Base)"}
+                      theme={patronCheckoutTheme}
+                      purchaseData={{ walletAddress: account?.address }}
+                      onSuccess={handleCheckoutSuccess}
+                      onError={(err) => {
+                        console.error("Checkout error:", err);
+                        alert(err?.message || String(err));
+                      }}
+                    />
+                  </CheckoutBoundary>
+                </div>
+              </div>
+
+              <p
+                style={{
+                  marginTop: "10px",
+                  fontSize: "11px",
+                  lineHeight: 1.5,
+                  color: "#c7b08a",
+                  textAlign: "center",
+                }}
+              >
+                This Patron Wallet works across the Cowboy Polo Circuit,{" "}
+                <a
+                  href="https://uspolopatrons.org"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#e3bf72", textDecoration: "none" }}
+                >
+                  USPOLOPATRONS.org
+                </a>{" "}
+                and{" "}
+                <a
+                  href="https://polopatronium.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#e3bf72", textDecoration: "none" }}
+                >
+                  PoloPatronium.com
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <footer>
+          © <span>{year}</span> USPPA · COWBOY POLO CIRCUIT ·{" "}
+          <a
+            href="https://uspolopatrons.org"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "#e3bf72", textDecoration: "none" }}
+          >
+            USPOLOPATRONS.org
+          </a>{" "}
+          ·{" "}
+          <a
+            href="https://polopatronium.com"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "#e3bf72", textDecoration: "none" }}
+          >
+            PoloPatronium.com
+          </a>
+        </footer>
+      </div>
+    );
+  }
+
+  // ---------------------------------------------
+  // Original main Cowboy Polo page (unchanged)
+  // ---------------------------------------------
   return (
     <div className="page">
       {/* Top header */}
@@ -1092,7 +1558,6 @@ export default function App() {
                       seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"} // your seller/receiver
                       buttonLabel={"BUY PATRON (USDC on Base)"}
                       theme={patronCheckoutTheme}
-                      // ✅ CRITICAL FIX: pass buyer wallet to webhook via purchaseData
                       purchaseData={{ walletAddress: account?.address }}
                       onSuccess={handleCheckoutSuccess}
                       onError={(err) => {
@@ -1104,7 +1569,15 @@ export default function App() {
                 </div>
               </div>
 
-              <p style={{ marginTop: "10px", fontSize: "11px", lineHeight: 1.5, color: "#c7b08a", textAlign: "center" }}>
+              <p
+                style={{
+                  marginTop: "10px",
+                  fontSize: "11px",
+                  lineHeight: 1.5,
+                  color: "#c7b08a",
+                  textAlign: "center",
+                }}
+              >
                 This Patron Wallet works across the Cowboy Polo Circuit,{" "}
                 <a
                   href="https://uspolopatrons.org"
@@ -1224,7 +1697,15 @@ export default function App() {
                 </button>
               </div>
 
-              <p style={{ margin: "0 0 12px", fontSize: "12px", lineHeight: 1.6, color: "#dec89a", textAlign: "center" }}>
+              <p
+                style={{
+                  margin: "0 0 12px",
+                  fontSize: "12px",
+                  lineHeight: 1.6,
+                  color: "#dec89a",
+                  textAlign: "center",
+                }}
+              >
                 This form links your Cowboy Polo interest to your Patron Wallet so we can connect riders, parents, and
                 arenas with the right chapters and rewards.
               </p>
@@ -1327,7 +1808,12 @@ export default function App() {
                         key={label}
                         style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}
                       >
-                        <input type="checkbox" name="interest" value={label} style={{ width: 16, height: 16, accentColor: "#e3bf72" }} />
+                        <input
+                          type="checkbox"
+                          name="interest"
+                          value={label}
+                          style={{ width: 16, height: 16, accentColor: "#e3bf72" }}
+                        />
                         <span>{label}</span>
                       </label>
                     ))}
@@ -1543,7 +2029,13 @@ export default function App() {
 
               <div>
                 <label htmlFor="cr-wallet">Linked Wallet</label>
-                <input id="cr-wallet" type="text" value={account?.address || ""} readOnly style={{ fontFamily: "monospace" }} />
+                <input
+                  id="cr-wallet"
+                  type="text"
+                  value={account?.address || ""}
+                  readOnly
+                  style={{ fontFamily: "monospace" }}
+                />
                 <input type="hidden" name="walletAddress" value={account?.address || ""} />
               </div>
 
@@ -1589,7 +2081,12 @@ export default function App() {
 
               <div>
                 <label htmlFor="details">Chukker Details</label>
-                <textarea id="details" name="details" rows={4} placeholder="Teams, riders, horses, scoreline, and any notes." />
+                <textarea
+                  id="details"
+                  name="details"
+                  rows={4}
+                  placeholder="Teams, riders, horses, scoreline, and any notes."
+                />
               </div>
 
               <div>
