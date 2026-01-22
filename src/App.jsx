@@ -405,7 +405,6 @@ export default function App() {
             className="btn btn-outline"
             style={{ minWidth: "auto", padding: "6px 16px", fontSize: "0.7rem" }}
             onClick={() => {
-              // Clear hash → back to main Cowboy Polo page
               window.location.hash = "";
             }}
           >
@@ -813,27 +812,51 @@ export default function App() {
 
         <footer>
           <div className="footer-brand">
-            <a
-              href="https://uspolopatrons.org"
-              target="_blank"
-              rel="noreferrer"
-              className="footer-wordmark footer-wordmark-primary"
-            >
-              <span className="footer-wordmark-kicker">United States Polo</span>
-              <span className="footer-wordmark-main">Patrons Association</span>
-              <span className="footer-cta-pill">Learn more</span>
-            </a>
-            <a
-              href="https://polopatronium.com"
-              target="_blank"
-              rel="noreferrer"
-              className="footer-wordmark footer-wordmark-secondary"
-            >
-              <span className="footer-wordmark-kicker">Polo</span>
-              <span className="footer-wordmark-main">Patronium</span>
-              <span className="footer-cta-pill">Read more</span>
-            </a>
+            <div className="footer-column">
+              <div className="footer-kicker">Official Association</div>
+              <a
+                href="https://uspolopatrons.org"
+                target="_blank"
+                rel="noreferrer"
+                className="footer-wordmark"
+              >
+                <span className="footer-wordmark-main">United States Polo</span>
+                <span className="footer-wordmark-main">Patrons Association</span>
+              </a>
+              <a
+                href="https://uspolopatrons.org"
+                target="_blank"
+                rel="noreferrer"
+                className="footer-cta-link"
+              >
+                Learn more
+              </a>
+            </div>
+
+            <div className="footer-column">
+              <div className="footer-kicker">Official Token</div>
+              <a
+                href="https://polopatronium.com"
+                target="_blank"
+                rel="noreferrer"
+                className="footer-wordmark"
+              >
+                <span className="footer-wordmark-main">Polo Patronium</span>
+                <span className="footer-wordmark-main-sub">
+                  Symbol “PATRON” · Built on Base
+                </span>
+              </a>
+              <a
+                href="https://polopatronium.com"
+                target="_blank"
+                rel="noreferrer"
+                className="footer-cta-link"
+              >
+                Read more
+              </a>
+            </div>
           </div>
+
           <div className="footer-meta">
             © <span>{year}</span> USPPA · Cowboy Polo Circuit
           </div>
@@ -861,7 +884,6 @@ export default function App() {
           className="btn btn-outline"
           style={{ minWidth: "auto", padding: "6px 20px" }}
           onClick={() => {
-            // Navigate to standalone wallet page
             window.location.hash = "/wallet";
           }}
         >
@@ -916,7 +938,12 @@ export default function App() {
         </div>
 
         <div className="hero-cta-row">
-          <button className="btn btn-primary" onClick={openWalletModal}>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              window.location.hash = "/wallet";
+            }}
+          >
             Sign up / Sign in
           </button>
         </div>
@@ -2204,31 +2231,25 @@ export default function App() {
 
       <footer>
         <div className="footer-brand">
-          <a
-            href="https://uspolopatrons.org"
-            target="_blank"
-            rel="noreferrer"
-            className="footer-wordmark footer-wordmark-primary"
-          >
-            <span className="footer-wordmark-kicker">United States Polo</span>
-            <span className="footer-wordmark-main">Patrons Association</span>
-            <span className="footer-cta-pill">Learn more</span>
-          </a>
-          <a
-            href="https://polopatronium.com"
-            target="_blank"
-            rel="noreferrer"
-            className="footer-wordmark footer-wordmark-secondary"
-          >
-            <span className="footer-wordmark-kicker">Polo</span>
-            <span className="footer-wordmark-main">Patronium</span>
-            <span className="footer-cta-pill">Read more</span>
-          </a>
-        </div>
-        <div className="footer-meta">
-          © <span>{year}</span> USPPA · Cowboy Polo Circuit
-        </div>
-      </footer>
-    </div>
-  );
-}
+          <div className="footer-column">
+            <div className="footer-kicker">Official Association</div>
+            <a
+              href="https://uspolopatrons.org"
+              target="_blank"
+              rel="noreferrer"
+              className="footer-wordmark"
+            >
+              <span className="footer-wordmark-main">United States Polo</span>
+              <span className="footer-wordmark-main">Patrons Association</span>
+            </a>
+            <a
+              href="https://uspolopatrons.org"
+              target="_blank"
+              rel="noreferrer"
+              className="footer-cta-link"
+            >
+              Learn more
+            </a>
+          </div>
+
+          <div className
