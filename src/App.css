@@ -523,105 +523,132 @@ section {
   color: var(--muted);
 }
 
-/* -----------------------------
-   Footer – Patronium card style
-   ----------------------------- */
+/* ---------- Footer ---------- */
 
-footer {
+.site-footer {
   margin-top: var(--section-gap);
-  padding-top: 28px;
-  border-top: 1px solid #1d1a15;
-  text-align: center;
+  padding: 32px 16px 24px;
+  border-top: 1px solid #27201a;
+  background: #000;
   color: var(--muted);
 }
 
-.footer-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
+.footer-panels {
   max-width: 540px;
-  margin: 0 auto 16px;
+  margin: 0 auto 18px;
 }
 
-/* Each wordmark is a mini “Polo Patronium” poster */
-.footer-wordmark {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  width: 100%;
-  text-decoration: none;
+.footer-panel {
   text-align: center;
-  color: #f5eedc;
-  padding: 18px 22px 16px;
-  border-radius: 18px;
-  border: 1px solid rgba(227, 191, 114, 0.38);
-  background:
-    radial-gradient(circle at top, rgba(227, 191, 114, 0.10), rgba(0, 0, 0, 0.96));
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.95);
+  padding: 10px 0 26px;
+}
+
+.footer-panel + .footer-panel {
+  border-top: 1px solid #27201a; /* dividing line between blocks on mobile */
+  margin-top: 18px;
+  padding-top: 26px;
+}
+
+.footer-kicker {
+  font-size: 11px;
+  letter-spacing: 0.20em;
   text-transform: uppercase;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.08s ease,
-    box-shadow 0.2s ease;
+  color: #c7b08a;
+  margin-bottom: 8px;
 }
 
-.footer-wordmark-primary {
-  background:
-    radial-gradient(circle at top, rgba(227, 191, 114, 0.16), rgba(0, 0, 0, 0.96));
+.footer-title {
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: #f5eedc;
 }
 
-.footer-wordmark-secondary {
-  background:
-    radial-gradient(circle at top, rgba(140, 116, 84, 0.18), rgba(0, 0, 0, 0.96));
-}
-
-.footer-wordmark::before {
-  content: "";
-  width: 120px;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-  margin-bottom: 6px;
-}
-
-.footer-wordmark:hover {
-  border-color: #e3bf72;
-  transform: translateY(-1px);
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.98);
-}
-
-.footer-wordmark-kicker {
-  font-family: "IM Fell English SC", serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.28em;
-  opacity: 0.9;
-}
-
-.footer-wordmark-main {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.1rem;
-  letter-spacing: 0.32em;
-}
-
-/* CTA pill mimics the POLOPATRONIUM.COM button */
-.footer-cta-pill {
-  margin-top: 10px;
-  padding: 8px 26px;
-  border-radius: 999px;
-  border: 1px solid rgba(227, 191, 114, 0.9);
-  font-size: 0.78rem;
+.footer-subtitle {
+  margin-top: 4px;
+  font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
+  color: #9f8a64;
+}
+
+.footer-copy {
+  margin: 14px auto 18px;
+  max-width: 32rem;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #d5c6a5;
+}
+
+.btn-footer {
+  display: inline-block;
+  margin-bottom: 4px;
+  padding: 10px 26px;
+  border-radius: 999px;
+  border: 1px solid #f5eedc;
   background: transparent;
   color: #f5eedc;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.9),
-    0 18px 40px rgba(0, 0, 0, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+}
+
+.btn-footer:hover {
+  background: #f5eedc;
+  color: #050505;
 }
 
 .footer-meta {
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
+  max-width: 540px;
+  margin: 10px auto 0;
+  padding-top: 14px;
+  border-top: 1px solid #27201a;
+  font-size: 10px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  text-align: center;
+  color: #8f7e61;
+}
+
+/* Desktop layout: two columns with vertical divider */
+
+@media (min-width: 768px) {
+  .site-footer {
+    padding-top: 40px;
+    padding-bottom: 32px;
+  }
+
+  .footer-panels {
+    max-width: 720px;
+    display: flex;
+    justify-content: space-between;
+    gap: 48px;
+    margin-bottom: 22px;
+  }
+
+  .footer-panel {
+    flex: 1;
+    text-align: left;
+    padding-bottom: 0;
+  }
+
+  .footer-panel + .footer-panel {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+    border-left: 1px solid #27201a;  /* vertical dividing line on desktop */
+    padding-left: 32px;
+  }
+
+  .footer-copy {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .footer-meta {
+    margin-top: 18px;
+  }
 }
 
 /* -----------------------------
@@ -648,14 +675,6 @@ footer {
   /* First band closer to hero on mobile */
   .parallax-band-first {
     margin-top: 16px;
-  }
-
-  .footer-brand {
-    gap: 14px;
-  }
-
-  .footer-wordmark-main {
-    font-size: 1rem;
   }
 }
 
@@ -746,7 +765,8 @@ footer {
 }
 
 .signup-modal {
-  width: 100%;
+  width: 100%
+  ;
   max-width: 420px;
   background: #050505;
   border-radius: 14px;
