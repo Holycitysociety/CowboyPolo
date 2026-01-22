@@ -153,12 +153,33 @@ function ParallaxBand({ src, children, first = false, zoom = 30, speed = 0.1, fi
 }
 
 // ---------------------------------------------
+// Simple hash-based routing
+// ---------------------------------------------
+function getRouteFromHash() {
+  if (typeof window === "undefined") return "home";
+  const hash = window.location.hash.replace(/^#/, "");
+  if (hash === "/wallet" || hash === "wallet") return "wallet";
+  return "home";
+}
+
+// ---------------------------------------------
 // Main App
 // ---------------------------------------------
 export default function App() {
   const year = new Date().getFullYear();
 
-  // Wallet / modal state
+  // Route from hash (#/wallet vs default)
+  const [route, setRoute] = useState(getRouteFromHash);
+
+  useEffect(() => {
+    const onHashChange = () => {
+      setRoute(getRouteFromHash());
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  // Wallet / modal state (for main page)
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [usdAmount, setUsdAmount] = useState("1");
   const walletScrollRef = useRef(null);
@@ -201,8 +222,8 @@ export default function App() {
     tokenAddress: "0xD766a771887fFB6c528434d5710B406313CAe03A", // PATRON
   });
 
-  const openWallet = () => setIsWalletOpen(true);
-  const closeWallet = () => setIsWalletOpen(false);
+  const openWalletModal = () => setIsWalletOpen(true);
+  const closeWalletModal = () => setIsWalletOpen(false);
 
   const shortAddress = account?.address
     ? `${account.address.slice(0, 6)}…${account.address.slice(-4)}`
@@ -239,7 +260,7 @@ export default function App() {
     setCircuitSubmitStatus("idle");
   };
 
-  // Amount normalization (thirdweb build expects string in some versions)
+  // Amount normalization
   const normalizedAmountNumber = usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
   const normalizedAmount = String(normalizedAmountNumber);
 
@@ -252,7 +273,7 @@ export default function App() {
     );
   };
 
-  // --- Netlify form handlers ----
+  // Netlify forms
   const handleCircuitSubmit = async (e) => {
     e.preventDefault();
     setCircuitSubmitStatus("submitting");
@@ -297,7 +318,7 @@ export default function App() {
     }
   };
 
-  // Lock body scroll when ANY modal open
+  // Lock body scroll when ANY modal open (main page only)
   const anyModalOpen = isWalletOpen || isCircuitModalOpen;
 
   useEffect(() => {
@@ -338,8 +359,10 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [anyModalOpen, isWalletOpen, isCircuitModalOpen]);
 
-  // Scroll gating: open wallet once after ABOUT passes
+  // Scroll gating on main page
   useEffect(() => {
+    if (route !== "home") return; // only on main page
+
     if (isConnected) {
       setHasTriggeredGate(false);
       return;
@@ -361,16 +384,12 @@ export default function App() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isConnected, hasTriggeredGate]);
+  }, [route, isConnected, hasTriggeredGate]);
 
   // ---------------------------------------------
-  // Standalone wallet page toggle
+  // Standalone wallet page for #/wallet
   // ---------------------------------------------
-  const isWalletStandalonePage =
-    typeof window !== "undefined" && window.location.pathname === "/wallet";
-
-  if (isWalletStandalonePage) {
-    // Standalone Patron Wallet page at /wallet
+  if (route === "wallet") {
     return (
       <div className="page">
         <header
@@ -386,7 +405,8 @@ export default function App() {
             className="btn btn-outline"
             style={{ minWidth: "auto", padding: "6px 16px", fontSize: "0.7rem" }}
             onClick={() => {
-              window.location.href = "/";
+              // Clear hash → back to main Cowboy Polo page
+              window.location.hash = "";
             }}
           >
             ← Back to Cowboy Polo
@@ -425,7 +445,7 @@ export default function App() {
                 position: "relative",
               }}
             >
-              {/* Header (no close button here) */}
+              {/* Header */}
               <div
                 style={{
                   display: "flex",
@@ -619,7 +639,7 @@ export default function App() {
                 </div>
               )}
 
-              {/* NEXT STEPS CTA */}
+              {/* Next steps */}
               <div
                 style={{
                   marginBottom: "16px",
@@ -754,8 +774,8 @@ export default function App() {
                       currency={"USD"}
                       chain={BASE}
                       amount={normalizedAmount}
-                      tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"} // USDC on Base
-                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"} // your seller/receiver
+                      tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"}
+                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
                       buttonLabel={"BUY PATRON (USDC on Base)"}
                       theme={patronCheckoutTheme}
                       purchaseData={{ walletAddress: account?.address }}
@@ -827,7 +847,7 @@ export default function App() {
   }
 
   // ---------------------------------------------
-  // Original main Cowboy Polo page (unchanged)
+  // Main Cowboy Polo page (route === "home")
   // ---------------------------------------------
   return (
     <div className="page">
@@ -844,7 +864,7 @@ export default function App() {
         <button
           className="btn btn-outline"
           style={{ minWidth: "auto", padding: "6px 20px" }}
-          onClick={openWallet}
+          onClick={openWalletModal}
         >
           PATRON WALLET
         </button>
@@ -897,7 +917,7 @@ export default function App() {
         </div>
 
         <div className="hero-cta-row">
-          <button className="btn btn-primary" onClick={openWallet}>
+          <button className="btn btn-primary" onClick={openWalletModal}>
             Sign up / Sign in
           </button>
         </div>
@@ -962,7 +982,7 @@ export default function App() {
         <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
-              onClick={openWallet}
+              onClick={openWalletModal}
               aria-label="Sign in required to view rider standings"
               role="button"
               style={{
@@ -1074,7 +1094,7 @@ export default function App() {
         <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
-              onClick={openWallet}
+              onClick={openWalletModal}
               aria-label="Sign in required to view Remuda tables"
               role="button"
               style={{
@@ -1159,11 +1179,11 @@ export default function App() {
         </div>
       </section>
 
-      {/* WALLET MODAL */}
+      {/* WALLET MODAL (main page) */}
       {isWalletOpen && (
         <div
           className="wallet-modal-backdrop"
-          onClick={closeWallet}
+          onClick={closeWalletModal}
           style={{
             position: "fixed",
             inset: 0,
@@ -1241,7 +1261,7 @@ export default function App() {
                 </div>
 
                 <button
-                  onClick={closeWallet}
+                  onClick={closeWalletModal}
                   aria-label="Close wallet"
                   title="Close"
                   style={{
@@ -1414,7 +1434,7 @@ export default function App() {
                 </div>
               )}
 
-              {/* NEXT STEPS CTA */}
+              {/* Next steps */}
               <div
                 style={{
                   marginBottom: "16px",
@@ -1477,7 +1497,7 @@ export default function App() {
                 {!isConnected && (
                   <button
                     type="button"
-                    onClick={closeWallet}
+                    onClick={closeWalletModal}
                     aria-label="Connect wallet first"
                     style={{
                       position: "absolute",
@@ -1554,8 +1574,8 @@ export default function App() {
                       currency={"USD"}
                       chain={BASE}
                       amount={normalizedAmount}
-                      tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"} // USDC on Base
-                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"} // your seller/receiver
+                      tokenAddress={"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"}
+                      seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
                       buttonLabel={"BUY PATRON (USDC on Base)"}
                       theme={patronCheckoutTheme}
                       purchaseData={{ walletAddress: account?.address }}
@@ -1967,7 +1987,7 @@ export default function App() {
         <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
             <div
-              onClick={openWallet}
+              onClick={openWalletModal}
               aria-label="Sign in required to submit or view results"
               role="button"
               style={{
