@@ -1179,7 +1179,7 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Jess C</span>
-                <span>Palmetto Polo</span>
+                <span>6666 Polo</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">4</span>
                   <span className="handicap-value-decimal">.25</span>
