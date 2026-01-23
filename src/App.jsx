@@ -1275,7 +1275,7 @@ export default function App() {
                 by training and seasoning ponies in the Cowboy Polo way.
               </p>
               <p>
-                Riders can bring their own horses into the same pipeline.
+                Riders can bring their own horses into the same training pipeline.
                 Whether a horse starts in a local lesson program, a ranch
                 string, or a private barn, Cowboy Polo Tryout Clinics and
                 sanctioned chukkers provide a structured path to turn good
