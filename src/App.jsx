@@ -1151,7 +1151,7 @@ export default function App() {
             </div>
 
             <div className="board">
-              <div className="board-title">Top Riders — Mid-Season Snapshot</div>
+              <div className="board-title">Top Riders — Snapshot</div>
               <div className="board-sub">
                 Handicaps update as sanctioned results are submitted.
               </div>
@@ -1163,7 +1163,7 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Ryder Mitchell</span>
-                <span>Charleston</span>
+                <span>Charleston Polo</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">2</span>
                   <span className="handicap-value-decimal">.15</span>
@@ -1171,7 +1171,7 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Casey Navarro</span>
-                <span>Three Sevens 7̶7̶7̶</span>
+                <span>Virtue Duce</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">1</span>
                   <span className="handicap-value-decimal">.40</span>
@@ -1179,7 +1179,7 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Jess Carter</span>
-                <span>Independent</span>
+                <span>Palmetto Polo</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">1</span>
                   <span className="handicap-value-decimal">.25</span>
@@ -1187,7 +1187,7 @@ export default function App() {
               </div>
               <div className="board-row">
                 <span>Lane Douglas</span>
-                <span>Charleston</span>
+                <span>Creek Plantation</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">0</span>
                   <span className="handicap-value-decimal">.85</span>
