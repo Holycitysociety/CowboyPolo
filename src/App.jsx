@@ -1296,7 +1296,7 @@ export default function App() {
 
             <div className="board">
               <div className="board-title">
-                Remuda Horses — Performance Snapshot
+            Pony Performance Snapshot
               </div>
               <div className="board-sub">
                 Score blends chukker count, impact, and rider feedback
@@ -1321,7 +1321,7 @@ export default function App() {
               <div className="board-row">
                 <span>Cholla</span>
                 <span>6666</span>
-                <span>81</span>
+                <span>91</span>
               </div>
               <div className="board-row">
                 <span>River Scout</span>
@@ -1330,7 +1330,7 @@ export default function App() {
                     P
                   </span>
                 </span>
-                <span>79</span>
+                <span>98</span>
               </div>
             </div>
           </div>
