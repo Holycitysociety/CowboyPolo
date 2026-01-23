@@ -1137,7 +1137,7 @@ export default function App() {
                 chukker and displayed to two decimal places.
               </p>
               <p>
-                Ratings move with performance over time: goals scored, assists, and overall impact on the match all feed the same
+                Ratings move with performance over time: goals scored, assists, and overall impact on the chuckers all feed the same
                 underlying score.
               </p>
               <p>
@@ -1299,7 +1299,7 @@ export default function App() {
                 Remuda Horses — Performance Snapshot
               </div>
               <div className="board-sub">
-                Score blends chukker count, match impact, and rider feedback
+                Score blends chukker count, impact, and rider feedback
                 across the season.
               </div>
 
