@@ -1165,7 +1165,7 @@ export default function App() {
                 <span>Ryder M</span>
                 <span>Charleston Polo</span>
                 <span className="handicap-value">
-                  <span className="handicap-value-main">2</span>
+                  <span className="handicap-value-main">5</span>
                   <span className="handicap-value-decimal">.15</span>
                 </span>
               </div>
@@ -1173,7 +1173,7 @@ export default function App() {
                 <span>Casey N</span>
                 <span>Virtue Duce</span>
                 <span className="handicap-value">
-                  <span className="handicap-value-main">1</span>
+                  <span className="handicap-value-main">3</span>
                   <span className="handicap-value-decimal">.40</span>
                 </span>
               </div>
@@ -1181,7 +1181,7 @@ export default function App() {
                 <span>Jess C</span>
                 <span>Palmetto Polo</span>
                 <span className="handicap-value">
-                  <span className="handicap-value-main">1</span>
+                  <span className="handicap-value-main">4</span>
                   <span className="handicap-value-decimal">.25</span>
                 </span>
               </div>
@@ -1189,7 +1189,7 @@ export default function App() {
                 <span>Lane D</span>
                 <span>Creek Plantation</span>
                 <span className="handicap-value">
-                  <span className="handicap-value-main">0</span>
+                  <span className="handicap-value-main">6</span>
                   <span className="handicap-value-decimal">.85</span>
                 </span>
               </div>
