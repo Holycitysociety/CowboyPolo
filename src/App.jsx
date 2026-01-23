@@ -1137,8 +1137,7 @@ export default function App() {
                 chukker and displayed to two decimal places.
               </p>
               <p>
-                Ratings move with performance over time: goals scored, assists,
-                ride-offs won, and overall impact on the match all feed the same
+                Ratings move with performance over time: goals scored, assists, and overall impact on the match all feed the same
                 underlying score.
               </p>
               <p>
