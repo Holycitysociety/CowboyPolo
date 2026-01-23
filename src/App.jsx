@@ -1270,9 +1270,9 @@ export default function App() {
             <div className="section-body">
               <p>
                 The Three Sevens 7̶7̶7̶ Remuda is the managed herd of USPPA
-                horses — brought up inside the Cowboy Polo Circuit and tracked
-                from their first training to their retirement. It is built first
-                by training and seasoning ponies inside Cowboy Polo.
+                horses — trained inside the Cowboy Polo Circuit and tracked
+                from their first start to their retirement. It is built first
+                by training and seasoning ponies in the Cowboy Polo way.
               </p>
               <p>
                 Riders can bring their own horses into the same pipeline.
