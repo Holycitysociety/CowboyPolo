@@ -1305,7 +1305,7 @@ export default function App() {
 
               <div className="board-header">
                 <span>Horse</span>
-                <span>String</span>
+                <span>Circuit Brand</span>
                 <span>Score</span>
               </div>
               <div className="board-row">
