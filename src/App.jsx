@@ -958,18 +958,31 @@ export default function App() {
 
         <div className="section-body">
           <p>
-            The Cowboy Polo Circuit is a national development league for players, ponies, &amp; patrons built on
-            sanctioned and recorded Cowboy Polo chukkers.
+            The Cowboy Polo Circuit is a US development league for players, ponies, and patrons, built on tracking
+            sanctioned Cowboy Polo chukkers, with a long-term focus on training ponies and the player-trainers who bring
+            them along.
           </p>
           <p>
             Games are played 3 on 3 in arenas or campitos, with teams of up to 12 riders. The key is that a player does
             not need a full string to play and attract patrons: a rider can progress by playing as little as one
-            chukker, on one good horse, and still build a real Circuit handicap.
+            chukker, on one good horse, and still build a real Circuit handicap. Riders simply play one solid, safe
+            horse from home or their program and grow into a string over time.
           </p>
           <p>
-            Cowboy Polo chukkers can be hosted by any stable, arena, or program that signs on to the Circuit. A local
-            coach, instructor, or appointed captains run the game, then submit the chukker sheet feeding two tables: the
-            individual handicap table for each rider, and the game results table for teams.
+            Before entering official chukkers, every new rider and horse pair attends a Cowboy Polo Tryout Clinic. This
+            short, focused session evaluates basic polo skill levels, places them into further schooling practices or
+            live chukkers, and teaches the shared &quot;rules of the road&quot; that keep mixed-level games safe and
+            predictable.
+          </p>
+          <p>
+            This Circuit is intentionally built around training ponies as integral to the sport, rather than just paying
+            for finished ones. Cowboy Polo is a schoolhouse: student players are trained to train horses, and every
+            sanctioned chukker doubles as structured schooling miles for both horse and rider.
+          </p>
+          <p>
+            Cowboy Polo chukkers can be hosted by stables, arenas, or programs that sign on to the Circuit. Appointed
+            chapter captains run the game, then submit the chukker sheet feeding two tables: the individual handicap
+            table for each rider, and the game results table for teams.
           </p>
           <p>
             Each sanctioned chukker updates both sides of the story: how riders are rated, and how their teams are
@@ -1044,6 +1057,12 @@ export default function App() {
               <p>
                 Ratings move with performance over time: goals scored, assists, ride-offs won, and overall impact on the
                 match all feed the same underlying score.
+              </p>
+              <p>
+                As riders climb the Cowboy Polo ladder, they move from local development chukkers into featured Circuit
+                and pro-grade events. Riders who go pro will plug into the same patronage engine, with a portion of
+                Cowboy Polo event and streaming revenue reserved as Patron Tribute for the players, horses, and chapters
+                that carried them there.
               </p>
             </div>
 
@@ -1148,12 +1167,22 @@ export default function App() {
           <div aria-hidden={!isConnected && true}>
             <div className="section-body">
               <p>
-                The Three Sevens 7̶7̶7̶ Remuda is the managed string of USPPA horses — brought up inside the Cowboy Polo
-                Circuit and tracked from their first saddle miles to their final retirement.
+                The Three Sevens 7̶7̶7̶ Remuda is the managed herd of USPPA horses — brought up inside the Cowboy Polo
+                Circuit and tracked from their first training to their retirement. It is built first by training and
+                seasoning ponies inside Cowboy Polo.
               </p>
               <p>
-                By keeping a single, living record for each Remuda horse, breeders, trainers, players, and patrons can
-                see the whole life cycle of an equine athlete — not just a single sale moment.
+                Riders can bring their own horses into the same pipeline. Whether a horse starts in a local lesson
+                program, a ranch string, or a private barn, Cowboy Polo Tryout Clinics and sanctioned chukkers provide a
+                structured path to turn good horses into true polo ponies — while student players learn, step by step,
+                how to train and develop those ponies themselves.
+              </p>
+              <p>
+                For patrons, the Three Sevens 7̶7̶7̶ Remuda is where patron tokens go to work. Patrons can stake their
+                PATRON tokens behind specific horses, players, and teams to help fund daily training, clinics, and
+                schooling chukkers. As those horses and student trainers progress through the Circuit, Patron Tribute
+                from Cowboy Polo events and related revenue is directed back through the same patron pools, so
+                long-term supporters stay connected to the careers they helped build.
               </p>
             </div>
 
