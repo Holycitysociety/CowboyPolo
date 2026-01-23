@@ -962,20 +962,19 @@ export default function App() {
             them along.
           </p>
           <p>
-            Games are played 3 on 3 in arenas or campitos, with teams of up to 12 riders. The key is that a player does
-            not need a full string to play and attract patrons: a rider can progress by playing as little as one
-            chukker, on one good horse, and still build a real Circuit handicap. Riders simply play one solid, safe
+            Games are played 3 on 3 in arenas or campitos, with teams of up to 12 riders. The key here, is that a player no longer needs a full string to play polo and attract patrons: a rider can progress by playing one
+            chukker, on one good horse, building a real Cowboy Polo handicap. Riders simply play on one solid, safe
             horse from home or their program and grow into a string over time.
           </p>
           <p>
             Before entering official chukkers, every new rider and horse pair attends a Cowboy Polo Tryout Clinic. This
-            short, focused session evaluates basic polo skill levels, places them into further schooling practices or
+            short, focused session evaluates basic polo skill levels, places them into further schooling, practices or
             live chukkers, and teaches the shared &quot;rules of the road&quot; that keep mixed-level games safe and
-            predictable.
+            exciting.
           </p>
           <p>
-            This Circuit is intentionally built around training ponies as integral to the sport, rather than just paying
-            for finished ones. Cowboy Polo is a schoolhouse: student players are trained to train horses, and every
+            This Circuit is intentionally built around the training of ponies as integral to the sport, rather than just paying
+            for finished mounts. Cowboy Polo is a schoolhouse: student players are trained to train their horses, and every
             sanctioned chukker doubles as structured schooling miles for both horse and rider.
           </p>
           <p>
