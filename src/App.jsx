@@ -1034,7 +1034,7 @@ export default function App() {
           </p>
           <p>
             This Circuit is intentionally built around the training of ponies as
-            integral to the sport, rather than just paying for finished mounts.
+            integral to the sport, rather than just paying to ride finished mounts.
             Cowboy Polo is a schoolhouse: student players are trained to train
             their horses, and every sanctioned chukker doubles as structured
             schooling miles for both horse and rider.
