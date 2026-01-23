@@ -1162,7 +1162,7 @@ export default function App() {
                 <span>Handicap</span>
               </div>
               <div className="board-row">
-                <span>Ryder Mitchell</span>
+                <span>Ryder M</span>
                 <span>Charleston Polo</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">2</span>
@@ -1170,7 +1170,7 @@ export default function App() {
                 </span>
               </div>
               <div className="board-row">
-                <span>Casey Navarro</span>
+                <span>Casey N</span>
                 <span>Virtue Duce</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">1</span>
@@ -1178,7 +1178,7 @@ export default function App() {
                 </span>
               </div>
               <div className="board-row">
-                <span>Jess Carter</span>
+                <span>Jess C</span>
                 <span>Palmetto Polo</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">1</span>
@@ -1186,7 +1186,7 @@ export default function App() {
                 </span>
               </div>
               <div className="board-row">
-                <span>Lane Douglas</span>
+                <span>Lane D</span>
                 <span>Creek Plantation</span>
                 <span className="handicap-value">
                   <span className="handicap-value-main">0</span>
