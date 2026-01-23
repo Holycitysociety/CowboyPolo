@@ -958,8 +958,7 @@ export default function App() {
 
         <div className="section-body">
           <p>
-            The Cowboy Polo Circuit is a US development league for players, ponies, and patrons, built on tracking
-            sanctioned Cowboy Polo chukkers, with a long-term focus on training ponies and the player-trainers who bring
+            The Cowboy Polo Circuit is a US development league for players, ponies, and patrons, built on sanctioned Cowboy Polo chukkers, with a long-term focus on training ponies and the player-trainers who bring
             them along.
           </p>
           <p>
