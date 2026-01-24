@@ -987,19 +987,6 @@ export default function App() {
             Sign up / Sign in
           </button>
         </div>
-
-        {/* NEW: YouTube embed at bottom of first section, before gate */}
-        <div className="hero-video-wrapper">
-          <div className="hero-video-inner">
-            <iframe
-              src="https://www.youtube.com/embed/jx_ZJuV-5mU"
-              title="Cowboy Polo Circuit — Intro Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
       </section>
 
       <ParallaxBand
@@ -1309,7 +1296,7 @@ export default function App() {
 
             <div className="board">
               <div className="board-title">
-                Pony Performance Snapshot
+            Pony Performance Snapshot
               </div>
               <div className="board-sub">
                 Score blends chukker count, impact, and rider feedback
