@@ -1219,7 +1219,13 @@ export default function App() {
             </div>
           </div>
         </div>
-        <h2 className="section-title">HORSE PERFORMANCE &amp; REMUDA</h2>
+        {/* CHANGED: centered this heading */}
+        <h2
+          className="section-title"
+          style={{ textAlign: "center" }}
+        >
+          HORSE PERFORMANCE &amp; REMUDA
+        </h2>
 
         <div style={{ position: "relative", marginTop: "20px" }}>
           {!isConnected && (
@@ -1296,7 +1302,7 @@ export default function App() {
 
             <div className="board">
               <div className="board-title">
-            Pony Performance Snapshot
+                Pony Performance Snapshot
               </div>
               <div className="board-sub">
                 Score blends chukker count, impact, and rider feedback
