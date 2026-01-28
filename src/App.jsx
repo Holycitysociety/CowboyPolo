@@ -1091,7 +1091,7 @@ export default function App() {
               chukker and displayed to two decimal places.
             </p>
             <p>
-              Ratings move with performance over time: goals scored, assists,
+              Handicaps move with performance over time: goals scored, assists,
               and overall impact on the chuckers all feed the same underlying
               score.
             </p>
