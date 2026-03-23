@@ -205,7 +205,7 @@ export default function App() {
 
   // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
-  const roadmapGateRef = useRef(null); // still attached to ABOUT, now unused in logic but harmless
+  const roadmapGateRef = useRef(null); // now used as bottom-of-page sentinel
 
   // Thirdweb hooks
   const account = useActiveAccount();
@@ -372,35 +372,36 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [anyModalOpen, isWalletOpen, isCircuitModalOpen]);
 
-  // ---------------------------------------------
-  // Scroll gating on main page (trigger near bottom)
-  // ---------------------------------------------
+  // Scroll gating on main page — now uses a bottom-of-page sentinel
   useEffect(() => {
     if (route !== "home") return; // only on main page
 
     if (isConnected) {
-      // If they're already connected, don't auto-open
       setHasTriggeredGate(false);
       return;
     }
 
     const handleScroll = () => {
       if (hasTriggeredGate) return;
+      const el = roadmapGateRef.current;
+      if (!el) return;
 
-      const scrollPosition = window.scrollY + window.innerHeight;
-      const docHeight = document.documentElement.scrollHeight;
-      const threshold = 120; // px from bottom before triggering
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
 
-      if (docHeight - scrollPosition <= threshold) {
+      // Trigger once when the sentinel enters the viewport near the bottom
+      const isVisible = rect.top < vh && rect.bottom > 0;
+
+      if (isVisible) {
         setHasTriggeredGate(true);
         setIsWalletOpen(true);
       }
     };
 
-    // In case user loads already near the bottom
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // In case the user loads already scrolled near the bottom (mobile refresh)
     handleScroll();
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [route, isConnected, hasTriggeredGate]);
 
@@ -1005,7 +1006,6 @@ export default function App() {
       {/* ABOUT */}
       <section
         id="about"
-        ref={roadmapGateRef}
         className="band-section"
         style={{ marginTop: "-20px", paddingTop: "20px" }}
       >
@@ -1088,52 +1088,9 @@ export default function App() {
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
         </div>
 
+        {/* Gating removed: content always visible */}
         <div style={{ position: "relative", marginTop: "20px" }}>
-          {!isConnected && (
-            <div
-              onClick={openWalletModal}
-              aria-label="Sign in required to view rider standings"
-              role="button"
-              style={{
-                position: "absolute",
-                inset: 0,
-                zIndex: 50,
-                background: "rgba(0, 0, 0, 1)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "22px",
-                textAlign: "center",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    marginBottom: "8px",
-                  }}
-                >
-                  COWBOY POLO CIRCUIT STANDINGS
-                </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
-                  Sign into your Patron Wallet to view live rider handicaps and
-                  Circuit tables.
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div aria-hidden={!isConnected && true}>
+          <div>
             <div className="section-body">
               <p>
                 Player handicaps in the Cowboy Polo Circuit are not just static
@@ -1142,8 +1099,9 @@ export default function App() {
                 chukker and displayed to two decimal places.
               </p>
               <p>
-                Ratings move with performance over time: goals scored, assists, and overall impact on the chuckers all feed the same
-                underlying score.
+                Ratings move with performance over time: goals scored, assists,
+                and overall impact on the chuckers all feed the same underlying
+                score.
               </p>
               <p>
                 As riders climb the Cowboy Polo ladder, they move from local
@@ -1232,52 +1190,9 @@ export default function App() {
           HORSE PERFORMANCE &amp; REMUDA
         </h2>
 
+        {/* Gating removed: content always visible */}
         <div style={{ position: "relative", marginTop: "20px" }}>
-          {!isConnected && (
-            <div
-              onClick={openWalletModal}
-              aria-label="Sign in required to view Remuda tables"
-              role="button"
-              style={{
-                position: "absolute",
-                inset: 0,
-                zIndex: 50,
-                background: "rgba(0, 0, 0, 1)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "22px",
-                textAlign: "center",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    marginBottom: "8px",
-                  }}
-                >
-                  REMUDA &amp; HORSE PERFORMANCE
-                </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
-                  Sign into your Patron Wallet to view tracked horses and
-                  Remuda performance.
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div aria-hidden={!isConnected && true}>
+          <div>
             <div className="section-body">
               <p>
                 The Three Sevens 7̶7̶7̶ Remuda is the managed herd of USPPA
@@ -2303,52 +2218,9 @@ export default function App() {
           </h2>
         </div>
 
+        {/* Gating removed: content always visible */}
         <div style={{ position: "relative", marginTop: "20px" }}>
-          {!isConnected && (
-            <div
-              onClick={openWalletModal}
-              aria-label="Sign in required to submit or view results"
-              role="button"
-              style={{
-                position: "absolute",
-                inset: 0,
-                zIndex: 50,
-                background: "rgba(0, 0, 0, 1)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "22px",
-                textAlign: "center",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "#c7b08a",
-                    marginBottom: "8px",
-                  }}
-                >
-                  CIRCUIT RESULTS
-                </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    lineHeight: 1.6,
-                    color: "#f5eedc",
-                  }}
-                >
-                  Sign into your Patron Wallet to submit official chukker
-                  results and season records.
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div aria-hidden={!isConnected && true}>
+          <div>
             <div className="section-body">
               <p>
                 Match captains or appointed officials submit chukker sheets:
@@ -2499,6 +2371,12 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {/* NEW: bottom-of-page scroll trigger sentinel */}
+      <div
+        ref={roadmapGateRef}
+        style={{ height: 1, width: "100%" }}
+      />
 
       {renderFooter()}
     </div>
