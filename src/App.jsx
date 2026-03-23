@@ -1891,7 +1891,7 @@ export default function App() {
                   >
                     Thank you — your Cowboy Polo Circuit signup was received.
                     <br />
-                    We&apos;ll email you with local chapter and season details
+                    We will email you with local chapter and season details
                     as they open.
                   </p>
                   <button
