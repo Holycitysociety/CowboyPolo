@@ -402,7 +402,6 @@ export default function App() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    // In case the user loads already scrolled near the bottom (mobile refresh)
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
@@ -414,7 +413,6 @@ export default function App() {
   const renderFooter = () => (
     <footer className="site-footer">
       <div className="footer-panels">
-        {/* USPPA block */}
         <div className="footer-panel">
           <div className="footer-kicker">NATIONAL PATRON BODY</div>
           <div className="footer-title">
@@ -432,7 +430,6 @@ export default function App() {
           </a>
         </div>
 
-        {/* Polo Patronium block */}
         <div className="footer-panel">
           <div className="footer-kicker">OFFICIAL TOKEN</div>
           <div className="footer-title">POLO PATRONIUM</div>
@@ -522,6 +519,7 @@ export default function App() {
                 handleCheckoutSuccess={handleCheckoutSuccess}
                 handleCheckoutError={handleCheckoutError}
                 CheckoutBoundary={CheckoutBoundary}
+                showDashboardTabs={true}
               />
             </div>
           </div>
@@ -537,7 +535,6 @@ export default function App() {
   // ---------------------------------------------
   return (
     <div className="page">
-      {/* Top header: now links to dedicated wallet page */}
       <header
         style={{
           display: "flex",
@@ -556,7 +553,6 @@ export default function App() {
         </a>
       </header>
 
-      {/* HERO */}
       <section className="hero">
         <div className="hero-topline">
           UNITED STATES POLO
@@ -620,7 +616,6 @@ export default function App() {
         finishFactor={2}
       />
 
-      {/* ABOUT */}
       <section
         id="about"
         className="band-section"
@@ -694,7 +689,6 @@ export default function App() {
         finishFactor={2}
       />
 
-      {/* PLAYER LEADERBOARD */}
       <section
         id="players"
         className="band-section"
@@ -705,7 +699,6 @@ export default function App() {
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
         </div>
 
-        {/* Gating removed: content always visible */}
         <div style={{ position: "relative", marginTop: "20px" }}>
           <div>
             <div className="section-body">
@@ -785,7 +778,6 @@ export default function App() {
         finishFactor={2}
       />
 
-      {/* HORSE & REMUDA */}
       <section
         id="horses"
         className="band-section"
@@ -808,9 +800,9 @@ export default function App() {
             <div className="section-body">
               <p>
                 The Three Sevens 7̶7̶7̶ Remuda is the managed herd of USPPA
-                horses — trained inside the Cowboy Polo Circuit and tracked from
-                their first start to their retirement. It is built first by
-                training and seasoning ponies in the Cowboy Polo way.
+                horses — trained inside the Cowboy Polo Circuit and tracked
+                from their first start to their retirement. It is built first
+                by training and seasoning ponies in the Cowboy Polo way.
               </p>
               <p>
                 Riders can bring their own horses into the same training
@@ -833,10 +825,12 @@ export default function App() {
             </div>
 
             <div className="board">
-              <div className="board-title">Pony Performance Snapshot</div>
+              <div className="board-title">
+                Pony Performance Snapshot
+              </div>
               <div className="board-sub">
-                Score blends chukker count, impact, and rider feedback across
-                the season.
+                Score blends chukker count, impact, and rider feedback
+                across the season.
               </div>
 
               <div className="board-header">
@@ -873,7 +867,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* WALLET MODAL (main page) */}
       {isWalletOpen && (
         <div
           className="wallet-modal-backdrop"
@@ -939,7 +932,6 @@ export default function App() {
         </div>
       )}
 
-      {/* CIRCUIT SIGNUP MODAL */}
       {isCircuitModalOpen && (
         <div
           className="wallet-modal-backdrop"
@@ -1203,7 +1195,9 @@ export default function App() {
                         }}
                       >
                         Interested In{" "}
-                        <span style={{ fontSize: "9px", opacity: 0.8 }}>
+                        <span
+                          style={{ fontSize: "9px", opacity: 0.8 }}
+                        >
                           (check all that apply)
                         </span>
                       </div>
@@ -1235,11 +1229,7 @@ export default function App() {
                               type="checkbox"
                               name="interest"
                               value={label}
-                              style={{
-                                width: 16,
-                                height: 16,
-                                accentColor: "#e3bf72",
-                              }}
+                              style={{ width: 16, height: 16, accentColor: "#e3bf72" }}
                             />
                             <span>{label}</span>
                           </label>
@@ -1361,7 +1351,9 @@ export default function App() {
                       </small>
                     </div>
 
-                    <div style={{ marginTop: "12px", textAlign: "right" }}>
+                    <div
+                      style={{ marginTop: "12px", textAlign: "right" }}
+                    >
                       <button
                         type="submit"
                         className="btn btn-primary"
@@ -1406,7 +1398,6 @@ export default function App() {
         </div>
       )}
 
-      {/* RESULTS */}
       <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
@@ -1517,13 +1508,16 @@ export default function App() {
                 <small>PDF, image, or spreadsheet files are welcome.</small>
               </div>
 
-              <div style={{ marginTop: "12px", textAlign: "right" }}>
+              <div
+                style={{ marginTop: "12px", textAlign: "right" }}
+              >
                 <button
                   type="submit"
                   className="btn btn-outline"
                   disabled={resultsSubmitStatus === "submitting"}
                   style={{
-                    opacity: resultsSubmitStatus === "submitting" ? 0.7 : 1,
+                    opacity:
+                      resultsSubmitStatus === "submitting" ? 0.7 : 1,
                     cursor:
                       resultsSubmitStatus === "submitting"
                         ? "wait"
@@ -1565,8 +1559,10 @@ export default function App() {
         </div>
       </section>
 
-      {/* NEW: bottom-of-page scroll trigger sentinel */}
-      <div ref={roadmapGateRef} style={{ height: 1, width: "100%" }} />
+      <div
+        ref={roadmapGateRef}
+        style={{ height: 1, width: "100%" }}
+      />
 
       {renderFooter()}
     </div>
