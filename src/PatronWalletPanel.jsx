@@ -10,7 +10,6 @@ export default function PatronWalletPanel({
   usdcBalance,
   patronBalance,
   handleSignOut,
-  openCircuitSignup,
   usdAmount,
   setUsdAmount,
   normalizedAmount,
@@ -27,6 +26,41 @@ export default function PatronWalletPanel({
   showDashboardTabs = false,
 }) {
   const [activeTab, setActiveTab] = useState("home");
+  const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
+  const [circuitSubmitStatus, setCircuitSubmitStatus] = useState("idle");
+
+  const openCircuitSignup = () => {
+    if (!isConnected) return;
+    setCircuitSubmitStatus("idle");
+    setIsCircuitModalOpen(true);
+  };
+
+  const closeCircuitSignup = () => {
+    setIsCircuitModalOpen(false);
+    setCircuitSubmitStatus("idle");
+  };
+
+  const handleCircuitSubmit = async (e) => {
+    e.preventDefault();
+    setCircuitSubmitStatus("submitting");
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString(),
+      });
+
+      setCircuitSubmitStatus("success");
+      form.reset();
+    } catch (err) {
+      console.error("Circuit signup submission error:", err);
+      setCircuitSubmitStatus("error");
+    }
+  };
 
   const renderWalletHeader = () => (
     <div
@@ -469,6 +503,475 @@ export default function PatronWalletPanel({
     </>
   );
 
+  const renderSignupModal = () => {
+    if (!isCircuitModalOpen) return null;
+
+    return (
+      <div
+        className="wallet-modal-backdrop"
+        onClick={closeCircuitSignup}
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,0.86)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 10000,
+          padding: "14px",
+        }}
+      >
+        <div style={{ width: "100%", maxWidth: "420px" }}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              border: "1px solid #3a2b16",
+              borderRadius: "14px",
+              padding: "18px 16px 16px",
+              background: "#050505",
+              boxShadow: "0 18px 60px rgba(0,0,0,0.9)",
+              fontFamily:
+                '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
+              color: "#f5eedc",
+              fontSize: "13px",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "10px",
+                position: "relative",
+                paddingTop: "2px",
+              }}
+            >
+              <div style={{ textAlign: "center" }}>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "#9f8a64",
+                    marginBottom: "4px",
+                  }}
+                >
+                  Cowboy Polo Circuit
+                </div>
+                <div
+                  style={{
+                    fontSize: "15px",
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "#f5eedc",
+                  }}
+                >
+                  Join the Circuit
+                </div>
+              </div>
+
+              <button
+                onClick={closeCircuitSignup}
+                aria-label="Close signup"
+                title="Close"
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: "48px",
+                  height: "48px",
+                  border: "none",
+                  background: "transparent",
+                  color: "#e3bf72",
+                  fontSize: "32px",
+                  lineHeight: 1,
+                  cursor: "pointer",
+                  padding: 0,
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <p
+              style={{
+                margin: "0 0 12px",
+                fontSize: "12px",
+                lineHeight: 1.6,
+                color: "#dec89a",
+                textAlign: "center",
+              }}
+            >
+              This form links your Cowboy Polo interest to your Patron Wallet so
+              we can connect riders, parents, and arenas with the right chapters
+              and rewards.
+            </p>
+
+            {circuitSubmitStatus === "success" ? (
+              <div
+                style={{
+                  padding: "14px 10px 10px",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(234,191,114,0.4)",
+                  background:
+                    "radial-gradient(circle at top, rgba(227,191,114,0.16), rgba(0,0,0,0.95))",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "34px",
+                    lineHeight: 1,
+                    marginBottom: "6px",
+                  }}
+                >
+                  ✓
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "#e3bf72",
+                    marginBottom: "8px",
+                  }}
+                >
+                  You&apos;re signed up
+                </div>
+                <p
+                  style={{
+                    margin: "0 0 10px",
+                    fontSize: "12px",
+                    lineHeight: 1.7,
+                    color: "#f5eedc",
+                  }}
+                >
+                  Thank you — your Cowboy Polo Circuit signup was received.
+                  <br />
+                  We&apos;ll email you with local chapter and season details as
+                  they open.
+                </p>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={closeCircuitSignup}
+                  style={{
+                    marginTop: "6px",
+                    padding: "8px 22px",
+                    fontSize: "11px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <>
+                <form
+                  name="circuit-signup"
+                  method="POST"
+                  data-netlify="true"
+                  data-netlify-honeypot="bot-field"
+                  onSubmit={handleCircuitSubmit}
+                >
+                  <input
+                    type="hidden"
+                    name="form-name"
+                    value="circuit-signup"
+                  />
+                  <p style={{ display: "none" }}>
+                    <label>
+                      Don’t fill this out if you're human:
+                      <input name="bot-field" />
+                    </label>
+                  </p>
+
+                  <div style={{ marginBottom: "10px" }}>
+                    <label
+                      htmlFor="cs-name-wallet"
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        display: "block",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Name
+                    </label>
+                    <input
+                      id="cs-name-wallet"
+                      name="name"
+                      type="text"
+                      required
+                      style={{
+                        width: "100%",
+                        padding: "8px 10px",
+                        borderRadius: 8,
+                        border: "1px solid #333333",
+                        background: "#050505",
+                        color: "#f5eedc",
+                        fontFamily: '"EB Garamond", serif',
+                        fontSize: "0.95rem",
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }}>
+                    <label
+                      htmlFor="cs-email-wallet"
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        display: "block",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="cs-email-wallet"
+                      name="email"
+                      type="email"
+                      required
+                      style={{
+                        width: "100%",
+                        padding: "8px 10px",
+                        borderRadius: 8,
+                        border: "1px solid #333333",
+                        background: "#050505",
+                        color: "#f5eedc",
+                        fontFamily: '"EB Garamond", serif',
+                        fontSize: "0.95rem",
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }}>
+                    <div
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        display: "block",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Interested In{" "}
+                      <span style={{ fontSize: "9px", opacity: 0.8 }}>
+                        (check all that apply)
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "6px",
+                        fontSize: "12px",
+                      }}
+                    >
+                      {[
+                        "Rider",
+                        "Parent / Guardian",
+                        "Patron",
+                        "Arena / Program",
+                        "Other",
+                      ].map((label) => (
+                        <label
+                          key={label}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="interest"
+                            value={label}
+                            style={{
+                              width: 16,
+                              height: 16,
+                              accentColor: "#e3bf72",
+                            }}
+                          />
+                          <span>{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }}>
+                    <label
+                      htmlFor="cs-chapter-wallet"
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        display: "block",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Chapter / City / Arena
+                    </label>
+                    <input
+                      id="cs-chapter-wallet"
+                      name="chapter"
+                      type="text"
+                      placeholder="Charleston, SC · Creek Plantation, etc."
+                      style={{
+                        width: "100%",
+                        padding: "8px 10px",
+                        borderRadius: 8,
+                        border: "1px solid #333333",
+                        background: "#050505",
+                        color: "#f5eedc",
+                        fontFamily: '"EB Garamond", serif',
+                        fontSize: "0.95rem",
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }}>
+                    <label
+                      htmlFor="cs-notes-wallet"
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        display: "block",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Notes
+                    </label>
+                    <textarea
+                      id="cs-notes-wallet"
+                      name="notes"
+                      rows={3}
+                      placeholder="Tell us about your experience, horses, or program."
+                      style={{
+                        width: "100%",
+                        padding: "8px 10px",
+                        borderRadius: 8,
+                        border: "1px solid #333333",
+                        background: "#050505",
+                        color: "#f5eedc",
+                        fontFamily: '"EB Garamond", serif',
+                        fontSize: "0.95rem",
+                        resize: "vertical",
+                        minHeight: "80px",
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "10px" }}>
+                    <label
+                      htmlFor="cs-wallet-wallet"
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        color: "#c7b08a",
+                        display: "block",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Linked Wallet
+                    </label>
+                    <input
+                      id="cs-wallet-wallet"
+                      type="text"
+                      value={account?.address || ""}
+                      readOnly
+                      style={{
+                        width: "100%",
+                        padding: "8px 10px",
+                        borderRadius: 8,
+                        border: "1px solid #333333",
+                        background: "#050505",
+                        color: "#f5eedc",
+                        fontFamily: "monospace",
+                        fontSize: "0.9rem",
+                      }}
+                    />
+                    <input
+                      type="hidden"
+                      name="walletAddress"
+                      value={account?.address || ""}
+                    />
+                    <small
+                      style={{
+                        display: "block",
+                        marginTop: "4px",
+                        fontSize: "10px",
+                        color: "#9f8a64",
+                      }}
+                    >
+                      This links your Circuit interest to your Patron Wallet
+                      profile.
+                    </small>
+                  </div>
+
+                  <div style={{ marginTop: "12px", textAlign: "right" }}>
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      style={{
+                        padding: "8px 22px",
+                        fontSize: "11px",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase",
+                        opacity:
+                          circuitSubmitStatus === "submitting" ? 0.7 : 1,
+                        cursor:
+                          circuitSubmitStatus === "submitting"
+                            ? "wait"
+                            : "pointer",
+                      }}
+                      disabled={circuitSubmitStatus === "submitting"}
+                    >
+                      {circuitSubmitStatus === "submitting"
+                        ? "Submitting…"
+                        : "Submit Circuit Signup"}
+                    </button>
+                  </div>
+                </form>
+
+                {circuitSubmitStatus === "error" && (
+                  <p
+                    style={{
+                      marginTop: "8px",
+                      fontSize: "11px",
+                      color: "#f97373",
+                      textAlign: "center",
+                    }}
+                  >
+                    Something went wrong submitting the form. Please try again.
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderDashboardTabs = () => {
     const tabButtonStyle = (tab) => ({
       flex: 1,
@@ -537,7 +1040,7 @@ export default function PatronWalletPanel({
                   marginBottom: "8px",
                 }}
               >
-                Player Profile
+                Player Profile Preview
               </div>
               <div style={{ color: "#f5eedc", fontSize: "13px", lineHeight: 1.8 }}>
                 <div>
@@ -579,7 +1082,7 @@ export default function PatronWalletPanel({
                   marginBottom: "10px",
                 }}
               >
-                Handicap Progress
+                Handicap Progress Preview
               </div>
 
               <div
@@ -701,6 +1204,7 @@ export default function PatronWalletPanel({
       <>
         {renderWalletHeader()}
         {renderDashboardTabs()}
+        {renderSignupModal()}
       </>
     );
   }
@@ -711,6 +1215,7 @@ export default function PatronWalletPanel({
       {renderConnectOrAccount()}
       {renderNextSteps()}
       {renderCheckout()}
+      {renderSignupModal()}
     </>
   );
 }
