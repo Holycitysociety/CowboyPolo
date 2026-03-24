@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ConnectEmbed, CheckoutWidget } from "thirdweb/react";
 
 export default function PatronWalletPanel({
@@ -24,88 +24,91 @@ export default function PatronWalletPanel({
   showCloseButton = false,
   onClose = null,
   closeOnDisabledOverlay = false,
+  showDashboardTabs = false,
 }) {
-  return (
-    <>
-      {/* Header */}
+  const [activeTab, setActiveTab] = useState("home");
+
+  const renderWalletHeader = () => (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: "8px",
+        position: "relative",
+        paddingTop: "4px",
+      }}
+    >
       <div
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          marginBottom: "8px",
-          position: "relative",
-          paddingTop: "4px",
+          gap: 3,
         }}
       >
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 3,
+            fontSize: "11px",
+            letterSpacing: "0.28em",
+            textTransform: "uppercase",
+            color: "#9f8a64",
           }}
         >
-          <div
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              color: "#9f8a64",
-            }}
-          >
-            U&nbsp;S&nbsp;P&nbsp;P&nbsp;A
-          </div>
-          <div
-            style={{
-              fontSize: "16px",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#f5eedc",
-            }}
-          >
-            Cowboy Polo Circuit
-          </div>
-          <div
-            style={{
-              fontSize: "11px",
-              letterSpacing: "0.26em",
-              textTransform: "uppercase",
-              color: "#c7b08a",
-            }}
-          >
-            Patron Wallet
-          </div>
+          U&nbsp;S&nbsp;P&nbsp;P&nbsp;A
         </div>
-
-        {showCloseButton && onClose && (
-          <button
-            onClick={onClose}
-            aria-label="Close wallet"
-            title="Close"
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: "56px",
-              height: "56px",
-              border: "none",
-              background: "transparent",
-              color: "#e3bf72",
-              fontSize: "38px",
-              lineHeight: 1,
-              cursor: "pointer",
-              padding: 0,
-              WebkitTapHighlightColor: "transparent",
-            }}
-          >
-            ×
-          </button>
-        )}
+        <div
+          style={{
+            fontSize: "16px",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#f5eedc",
+          }}
+        >
+          Cowboy Polo Circuit
+        </div>
+        <div
+          style={{
+            fontSize: "11px",
+            letterSpacing: "0.26em",
+            textTransform: "uppercase",
+            color: "#c7b08a",
+          }}
+        >
+          Patron Wallet
+        </div>
       </div>
 
-      {/* Explanatory copy under title */}
+      {showCloseButton && onClose && (
+        <button
+          onClick={onClose}
+          aria-label="Close wallet"
+          title="Close"
+          style={{
+            position: "absolute",
+            right: 0,
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "56px",
+            height: "56px",
+            border: "none",
+            background: "transparent",
+            color: "#e3bf72",
+            fontSize: "38px",
+            lineHeight: 1,
+            cursor: "pointer",
+            padding: 0,
+            WebkitTapHighlightColor: "transparent",
+          }}
+        >
+          ×
+        </button>
+      )}
+    </div>
+  );
+
+  const renderConnectOrAccount = () => (
+    <>
       {!account && (
         <p
           style={{
@@ -141,7 +144,6 @@ export default function PatronWalletPanel({
         </p>
       )}
 
-      {/* Connect or account view */}
       {!account ? (
         <div style={{ marginBottom: "14px" }}>
           <ConnectEmbed
@@ -153,7 +155,6 @@ export default function PatronWalletPanel({
         </div>
       ) : (
         <div style={{ marginBottom: "14px", textAlign: "center" }}>
-          {/* Address + copy */}
           <div
             style={{
               display: "flex",
@@ -183,7 +184,6 @@ export default function PatronWalletPanel({
             </button>
           </div>
 
-          {/* Gas + USDC */}
           <div
             style={{
               display: "flex",
@@ -228,7 +228,6 @@ export default function PatronWalletPanel({
             </div>
           </div>
 
-          {/* Patron balance */}
           <div style={{ marginBottom: "12px" }}>
             <div
               style={{
@@ -268,66 +267,70 @@ export default function PatronWalletPanel({
           </button>
         </div>
       )}
+    </>
+  );
 
-      {/* Next steps */}
+  const renderNextSteps = () => (
+    <div
+      style={{
+        marginBottom: "16px",
+        marginTop: "4px",
+        padding: "10px 10px 12px",
+        borderRadius: "10px",
+        border: "1px solid rgba(234,191,114,0.25)",
+        background: "rgba(5,5,5,0.9)",
+      }}
+    >
       <div
         style={{
-          marginBottom: "16px",
-          marginTop: "4px",
-          padding: "10px 10px 12px",
-          borderRadius: "10px",
-          border: "1px solid rgba(234,191,114,0.25)",
-          background: "rgba(5,5,5,0.9)",
+          fontSize: "10px",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: "#c7b08a",
+          marginBottom: "6px",
+          textAlign: "center",
         }}
       >
+        Next Steps
+      </div>
+      <button
+        type="button"
+        className="btn"
+        onClick={openCircuitSignup}
+        disabled={!isConnected}
+        style={{
+          width: "100%",
+          padding: "8px 20px",
+          fontSize: "11px",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          background: "#e3bf72",
+          color: "#181210",
+          borderColor: "#e3bf72",
+          opacity: isConnected ? 1 : 0.45,
+          cursor: isConnected ? "pointer" : "not-allowed",
+        }}
+      >
+        Join the Cowboy Polo Circuit
+      </button>
+      {!isConnected && (
         <div
           style={{
+            marginTop: "6px",
             fontSize: "10px",
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: "#c7b08a",
-            marginBottom: "6px",
+            lineHeight: 1.4,
+            color: "#9f8a64",
             textAlign: "center",
           }}
         >
-          Next Steps
+          Connect or create your Patron Wallet above to enable this step.
         </div>
-        <button
-          type="button"
-          className="btn"
-          onClick={openCircuitSignup}
-          disabled={!isConnected}
-          style={{
-            width: "100%",
-            padding: "8px 20px",
-            fontSize: "11px",
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            background: "#e3bf72",
-            color: "#181210",
-            borderColor: "#e3bf72",
-            opacity: isConnected ? 1 : 0.45,
-            cursor: isConnected ? "pointer" : "not-allowed",
-          }}
-        >
-          Join the Cowboy Polo Circuit
-        </button>
-        {!isConnected && (
-          <div
-            style={{
-              marginTop: "6px",
-              fontSize: "10px",
-              lineHeight: 1.4,
-              color: "#9f8a64",
-              textAlign: "center",
-            }}
-          >
-            Connect or create your Patron Wallet above to enable this step.
-          </div>
-        )}
-      </div>
+      )}
+    </div>
+  );
 
-      {/* Amount + Checkout */}
+  const renderCheckout = () => (
+    <>
       <div style={{ position: "relative" }}>
         {!isConnected &&
           (closeOnDisabledOverlay && onClose ? (
@@ -463,6 +466,251 @@ export default function PatronWalletPanel({
         </a>
         .
       </p>
+    </>
+  );
+
+  const renderDashboardTabs = () => {
+    const tabButtonStyle = (tab) => ({
+      flex: 1,
+      padding: "10px 8px",
+      borderRadius: "999px",
+      border: activeTab === tab ? "1px solid #e3bf72" : "1px solid #3a2b16",
+      background: activeTab === tab ? "#e3bf72" : "#050505",
+      color: activeTab === tab ? "#181210" : "#f5eedc",
+      fontSize: "10px",
+      letterSpacing: "0.16em",
+      textTransform: "uppercase",
+      cursor: "pointer",
+      fontFamily:
+        '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
+    });
+
+    return (
+      <>
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginBottom: "16px",
+          }}
+        >
+          <button
+            type="button"
+            style={tabButtonStyle("home")}
+            onClick={() => setActiveTab("home")}
+          >
+            Home
+          </button>
+          <button
+            type="button"
+            style={tabButtonStyle("stable")}
+            onClick={() => setActiveTab("stable")}
+          >
+            Stable
+          </button>
+          <button
+            type="button"
+            style={tabButtonStyle("wallet")}
+            onClick={() => setActiveTab("wallet")}
+          >
+            Wallet
+          </button>
+        </div>
+
+        {activeTab === "home" && (
+          <div>
+            <div
+              style={{
+                marginBottom: "14px",
+                padding: "12px",
+                borderRadius: "12px",
+                border: "1px solid #3a2b16",
+                background: "#0a0a0a",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: "#c7b08a",
+                  marginBottom: "8px",
+                }}
+              >
+                Player Profile
+              </div>
+              <div style={{ color: "#f5eedc", fontSize: "13px", lineHeight: 1.8 }}>
+                <div>
+                  <strong>Name:</strong> {account ? "Patron / Player" : "Guest"}
+                </div>
+                <div>
+                  <strong>Wallet:</strong> {shortAddress || "Not connected"}
+                </div>
+                <div>
+                  <strong>Chapter:</strong> Charleston Polo
+                </div>
+                <div>
+                  <strong>Division:</strong> Division 4
+                </div>
+                <div>
+                  <strong>Global Handicap:</strong> 0.7
+                </div>
+                <div>
+                  <strong>Next Goal:</strong> Reach 1.0
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginBottom: "14px",
+                padding: "12px",
+                borderRadius: "12px",
+                border: "1px solid #3a2b16",
+                background: "#0a0a0a",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: "#c7b08a",
+                  marginBottom: "10px",
+                }}
+              >
+                Handicap Progress
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  justifyContent: "space-between",
+                  gap: "8px",
+                  height: "90px",
+                  padding: "8px 0 4px",
+                }}
+              >
+                {[20, 32, 45, 62, 80].map((height, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      gap: "6px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "100%",
+                        maxWidth: "28px",
+                        height: `${height}px`,
+                        borderRadius: "999px",
+                        background: "linear-gradient(to top, #8f6b2f, #e3bf72)",
+                      }}
+                    />
+                    <div
+                      style={{
+                        fontSize: "9px",
+                        color: "#9f8a64",
+                      }}
+                    >
+                      {[0.0, 0.2, 0.4, 0.7, 1.0][index]}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {renderNextSteps()}
+          </div>
+        )}
+
+        {activeTab === "stable" && (
+          <div>
+            <div
+              style={{
+                display: "grid",
+                gap: "12px",
+              }}
+            >
+              {[
+                {
+                  name: "River Scout",
+                  units: 2,
+                  status: "Training",
+                },
+                {
+                  name: "Thunderbird",
+                  units: 1,
+                  status: "Active",
+                },
+                {
+                  name: "Sundance",
+                  units: 3,
+                  status: "Patron Pool",
+                },
+              ].map((horse) => (
+                <div
+                  key={horse.name}
+                  style={{
+                    padding: "12px",
+                    borderRadius: "12px",
+                    border: "1px solid #3a2b16",
+                    background: "#0a0a0a",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "#f5eedc",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    {horse.name}
+                  </div>
+                  <div style={{ color: "#c7b08a", fontSize: "12px", lineHeight: 1.7 }}>
+                    <div>Patron Units: {horse.units}</div>
+                    <div>Status: {horse.status}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === "wallet" && (
+          <div>
+            {renderConnectOrAccount()}
+            {renderNextSteps()}
+            {renderCheckout()}
+          </div>
+        )}
+      </>
+    );
+  };
+
+  if (showDashboardTabs) {
+    return (
+      <>
+        {renderWalletHeader()}
+        {renderDashboardTabs()}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {renderWalletHeader()}
+      {renderConnectOrAccount()}
+      {renderNextSteps()}
+      {renderCheckout()}
     </>
   );
 }
