@@ -993,10 +993,10 @@ export default function PatronWalletPanel({
     const chartUsableHeight = chartHeight - chartBottomPad;
     const ticks = [10, 8, 6, 4, 2, 0];
     const bars = [
-      { label: "D4", value: 8 },
-      { label: "D3", value: 6 },
-      { label: "D2", value: 4 },
-      { label: "D1 / G", value: 2 },
+      { label: "D4", value: 8.44 },
+      { label: "D3", value: 6.33 },
+      { label: "D2", value: 4.22 },
+      { label: "D1 / GLobal", value: 2.11 },
     ];
 
     const getY = (value) => (10 - value) * (chartUsableHeight / 10);
