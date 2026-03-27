@@ -25,7 +25,7 @@ export default function PatronWalletPanel({
   closeOnDisabledOverlay = false,
   showDashboardTabs = false,
 }) {
-  const [activeTab, setActiveTab] = useState("home");
+  const [activeTab, setActiveTab] = useState("wallet");
   const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
   const [circuitSubmitStatus, setCircuitSubmitStatus] = useState("idle");
 
@@ -999,24 +999,24 @@ export default function PatronWalletPanel({
         >
           <button
             type="button"
-            style={tabButtonStyle("home")}
-            onClick={() => setActiveTab("home")}
+            style={tabButtonStyle("wallet")}
+            onClick={() => setActiveTab("wallet")}
           >
-            Home
+            Wallet
           </button>
           <button
             type="button"
             style={tabButtonStyle("stable")}
             onClick={() => setActiveTab("stable")}
           >
-            Stable
+            777
           </button>
           <button
             type="button"
-            style={tabButtonStyle("wallet")}
-            onClick={() => setActiveTab("wallet")}
+            style={tabButtonStyle("home")}
+            onClick={() => setActiveTab("home")}
           >
-            Wallet
+            Handicap
           </button>
         </div>
 
