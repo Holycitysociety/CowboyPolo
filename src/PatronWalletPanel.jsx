@@ -1067,13 +1067,11 @@ export default function PatronWalletPanel({
                   <strong>Chapter:</strong> Charleston Polo
                 </div>
                 <div>
-                  <strong>Division:</strong> Division 4
+                  <strong>Home Division:</strong> Division 4
                 </div>
                 <div>
-                  <strong>Global Handicap:</strong> 0.7
-                </div>
-                <div>
-                  <strong>Next Goal:</strong> Reach 1.0
+                  <strong>Global Handicap:</strong> 2.11
+    
                 </div>
               </div>
             </div>
