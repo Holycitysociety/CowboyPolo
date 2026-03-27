@@ -988,6 +988,20 @@ export default function PatronWalletPanel({
         '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
     });
 
+    const chartHeight = 180;
+    const chartBottomPad = 22;
+    const chartUsableHeight = chartHeight - chartBottomPad;
+    const ticks = [10, 8, 6, 4, 2, 0];
+    const bars = [
+      { label: "D4", value: 8 },
+      { label: "D3", value: 6 },
+      { label: "D2", value: 4 },
+      { label: "D1 / G", value: 2 },
+    ];
+
+    const getY = (value) => (10 - value) * (chartUsableHeight / 10);
+    const getBarHeight = (value) => (value / 10) * chartUsableHeight;
+
     return (
       <>
         <div
@@ -1088,7 +1102,7 @@ export default function PatronWalletPanel({
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "28px 1fr",
+                  gridTemplateColumns: "32px 1fr",
                   columnGap: "10px",
                   alignItems: "stretch",
                 }}
@@ -1096,18 +1110,18 @@ export default function PatronWalletPanel({
                 <div
                   style={{
                     position: "relative",
-                    height: "180px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    paddingTop: "2px",
-                    paddingBottom: "18px",
+                    height: `${chartHeight}px`,
+                    paddingBottom: `${chartBottomPad}px`,
                   }}
                 >
-                  {[10, 8, 6, 4, 2, 0].map((tick) => (
+                  {ticks.map((tick) => (
                     <div
                       key={tick}
                       style={{
+                        position: "absolute",
+                        right: 0,
+                        top: `${getY(tick)}px`,
+                        transform: "translateY(-50%)",
                         fontSize: "10px",
                         color: "#9f8a64",
                         lineHeight: 1,
@@ -1122,70 +1136,89 @@ export default function PatronWalletPanel({
                 <div
                   style={{
                     position: "relative",
-                    height: "180px",
-                    display: "flex",
-                    alignItems: "flex-end",
-                    justifyContent: "space-between",
-                    gap: "10px",
-                    padding: "8px 0 18px",
-                    backgroundImage:
-                      "repeating-linear-gradient(to top, rgba(199,176,138,0.16) 0, rgba(199,176,138,0.16) 1px, transparent 1px, transparent 32px)",
+                    height: `${chartHeight}px`,
+                    paddingBottom: `${chartBottomPad}px`,
                     borderLeft: "1px solid rgba(199,176,138,0.2)",
                     borderBottom: "1px solid rgba(199,176,138,0.2)",
                   }}
                 >
-                  {[
-                    { label: "D4", value: 8, height: 128 },
-                    { label: "D3", value: 6, height: 96 },
-                    { label: "D2", value: 4, height: 64 },
-                    { label: "D1 / G", value: 2, height: 32 },
-                  ].map((item) => (
+                  {ticks.map((tick) => (
                     <div
-                      key={item.label}
+                      key={tick}
                       style={{
-                        flex: 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                        gap: "8px",
-                        height: "100%",
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: `${getY(tick)}px`,
+                        borderTop: "1px solid rgba(199,176,138,0.16)",
                       }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "12px",
-                          color: "#f5eedc",
-                          letterSpacing: "0.06em",
-                        }}
-                      >
-                        {item.value}
-                      </div>
-
-                      <div
-                        style={{
-                          width: "100%",
-                          maxWidth: "36px",
-                          height: `${item.height}px`,
-                          borderRadius: "10px 10px 0 0",
-                          background: "linear-gradient(to top, #8f6b2f, #e3bf72)",
-                          boxShadow: "0 4px 14px rgba(227,191,114,0.18)",
-                        }}
-                      />
-
-                      <div
-                        style={{
-                          fontSize: "11px",
-                          color: "#c7b08a",
-                          textAlign: "center",
-                          lineHeight: 1.2,
-                          letterSpacing: "0.08em",
-                        }}
-                      >
-                        {item.label}
-                      </div>
-                    </div>
+                    />
                   ))}
+
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "flex-end",
+                      justifyContent: "space-between",
+                      gap: "10px",
+                      padding: "0 0 0 10px",
+                    }}
+                  >
+                    {bars.map((item) => (
+                      <div
+                        key={item.label}
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "flex-end",
+                          height: "100%",
+                        }}
+                      >
+                        <div
+                          style={{
+                            marginBottom: "8px",
+                            fontSize: "12px",
+                            color: "#f5eedc",
+                            letterSpacing: "0.06em",
+                          }}
+                        >
+                          {item.value}
+                        </div>
+
+                        <div
+                          style={{
+                            width: "100%",
+                            maxWidth: "36px",
+                            height: `${getBarHeight(item.value)}px`,
+                            borderRadius: "10px 10px 0 0",
+                            background: "linear-gradient(to top, #8f6b2f, #e3bf72)",
+                            boxShadow: "0 4px 14px rgba(227,191,114,0.18)",
+                          }}
+                        />
+
+                        <div
+                          style={{
+                            marginTop: "8px",
+                            height: `${chartBottomPad - 4}px`,
+                            display: "flex",
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            fontSize: "11px",
+                            color: "#c7b08a",
+                            textAlign: "center",
+                            lineHeight: 1.2,
+                            letterSpacing: "0.08em",
+                          }}
+                        >
+                          {item.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
