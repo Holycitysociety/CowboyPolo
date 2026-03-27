@@ -1004,17 +1004,13 @@ export default function PatronWalletPanel({
           >
             Wallet
           </button>
-          
-          
           <button
-  type="button"
-  style={tabButtonStyle("stable")}
-  onClick={() => setActiveTab("stable")}
->
-  7̶7̶7̶ REMUDA
-</button>
-          
-          
+            type="button"
+            style={tabButtonStyle("stable")}
+            onClick={() => setActiveTab("stable")}
+          >
+            7̶7̶7̶ REMUDA
+          </button>
           <button
             type="button"
             style={tabButtonStyle("home")}
@@ -1091,63 +1087,106 @@ export default function PatronWalletPanel({
 
               <div
                 style={{
-                  display: "flex",
-                  alignItems: "flex-end",
-                  justifyContent: "space-between",
-                  gap: "8px",
-                  height: "110px",
-                  padding: "8px 0 4px",
+                  display: "grid",
+                  gridTemplateColumns: "28px 1fr",
+                  columnGap: "10px",
+                  alignItems: "stretch",
                 }}
               >
-                {[
-                  { label: "D4", value: 8, height: 80 },
-                  { label: "D3", value: 6, height: 60 },
-                  { label: "D2", value: 4, height: 40 },
-                  { label: "D1 / G", value: 2, height: 20 },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    style={{
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      gap: "6px",
-                    }}
-                  >
+                <div
+                  style={{
+                    position: "relative",
+                    height: "180px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    paddingTop: "2px",
+                    paddingBottom: "18px",
+                  }}
+                >
+                  {[10, 8, 6, 4, 2, 0].map((tick) => (
                     <div
+                      key={tick}
                       style={{
                         fontSize: "10px",
-                        color: "#f5eedc",
-                        letterSpacing: "0.06em",
-                      }}
-                    >
-                      {item.value}
-                    </div>
-
-                    <div
-                      style={{
-                        width: "100%",
-                        maxWidth: "28px",
-                        height: `${item.height}px`,
-                        borderRadius: "999px",
-                        background: "linear-gradient(to top, #8f6b2f, #e3bf72)",
-                      }}
-                    />
-
-                    <div
-                      style={{
-                        fontSize: "9px",
                         color: "#9f8a64",
-                        textAlign: "center",
-                        lineHeight: 1.2,
+                        lineHeight: 1,
+                        textAlign: "right",
                       }}
                     >
-                      {item.label}
+                      {tick}
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+
+                <div
+                  style={{
+                    position: "relative",
+                    height: "180px",
+                    display: "flex",
+                    alignItems: "flex-end",
+                    justifyContent: "space-between",
+                    gap: "10px",
+                    padding: "8px 0 18px",
+                    backgroundImage:
+                      "repeating-linear-gradient(to top, rgba(199,176,138,0.16) 0, rgba(199,176,138,0.16) 1px, transparent 1px, transparent 32px)",
+                    borderLeft: "1px solid rgba(199,176,138,0.2)",
+                    borderBottom: "1px solid rgba(199,176,138,0.2)",
+                  }}
+                >
+                  {[
+                    { label: "D4", value: 8, height: 128 },
+                    { label: "D3", value: 6, height: 96 },
+                    { label: "D2", value: 4, height: 64 },
+                    { label: "D1 / G", value: 2, height: 32 },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        gap: "8px",
+                        height: "100%",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          color: "#f5eedc",
+                          letterSpacing: "0.06em",
+                        }}
+                      >
+                        {item.value}
+                      </div>
+
+                      <div
+                        style={{
+                          width: "100%",
+                          maxWidth: "36px",
+                          height: `${item.height}px`,
+                          borderRadius: "10px 10px 0 0",
+                          background: "linear-gradient(to top, #8f6b2f, #e3bf72)",
+                          boxShadow: "0 4px 14px rgba(227,191,114,0.18)",
+                        }}
+                      />
+
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          color: "#c7b08a",
+                          textAlign: "center",
+                          lineHeight: 1.2,
+                          letterSpacing: "0.08em",
+                        }}
+                      >
+                        {item.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
