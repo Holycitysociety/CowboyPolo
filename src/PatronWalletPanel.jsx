@@ -1082,7 +1082,7 @@ export default function PatronWalletPanel({
                   marginBottom: "10px",
                 }}
               >
-                Handicap Progress Preview
+                Handicap Per Division
               </div>
 
               <div
@@ -1091,13 +1091,18 @@ export default function PatronWalletPanel({
                   alignItems: "flex-end",
                   justifyContent: "space-between",
                   gap: "8px",
-                  height: "90px",
+                  height: "110px",
                   padding: "8px 0 4px",
                 }}
               >
-                {[20, 32, 45, 62, 80].map((height, index) => (
+                {[
+                  { label: "D4", value: 8, height: 80 },
+                  { label: "D3", value: 6, height: 60 },
+                  { label: "D2", value: 4, height: 40 },
+                  { label: "D1 / G", value: 2, height: 20 },
+                ].map((item) => (
                   <div
-                    key={index}
+                    key={item.label}
                     style={{
                       flex: 1,
                       display: "flex",
@@ -1109,20 +1114,33 @@ export default function PatronWalletPanel({
                   >
                     <div
                       style={{
+                        fontSize: "10px",
+                        color: "#f5eedc",
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      {item.value}
+                    </div>
+
+                    <div
+                      style={{
                         width: "100%",
                         maxWidth: "28px",
-                        height: `${height}px`,
+                        height: `${item.height}px`,
                         borderRadius: "999px",
                         background: "linear-gradient(to top, #8f6b2f, #e3bf72)",
                       }}
                     />
+
                     <div
                       style={{
                         fontSize: "9px",
                         color: "#9f8a64",
+                        textAlign: "center",
+                        lineHeight: 1.2,
                       }}
                     >
-                      {[0.0, 0.2, 0.4, 0.7, 1.0][index]}
+                      {item.label}
                     </div>
                   </div>
                 ))}
