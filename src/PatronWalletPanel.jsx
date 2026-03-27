@@ -1004,13 +1004,17 @@ export default function PatronWalletPanel({
           >
             Wallet
           </button>
+          
+          
           <button
-            type="button"
-            style={tabButtonStyle("stable")}
-            onClick={() => setActiveTab("stable")}
-          >
-            777
-          </button>
+  type="button"
+  style={tabButtonStyle("stable")}
+  onClick={() => setActiveTab("stable")}
+>
+  7̶7̶7̶ REMUDA
+</button>
+          
+          
           <button
             type="button"
             style={tabButtonStyle("home")}
