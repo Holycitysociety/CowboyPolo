@@ -559,10 +559,11 @@ export default function App() {
           </div>
         </div>
 
-        <div className="hero-cta-row">
-          <button className="btn btn-primary" onClick={openWalletModal}>
-            Sign up / Sign in
-          </button>
+        <a href="#/wallet" className="btn btn-primary">
+  Sign up / Sign in
+</a>
+          
+          
         </div>
       </section>
 
