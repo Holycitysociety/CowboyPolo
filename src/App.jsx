@@ -559,11 +559,10 @@ export default function App() {
           </div>
         </div>
 
-        <a href="#/wallet" className="btn btn-primary">
-  Sign up / Sign in
-</a>
-          
-          
+        <div className="hero-cta-row">
+          <a href="#/wallet" className="btn btn-primary">
+            Sign up / Sign in
+          </a>
         </div>
       </section>
 
