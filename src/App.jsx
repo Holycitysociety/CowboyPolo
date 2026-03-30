@@ -428,10 +428,14 @@ export default function App() {
               fontSize: "0.7rem",
             }}
             onClick={() => {
-              window.location.hash = "";
+              if (window.history.length > 1) {
+                window.history.back();
+              } else {
+                window.location.hash = "";
+              }
             }}
           >
-            ← Back to Cowboy Polo
+            ← Back
           </button>
         </header>
 
