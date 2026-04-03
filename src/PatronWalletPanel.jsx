@@ -418,7 +418,7 @@ export default function PatronWalletPanel({
             </label>
             <input
               type="number"
-              min="1"
+              min="2"
               step="1"
               value={usdAmount}
               onChange={(e) => setUsdAmount(e.target.value)}
