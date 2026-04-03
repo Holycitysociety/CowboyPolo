@@ -191,7 +191,7 @@ export default function App() {
 
   // Wallet / modal state (for main page)
   const [isWalletOpen, setIsWalletOpen] = useState(false);
-  const [usdAmount, setUsdAmount] = useState("1");
+  const [usdAmount, setUsdAmount] = useState("2");
   const walletScrollRef = useRef(null);
 
   // Netlify form statuses
@@ -256,7 +256,7 @@ export default function App() {
 
   // Amount normalization
   const normalizedAmountNumber =
-    usdAmount && Number(usdAmount) > 0 ? Number(usdAmount) : 1;
+    usdAmount && Number(usdAmount) >= 2 ? Number(usdAmount) : 2;
   const normalizedAmount = String(normalizedAmountNumber);
 
   const handleCheckoutSuccess = async (result) => {
