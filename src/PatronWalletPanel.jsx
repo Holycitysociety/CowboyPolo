@@ -25,7 +25,6 @@ export default function PatronWalletPanel({
   closeOnDisabledOverlay = false,
   showDashboardTabs = false,
 }) {
-  const [activeTab, setActiveTab] = useState("wallet");
   const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
   const [circuitSubmitStatus, setCircuitSubmitStatus] = useState("idle");
 
@@ -257,7 +256,8 @@ export default function PatronWalletPanel({
                 USDC
               </div>
               <div style={{ color: "#f5eedc", fontSize: "13px" }}>
-                {usdcBalance?.displayValue || "0"} {usdcBalance?.symbol || "USDC"}
+                {usdcBalance?.displayValue || "0"}{" "}
+                {usdcBalance?.symbol || "USDC"}
               </div>
             </div>
           </div>
@@ -304,6 +304,135 @@ export default function PatronWalletPanel({
     </>
   );
 
+  const renderStatusBadge = () => {
+    let label = "Guest";
+    let copy = "Sign in to buy PATRON, support initiatives, and begin your patron profile.";
+
+    if (isConnected) {
+      label = "Anonymous Holder";
+      copy =
+        "You can buy PATRON and support initiatives now. Complete registration to unlock lessons, bookings, tickets, recognition, and fuller dashboard access.";
+    }
+
+    return (
+      <div
+        style={{
+          marginBottom: "14px",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid rgba(227,191,114,0.28)",
+          background:
+            "radial-gradient(circle at top, rgba(227,191,114,0.08), rgba(5,5,5,0.94))",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#c7b08a",
+            marginBottom: "8px",
+          }}
+        >
+          Status
+        </div>
+
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "6px 12px 5px",
+            borderRadius: "999px",
+            border: "1px solid #e3bf72",
+            background: "rgba(227,191,114,0.12)",
+            color: "#f5eedc",
+            fontSize: "11px",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            marginBottom: "10px",
+          }}
+        >
+          {label}
+        </div>
+
+        <div
+          style={{
+            color: "#dec89a",
+            fontSize: "12px",
+            lineHeight: 1.6,
+          }}
+        >
+          {copy}
+        </div>
+      </div>
+    );
+  };
+
+  const renderUnlockCard = ({ title, copy, buttonText = "Complete Registration" }) => (
+    <div
+      style={{
+        padding: "12px",
+        borderRadius: "12px",
+        border: "1px solid rgba(227,191,114,0.18)",
+        background:
+          "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08)), #0a0a0a",
+        opacity: isConnected ? 1 : 0.72,
+      }}
+    >
+      <div
+        style={{
+          fontSize: "10px",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: "#9f8a64",
+          marginBottom: "7px",
+        }}
+      >
+        Unlock Access
+      </div>
+      <div
+        style={{
+          color: "#f5eedc",
+          fontSize: "13px",
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
+          marginBottom: "8px",
+        }}
+      >
+        {title}
+      </div>
+      <div
+        style={{
+          color: "#c7b08a",
+          fontSize: "12px",
+          lineHeight: 1.6,
+          marginBottom: "10px",
+        }}
+      >
+        {copy}
+      </div>
+      <button
+        type="button"
+        className="btn btn-outline"
+        onClick={openCircuitSignup}
+        disabled={!isConnected}
+        style={{
+          minWidth: "auto",
+          width: "100%",
+          padding: "8px 14px",
+          fontSize: "10px",
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          opacity: isConnected ? 1 : 0.45,
+          cursor: isConnected ? "pointer" : "not-allowed",
+        }}
+      >
+        {buttonText}
+      </button>
+    </div>
+  );
+
   const renderNextSteps = () => (
     <div
       style={{
@@ -345,7 +474,7 @@ export default function PatronWalletPanel({
           cursor: isConnected ? "pointer" : "not-allowed",
         }}
       >
-        Join the Cowboy Polo Circuit
+        Complete Registration
       </button>
       {!isConnected && (
         <div
@@ -503,6 +632,277 @@ export default function PatronWalletPanel({
     </>
   );
 
+  const renderPatronDashboard = () => (
+    <div>
+      {renderConnectOrAccount()}
+      {renderStatusBadge()}
+
+      <div
+        style={{
+          marginBottom: "14px",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid #3a2b16",
+          background: "#0a0a0a",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "#c7b08a",
+            marginBottom: "8px",
+          }}
+        >
+          Patron Dashboard
+        </div>
+        <div style={{ color: "#f5eedc", fontSize: "13px", lineHeight: 1.75 }}>
+          <div>
+            <strong>Role:</strong> {isConnected ? "Holder Member" : "Guest"}
+          </div>
+          <div>
+            <strong>Wallet:</strong> {shortAddress || "Not connected"}
+          </div>
+          <div>
+            <strong>Access:</strong>{" "}
+            {isConnected ? "Buy PATRON and support initiatives now" : "Connect to begin"}
+          </div>
+          <div>
+            <strong>Recognition:</strong>{" "}
+            {isConnected ? "Anonymous until registered" : "Unavailable"}
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          marginBottom: "14px",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid #3a2b16",
+          background: "#0a0a0a",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "#c7b08a",
+            marginBottom: "10px",
+          }}
+        >
+          Live Initiatives
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gap: "12px",
+          }}
+        >
+          {[
+            {
+              title: "Three Sevens Remuda",
+              copy:
+                "Support horse intake, development, and prospect growth across the association remuda.",
+            },
+            {
+              title: "Cowboy Polo Circuit",
+              copy:
+                "Support clinics, chukkers, and the expanding rider pipeline across local chapters.",
+            },
+            {
+              title: "Founding Horse Syndicate",
+              copy:
+                "Direct additional patronage toward the first remuda syndicate horse and related care.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              style={{
+                padding: "12px",
+                borderRadius: "12px",
+                border: "1px solid rgba(227,191,114,0.18)",
+                background: "rgba(255,255,255,0.015)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "11px",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#f5eedc",
+                  marginBottom: "8px",
+                }}
+              >
+                {item.title}
+              </div>
+              <div
+                style={{
+                  color: "#c7b08a",
+                  fontSize: "12px",
+                  lineHeight: 1.6,
+                }}
+              >
+                {item.copy}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div
+        style={{
+          marginBottom: "14px",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid #3a2b16",
+          background: "#0a0a0a",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "#c7b08a",
+            marginBottom: "10px",
+          }}
+        >
+          Wallet & Patronage
+        </div>
+        {renderCheckout()}
+      </div>
+
+      <div
+        style={{
+          marginBottom: "14px",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid #3a2b16",
+          background: "#0a0a0a",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "#c7b08a",
+            marginBottom: "10px",
+          }}
+        >
+          Unlock More
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gap: "12px",
+          }}
+        >
+          {renderUnlockCard({
+            title: "Lessons & Bookings",
+            copy:
+              "Complete registration to book lessons, polo experiences, and real-world rider access.",
+          })}
+          {renderUnlockCard({
+            title: "Tickets & Event Access",
+            copy:
+              "Complete registration to reserve event access, future ticketing, and chapter invitations.",
+          })}
+          {renderUnlockCard({
+            title: "Patron Recognition",
+            copy:
+              "Complete registration to attach your name, profile, and chapter identity to your support.",
+          })}
+          {renderUnlockCard({
+            title: "Player Pathway",
+            copy:
+              "Register as rider, parent, or guardian to unlock player progress, chapter tools, and more.",
+          })}
+        </div>
+      </div>
+
+      <div
+        style={{
+          marginBottom: "14px",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid #3a2b16",
+          background: "#0a0a0a",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "10px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "#c7b08a",
+            marginBottom: "10px",
+          }}
+        >
+          Remuda Snapshot
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gap: "12px",
+          }}
+        >
+          {[
+            {
+              name: "River Scout",
+              units: 2,
+              status: "Training",
+            },
+            {
+              name: "Thunderbird",
+              units: 1,
+              status: "Active",
+            },
+            {
+              name: "Sundance",
+              units: 3,
+              status: "Patron Pool",
+            },
+          ].map((horse) => (
+            <div
+              key={horse.name}
+              style={{
+                padding: "12px",
+                borderRadius: "12px",
+                border: "1px solid rgba(227,191,114,0.18)",
+                background: "rgba(255,255,255,0.015)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "11px",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#f5eedc",
+                  marginBottom: "8px",
+                }}
+              >
+                {horse.name}
+              </div>
+              <div style={{ color: "#c7b08a", fontSize: "12px", lineHeight: 1.7 }}>
+                <div>Patron Units: {horse.units}</div>
+                <div>Status: {horse.status}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {renderNextSteps()}
+    </div>
+  );
+
   const renderSignupModal = () => {
     if (!isCircuitModalOpen) return null;
 
@@ -570,7 +970,7 @@ export default function PatronWalletPanel({
                     color: "#f5eedc",
                   }}
                 >
-                  Join the Circuit
+                  Complete Registration
                 </div>
               </div>
 
@@ -608,9 +1008,9 @@ export default function PatronWalletPanel({
                 textAlign: "center",
               }}
             >
-              This form links your Cowboy Polo interest to your Patron Wallet so
-              we can connect riders, parents, and arenas with the right chapters
-              and rewards.
+              Complete registration to unlock lessons, bookings, event access,
+              fuller patron recognition, and player pathway tools linked to your
+              Patron Wallet.
             </p>
 
             {circuitSubmitStatus === "success" ? (
@@ -642,7 +1042,7 @@ export default function PatronWalletPanel({
                     marginBottom: "8px",
                   }}
                 >
-                  You&apos;re signed up
+                  Registration Received
                 </div>
                 <p
                   style={{
@@ -652,10 +1052,10 @@ export default function PatronWalletPanel({
                     color: "#f5eedc",
                   }}
                 >
-                  Thank you — your Cowboy Polo Circuit signup was received.
+                  Thank you — your registration was received.
                   <br />
-                  We&apos;ll email you with local chapter and season details as
-                  they open.
+                  We&apos;ll email you with chapter, season, and access details
+                  as they open.
                 </p>
                 <button
                   type="button"
@@ -786,6 +1186,7 @@ export default function PatronWalletPanel({
                         "Parent / Guardian",
                         "Patron",
                         "Arena / Program",
+                        "Tickets / Events",
                         "Other",
                       ].map((label) => (
                         <label
@@ -863,7 +1264,7 @@ export default function PatronWalletPanel({
                       id="cs-notes-wallet"
                       name="notes"
                       rows={3}
-                      placeholder="Tell us about your experience, horses, or program."
+                      placeholder="Tell us about your goals, horses, or program."
                       style={{
                         width: "100%",
                         padding: "8px 10px",
@@ -922,8 +1323,7 @@ export default function PatronWalletPanel({
                         color: "#9f8a64",
                       }}
                     >
-                      This links your Circuit interest to your Patron Wallet
-                      profile.
+                      This links your access profile to your Patron Wallet.
                     </small>
                   </div>
 
@@ -947,7 +1347,7 @@ export default function PatronWalletPanel({
                     >
                       {circuitSubmitStatus === "submitting"
                         ? "Submitting…"
-                        : "Submit Circuit Signup"}
+                        : "Complete Registration"}
                     </button>
                   </div>
                 </form>
@@ -972,330 +1372,11 @@ export default function PatronWalletPanel({
     );
   };
 
-  const renderDashboardTabs = () => {
-    const tabButtonStyle = (tab) => ({
-      flex: 1,
-      padding: "10px 8px",
-      borderRadius: "999px",
-      border: activeTab === tab ? "1px solid #e3bf72" : "1px solid #3a2b16",
-      background: activeTab === tab ? "#e3bf72" : "#050505",
-      color: activeTab === tab ? "#181210" : "#f5eedc",
-      fontSize: "10px",
-      letterSpacing: "0.16em",
-      textTransform: "uppercase",
-      cursor: "pointer",
-      fontFamily:
-        '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-    });
-
-    const chartHeight = 180;
-    const chartBottomPad = 22;
-    const chartUsableHeight = chartHeight - chartBottomPad;
-    const ticks = [10, 8, 6, 4, 2, 0];
-    const bars = [
-      { label: "D4", value: 8.44 },
-      { label: "D3", value: 6.33 },
-      { label: "D2", value: 4.22 },
-      { label: "D1 Global", value: 2.11 },
-    ];
-
-    const getY = (value) => (10 - value) * (chartUsableHeight / 10);
-    const getBarHeight = (value) => (value / 10) * chartUsableHeight;
-
-    return (
-      <>
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            marginBottom: "16px",
-          }}
-        >
-          <button
-            type="button"
-            style={tabButtonStyle("wallet")}
-            onClick={() => setActiveTab("wallet")}
-          >
-            Wallet
-          </button>
-          <button
-            type="button"
-            style={tabButtonStyle("stable")}
-            onClick={() => setActiveTab("stable")}
-          >
-            7̶7̶7̶ REMUDA
-          </button>
-          <button
-            type="button"
-            style={tabButtonStyle("home")}
-            onClick={() => setActiveTab("home")}
-          >
-            Handicap
-          </button>
-        </div>
-
-        {activeTab === "home" && (
-          <div>
-            <div
-              style={{
-                marginBottom: "14px",
-                padding: "12px",
-                borderRadius: "12px",
-                border: "1px solid #3a2b16",
-                background: "#0a0a0a",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "10px",
-                  letterSpacing: "0.16em",
-                  textTransform: "uppercase",
-                  color: "#c7b08a",
-                  marginBottom: "8px",
-                }}
-              >
-                Player Profile Preview
-              </div>
-              <div style={{ color: "#f5eedc", fontSize: "13px", lineHeight: 1.8 }}>
-                <div>
-                  <strong>Name:</strong> {account ? "Patron / Player" : "Guest"}
-                </div>
-                <div>
-                  <strong>Wallet:</strong> {shortAddress || "Not connected"}
-                </div>
-                <div>
-                  <strong>Chapter:</strong> Charleston Polo
-                </div>
-                <div>
-                  <strong>Home Division:</strong> Division 4
-                </div>
-                <div>
-                  <strong>Global Handicap:</strong> 2.11
-    
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                marginBottom: "14px",
-                padding: "12px",
-                borderRadius: "12px",
-                border: "1px solid #3a2b16",
-                background: "#0a0a0a",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "10px",
-                  letterSpacing: "0.16em",
-                  textTransform: "uppercase",
-                  color: "#c7b08a",
-                  marginBottom: "10px",
-                }}
-              >
-                Handicap Per Division
-              </div>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "32px 1fr",
-                  columnGap: "10px",
-                  alignItems: "stretch",
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    height: `${chartHeight}px`,
-                    paddingBottom: `${chartBottomPad}px`,
-                  }}
-                >
-                  {ticks.map((tick) => (
-                    <div
-                      key={tick}
-                      style={{
-                        position: "absolute",
-                        right: 0,
-                        top: `${getY(tick)}px`,
-                        transform: "translateY(-50%)",
-                        fontSize: "10px",
-                        color: "#9f8a64",
-                        lineHeight: 1,
-                        textAlign: "right",
-                      }}
-                    >
-                      {tick}
-                    </div>
-                  ))}
-                </div>
-
-                <div
-                  style={{
-                    position: "relative",
-                    height: `${chartHeight}px`,
-                    paddingBottom: `${chartBottomPad}px`,
-                    borderLeft: "1px solid rgba(199,176,138,0.2)",
-                    borderBottom: "1px solid rgba(199,176,138,0.2)",
-                  }}
-                >
-                  {ticks.map((tick) => (
-                    <div
-                      key={tick}
-                      style={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        top: `${getY(tick)}px`,
-                        borderTop: "1px solid rgba(199,176,138,0.16)",
-                      }}
-                    />
-                  ))}
-
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      display: "flex",
-                      alignItems: "flex-end",
-                      justifyContent: "space-between",
-                      gap: "10px",
-                      padding: "0 0 0 10px",
-                    }}
-                  >
-                    {bars.map((item) => (
-                      <div
-                        key={item.label}
-                        style={{
-                          flex: 1,
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "flex-end",
-                          height: "100%",
-                        }}
-                      >
-                        <div
-                          style={{
-                            marginBottom: "8px",
-                            fontSize: "12px",
-                            color: "#f5eedc",
-                            letterSpacing: "0.06em",
-                          }}
-                        >
-                          {item.value}
-                        </div>
-
-                        <div
-                          style={{
-                            width: "100%",
-                            maxWidth: "36px",
-                            height: `${getBarHeight(item.value)}px`,
-                            borderRadius: "10px 10px 0 0",
-                            background: "linear-gradient(to top, #8f6b2f, #e3bf72)",
-                            boxShadow: "0 4px 14px rgba(227,191,114,0.18)",
-                          }}
-                        />
-
-                        <div
-                          style={{
-                            marginTop: "8px",
-                            height: `${chartBottomPad - 4}px`,
-                            display: "flex",
-                            alignItems: "flex-start",
-                            justifyContent: "center",
-                            fontSize: "11px",
-                            color: "#c7b08a",
-                            textAlign: "center",
-                            lineHeight: 1.2,
-                            letterSpacing: "0.08em",
-                          }}
-                        >
-                          {item.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {renderNextSteps()}
-          </div>
-        )}
-
-        {activeTab === "stable" && (
-          <div>
-            <div
-              style={{
-                display: "grid",
-                gap: "12px",
-              }}
-            >
-              {[
-                {
-                  name: "River Scout",
-                  units: 2,
-                  status: "Training",
-                },
-                {
-                  name: "Thunderbird",
-                  units: 1,
-                  status: "Active",
-                },
-                {
-                  name: "Sundance",
-                  units: 3,
-                  status: "Patron Pool",
-                },
-              ].map((horse) => (
-                <div
-                  key={horse.name}
-                  style={{
-                    padding: "12px",
-                    borderRadius: "12px",
-                    border: "1px solid #3a2b16",
-                    background: "#0a0a0a",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: "#f5eedc",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    {horse.name}
-                  </div>
-                  <div style={{ color: "#c7b08a", fontSize: "12px", lineHeight: 1.7 }}>
-                    <div>Patron Units: {horse.units}</div>
-                    <div>Status: {horse.status}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === "wallet" && (
-          <div>
-            {renderConnectOrAccount()}
-            {renderNextSteps()}
-            {renderCheckout()}
-          </div>
-        )}
-      </>
-    );
-  };
-
   if (showDashboardTabs) {
     return (
       <>
         {renderWalletHeader()}
-        {renderDashboardTabs()}
+        {renderPatronDashboard()}
         {renderSignupModal()}
       </>
     );
