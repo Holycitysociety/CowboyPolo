@@ -25,23 +25,24 @@ export default function PatronWalletPanel({
   closeOnDisabledOverlay = false,
   showDashboardTabs = false,
 }) {
-  const [isCircuitModalOpen, setIsCircuitModalOpen] = useState(false);
-  const [circuitSubmitStatus, setCircuitSubmitStatus] = useState("idle");
+  const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
+  const [registrationSubmitStatus, setRegistrationSubmitStatus] =
+    useState("idle");
 
-  const openCircuitSignup = () => {
+  const openRegistration = () => {
     if (!isConnected) return;
-    setCircuitSubmitStatus("idle");
-    setIsCircuitModalOpen(true);
+    setRegistrationSubmitStatus("idle");
+    setIsRegistrationOpen(true);
   };
 
-  const closeCircuitSignup = () => {
-    setIsCircuitModalOpen(false);
-    setCircuitSubmitStatus("idle");
+  const closeRegistration = () => {
+    setIsRegistrationOpen(false);
+    setRegistrationSubmitStatus("idle");
   };
 
-  const handleCircuitSubmit = async (e) => {
+  const handleRegistrationSubmit = async (e) => {
     e.preventDefault();
-    setCircuitSubmitStatus("submitting");
+    setRegistrationSubmitStatus("submitting");
 
     const form = e.target;
     const formData = new FormData(form);
@@ -53,11 +54,11 @@ export default function PatronWalletPanel({
         body: new URLSearchParams(formData).toString(),
       });
 
-      setCircuitSubmitStatus("success");
+      setRegistrationSubmitStatus("success");
       form.reset();
     } catch (err) {
-      console.error("Circuit signup submission error:", err);
-      setCircuitSubmitStatus("error");
+      console.error("Registration submission error:", err);
+      setRegistrationSubmitStatus("error");
     }
   };
 
@@ -304,15 +305,11 @@ export default function PatronWalletPanel({
     </>
   );
 
-  const renderStatusBadge = () => {
-    let label = "Guest";
-    let copy = "Sign in to buy PATRON, support initiatives, and begin your patron profile.";
-
-    if (isConnected) {
-      label = "Anonymous Holder";
-      copy =
-        "You can buy PATRON and support initiatives now. Complete registration to unlock lessons, bookings, tickets, recognition, and fuller dashboard access.";
-    }
+  const renderStatusCard = () => {
+    const label = isConnected ? "Anonymous Holder" : "Guest";
+    const copy = isConnected
+      ? "You can buy PATRON and support the founding remuda now. Complete registration to unlock lessons, bookings, and fuller member access."
+      : "Sign in to buy PATRON, support the founding remuda, and begin your patron profile.";
 
     return (
       <div
@@ -369,9 +366,10 @@ export default function PatronWalletPanel({
     );
   };
 
-  const renderUnlockCard = ({ title, copy, buttonText = "Complete Registration" }) => (
+  const renderRegistrationCard = () => (
     <div
       style={{
+        marginBottom: "14px",
         padding: "12px",
         borderRadius: "12px",
         border: "1px solid rgba(227,191,114,0.18)",
@@ -389,7 +387,7 @@ export default function PatronWalletPanel({
           marginBottom: "7px",
         }}
       >
-        Unlock Access
+        Registration
       </div>
       <div
         style={{
@@ -400,7 +398,7 @@ export default function PatronWalletPanel({
           marginBottom: "8px",
         }}
       >
-        {title}
+        Unlock Real-World Access
       </div>
       <div
         style={{
@@ -410,12 +408,13 @@ export default function PatronWalletPanel({
           marginBottom: "10px",
         }}
       >
-        {copy}
+        Complete registration to unlock lessons, bookings, event access, and
+        fuller patron recognition tied to your wallet.
       </div>
       <button
         type="button"
         className="btn btn-outline"
-        onClick={openCircuitSignup}
+        onClick={openRegistration}
         disabled={!isConnected}
         style={{
           minWidth: "auto",
@@ -428,58 +427,12 @@ export default function PatronWalletPanel({
           cursor: isConnected ? "pointer" : "not-allowed",
         }}
       >
-        {buttonText}
-      </button>
-    </div>
-  );
-
-  const renderNextSteps = () => (
-    <div
-      style={{
-        marginBottom: "16px",
-        marginTop: "4px",
-        padding: "10px 10px 12px",
-        borderRadius: "10px",
-        border: "1px solid rgba(234,191,114,0.25)",
-        background: "rgba(5,5,5,0.9)",
-      }}
-    >
-      <div
-        style={{
-          fontSize: "10px",
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
-          color: "#c7b08a",
-          marginBottom: "6px",
-          textAlign: "center",
-        }}
-      >
-        Next Steps
-      </div>
-      <button
-        type="button"
-        className="btn"
-        onClick={openCircuitSignup}
-        disabled={!isConnected}
-        style={{
-          width: "100%",
-          padding: "8px 20px",
-          fontSize: "11px",
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
-          background: "#e3bf72",
-          color: "#181210",
-          borderColor: "#e3bf72",
-          opacity: isConnected ? 1 : 0.45,
-          cursor: isConnected ? "pointer" : "not-allowed",
-        }}
-      >
         Complete Registration
       </button>
       {!isConnected && (
         <div
           style={{
-            marginTop: "6px",
+            marginTop: "8px",
             fontSize: "10px",
             lineHeight: 1.4,
             color: "#9f8a64",
@@ -583,7 +536,7 @@ export default function PatronWalletPanel({
               client={client}
               name={"BUY POLO PATRONIUM (PATRON)"}
               description={
-                "USPPA Patronage Token — supporting Three Sevens Remuda, Cowboy Polo Circuit, The Polo Way streaming, and Charleston Polo."
+                "USPPA Patronage Token — supporting the Three Sevens Remuda, founding horse syndicate, Cowboy Polo Circuit, and related initiatives."
               }
               currency={"USD"}
               chain={BASE}
@@ -632,10 +585,82 @@ export default function PatronWalletPanel({
     </>
   );
 
-  const renderPatronDashboard = () => (
+  const renderSyndicateCards = () => (
+    <div
+      style={{
+        display: "grid",
+        gap: "12px",
+      }}
+    >
+      {[
+        {
+          title: "Three Sevens Remuda",
+          copy:
+            "Support horse intake, seasoning, and long-term remuda growth across the association.",
+          kicker: "Association Herd",
+        },
+        {
+          title: "Founding Horse Syndicate",
+          copy:
+            "Direct additional patronage toward the first remuda prospect horse and its acquisition, care, and development.",
+          kicker: "First Live Offer",
+        },
+        {
+          title: "Cowboy Polo Prospect Pathway",
+          copy:
+            "Help place horses, players, and training miles into a structured pathway from lessons and tryouts into live chukkers.",
+          kicker: "Player + Horse Ladder",
+        },
+      ].map((item) => (
+        <div
+          key={item.title}
+          style={{
+            padding: "12px",
+            borderRadius: "12px",
+            border: "1px solid rgba(227,191,114,0.18)",
+            background: "rgba(255,255,255,0.015)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "10px",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "#9f8a64",
+              marginBottom: "7px",
+            }}
+          >
+            {item.kicker}
+          </div>
+          <div
+            style={{
+              fontSize: "11px",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "#f5eedc",
+              marginBottom: "8px",
+            }}
+          >
+            {item.title}
+          </div>
+          <div
+            style={{
+              color: "#c7b08a",
+              fontSize: "12px",
+              lineHeight: 1.6,
+            }}
+          >
+            {item.copy}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderMvpDashboard = () => (
     <div>
       {renderConnectOrAccount()}
-      {renderStatusBadge()}
+      {renderStatusCard()}
 
       <div
         style={{
@@ -665,8 +690,10 @@ export default function PatronWalletPanel({
             <strong>Wallet:</strong> {shortAddress || "Not connected"}
           </div>
           <div>
-            <strong>Access:</strong>{" "}
-            {isConnected ? "Buy PATRON and support initiatives now" : "Connect to begin"}
+            <strong>Token Use:</strong>{" "}
+            {isConnected
+              ? "Buy PATRON and support initiatives now"
+              : "Connect to begin"}
           </div>
           <div>
             <strong>Recognition:</strong>{" "}
@@ -693,64 +720,9 @@ export default function PatronWalletPanel({
             marginBottom: "10px",
           }}
         >
-          Live Initiatives
+          Founding Syndicate Presentation
         </div>
-
-        <div
-          style={{
-            display: "grid",
-            gap: "12px",
-          }}
-        >
-          {[
-            {
-              title: "Three Sevens Remuda",
-              copy:
-                "Support horse intake, development, and prospect growth across the association remuda.",
-            },
-            {
-              title: "Cowboy Polo Circuit",
-              copy:
-                "Support clinics, chukkers, and the expanding rider pipeline across local chapters.",
-            },
-            {
-              title: "Founding Horse Syndicate",
-              copy:
-                "Direct additional patronage toward the first remuda syndicate horse and related care.",
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              style={{
-                padding: "12px",
-                borderRadius: "12px",
-                border: "1px solid rgba(227,191,114,0.18)",
-                background: "rgba(255,255,255,0.015)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "11px",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "#f5eedc",
-                  marginBottom: "8px",
-                }}
-              >
-                {item.title}
-              </div>
-              <div
-                style={{
-                  color: "#c7b08a",
-                  fontSize: "12px",
-                  lineHeight: 1.6,
-                }}
-              >
-                {item.copy}
-              </div>
-            </div>
-          ))}
-        </div>
+        {renderSyndicateCards()}
       </div>
 
       <div
@@ -771,145 +743,22 @@ export default function PatronWalletPanel({
             marginBottom: "10px",
           }}
         >
-          Wallet & Patronage
+          Wallet & Token Sale
         </div>
         {renderCheckout()}
       </div>
 
-      <div
-        style={{
-          marginBottom: "14px",
-          padding: "12px",
-          borderRadius: "12px",
-          border: "1px solid #3a2b16",
-          background: "#0a0a0a",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: "#c7b08a",
-            marginBottom: "10px",
-          }}
-        >
-          Unlock More
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gap: "12px",
-          }}
-        >
-          {renderUnlockCard({
-            title: "Lessons & Bookings",
-            copy:
-              "Complete registration to book lessons, polo experiences, and real-world rider access.",
-          })}
-          {renderUnlockCard({
-            title: "Tickets & Event Access",
-            copy:
-              "Complete registration to reserve event access, future ticketing, and chapter invitations.",
-          })}
-          {renderUnlockCard({
-            title: "Patron Recognition",
-            copy:
-              "Complete registration to attach your name, profile, and chapter identity to your support.",
-          })}
-          {renderUnlockCard({
-            title: "Player Pathway",
-            copy:
-              "Register as rider, parent, or guardian to unlock player progress, chapter tools, and more.",
-          })}
-        </div>
-      </div>
-
-      <div
-        style={{
-          marginBottom: "14px",
-          padding: "12px",
-          borderRadius: "12px",
-          border: "1px solid #3a2b16",
-          background: "#0a0a0a",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: "#c7b08a",
-            marginBottom: "10px",
-          }}
-        >
-          Remuda Snapshot
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gap: "12px",
-          }}
-        >
-          {[
-            {
-              name: "River Scout",
-              units: 2,
-              status: "Training",
-            },
-            {
-              name: "Thunderbird",
-              units: 1,
-              status: "Active",
-            },
-            {
-              name: "Sundance",
-              units: 3,
-              status: "Patron Pool",
-            },
-          ].map((horse) => (
-            <div
-              key={horse.name}
-              style={{
-                padding: "12px",
-                borderRadius: "12px",
-                border: "1px solid rgba(227,191,114,0.18)",
-                background: "rgba(255,255,255,0.015)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "11px",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "#f5eedc",
-                  marginBottom: "8px",
-                }}
-              >
-                {horse.name}
-              </div>
-              <div style={{ color: "#c7b08a", fontSize: "12px", lineHeight: 1.7 }}>
-                <div>Patron Units: {horse.units}</div>
-                <div>Status: {horse.status}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {renderNextSteps()}
+      {renderRegistrationCard()}
     </div>
   );
 
-  const renderSignupModal = () => {
-    if (!isCircuitModalOpen) return null;
+  const renderRegistrationModal = () => {
+    if (!isRegistrationOpen) return null;
 
     return (
       <div
         className="wallet-modal-backdrop"
-        onClick={closeCircuitSignup}
+        onClick={closeRegistration}
         style={{
           position: "fixed",
           inset: 0,
@@ -975,8 +824,8 @@ export default function PatronWalletPanel({
               </div>
 
               <button
-                onClick={closeCircuitSignup}
-                aria-label="Close signup"
+                onClick={closeRegistration}
+                aria-label="Close registration"
                 title="Close"
                 style={{
                   position: "absolute",
@@ -1009,11 +858,10 @@ export default function PatronWalletPanel({
               }}
             >
               Complete registration to unlock lessons, bookings, event access,
-              fuller patron recognition, and player pathway tools linked to your
-              Patron Wallet.
+              and fuller patron recognition linked to your Patron Wallet.
             </p>
 
-            {circuitSubmitStatus === "success" ? (
+            {registrationSubmitStatus === "success" ? (
               <div
                 style={{
                   padding: "14px 10px 10px",
@@ -1054,13 +902,12 @@ export default function PatronWalletPanel({
                 >
                   Thank you — your registration was received.
                   <br />
-                  We&apos;ll email you with chapter, season, and access details
-                  as they open.
+                  We&apos;ll email you with access and next-step details.
                 </p>
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={closeCircuitSignup}
+                  onClick={closeRegistration}
                   style={{
                     marginTop: "6px",
                     padding: "8px 22px",
@@ -1079,7 +926,7 @@ export default function PatronWalletPanel({
                   method="POST"
                   data-netlify="true"
                   data-netlify-honeypot="bot-field"
-                  onSubmit={handleCircuitSubmit}
+                  onSubmit={handleRegistrationSubmit}
                 >
                   <input
                     type="hidden"
@@ -1182,11 +1029,11 @@ export default function PatronWalletPanel({
                       }}
                     >
                       {[
+                        "Patron",
+                        "Lessons / Bookings",
+                        "Tickets / Events",
                         "Rider",
                         "Parent / Guardian",
-                        "Patron",
-                        "Arena / Program",
-                        "Tickets / Events",
                         "Other",
                       ].map((label) => (
                         <label
@@ -1264,7 +1111,7 @@ export default function PatronWalletPanel({
                       id="cs-notes-wallet"
                       name="notes"
                       rows={3}
-                      placeholder="Tell us about your goals, horses, or program."
+                      placeholder="Tell us about your goals, horses, or interests."
                       style={{
                         width: "100%",
                         padding: "8px 10px",
@@ -1337,22 +1184,22 @@ export default function PatronWalletPanel({
                         letterSpacing: "0.16em",
                         textTransform: "uppercase",
                         opacity:
-                          circuitSubmitStatus === "submitting" ? 0.7 : 1,
+                          registrationSubmitStatus === "submitting" ? 0.7 : 1,
                         cursor:
-                          circuitSubmitStatus === "submitting"
+                          registrationSubmitStatus === "submitting"
                             ? "wait"
                             : "pointer",
                       }}
-                      disabled={circuitSubmitStatus === "submitting"}
+                      disabled={registrationSubmitStatus === "submitting"}
                     >
-                      {circuitSubmitStatus === "submitting"
+                      {registrationSubmitStatus === "submitting"
                         ? "Submitting…"
                         : "Complete Registration"}
                     </button>
                   </div>
                 </form>
 
-                {circuitSubmitStatus === "error" && (
+                {registrationSubmitStatus === "error" && (
                   <p
                     style={{
                       marginTop: "8px",
@@ -1376,8 +1223,8 @@ export default function PatronWalletPanel({
     return (
       <>
         {renderWalletHeader()}
-        {renderPatronDashboard()}
-        {renderSignupModal()}
+        {renderMvpDashboard()}
+        {renderRegistrationModal()}
       </>
     );
   }
@@ -1386,9 +1233,9 @@ export default function PatronWalletPanel({
     <>
       {renderWalletHeader()}
       {renderConnectOrAccount()}
-      {renderNextSteps()}
+      {renderRegistrationCard()}
       {renderCheckout()}
-      {renderSignupModal()}
+      {renderRegistrationModal()}
     </>
   );
 }
