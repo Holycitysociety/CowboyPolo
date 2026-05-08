@@ -13,6 +13,10 @@ export default function PatronWalletPanel({
   usdAmount,
   setUsdAmount,
   normalizedAmount,
+  purchasePurpose,
+  setPurchasePurpose,
+  selectedPackage,
+  setSelectedPackage,
   client,
   wallets,
   BASE,
@@ -28,6 +32,47 @@ export default function PatronWalletPanel({
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
   const [registrationSubmitStatus, setRegistrationSubmitStatus] =
     useState("idle");
+
+  const carePackages = {
+    "4-rides": {
+      amount: "460",
+      label: "$460 — supports up to 4 rides",
+      description:
+        "Monthly care contribution with up to 4 ride credits available.",
+    },
+    "5-rides": {
+      amount: "555",
+      label: "$555 — supports up to 5 rides",
+      description:
+        "Monthly care contribution with up to 5 ride credits available.",
+    },
+    "6-rides": {
+      amount: "650",
+      label: "$650 — supports up to 6 rides",
+      description:
+        "Monthly care contribution with up to 6 ride credits available.",
+    },
+    "7-rides": {
+      amount: "745",
+      label: "$745 — supports up to 7 rides",
+      description:
+        "Monthly care contribution with up to 7 ride credits available.",
+    },
+    "8-rides": {
+      amount: "840",
+      label: "$840 — supports up to 8 rides",
+      description:
+        "Monthly care contribution with up to 8 ride credits available.",
+    },
+    custom: {
+      amount: usdAmount,
+      label: "Custom amount",
+      description:
+        "Choose a custom patronage amount for horse care, welfare, lease support, or general patron support.",
+    },
+  };
+
+  const currentPackage = carePackages[selectedPackage] || carePackages["4-rides"];
 
   const openRegistration = () => {
     if (!isConnected) return;
@@ -496,14 +541,19 @@ export default function PatronWalletPanel({
                 marginBottom: 6,
               }}
             >
-              Choose Your Patronage (USD)
+              Monthly Care Contribution
             </label>
-            <input
-              type="number"
-              min="2"
-              step="1"
-              value={usdAmount}
-              onChange={(e) => setUsdAmount(e.target.value)}
+
+            <select
+              value={selectedPackage}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSelectedPackage(value);
+
+                if (value !== "custom" && carePackages[value]) {
+                  setUsdAmount(carePackages[value].amount);
+                }
+              }}
               style={{
                 width: "100%",
                 padding: "10px 12px",
@@ -511,12 +561,120 @@ export default function PatronWalletPanel({
                 border: "1px solid #3a2b16",
                 background: "#050505",
                 color: "#f5eedc",
-                fontSize: 16,
+                fontSize: 14,
+                outline: "none",
+                marginBottom: selectedPackage === "custom" ? 8 : 0,
+                boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
+              }}
+            >
+              <option value="4-rides">$460 — supports up to 4 rides</option>
+              <option value="5-rides">$555 — supports up to 5 rides</option>
+              <option value="6-rides">$650 — supports up to 6 rides</option>
+              <option value="7-rides">$745 — supports up to 7 rides</option>
+              <option value="8-rides">$840 — supports up to 8 rides</option>
+              <option value="custom">Custom amount</option>
+            </select>
+
+            {selectedPackage === "custom" && (
+              <input
+                type="number"
+                min="2"
+                step="1"
+                value={usdAmount}
+                onChange={(e) => setUsdAmount(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  border: "1px solid #3a2b16",
+                  background: "#050505",
+                  color: "#f5eedc",
+                  fontSize: 16,
+                  outline: "none",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
+                }}
+              />
+            )}
+
+            <div
+              style={{
+                marginTop: "7px",
+                color: "#9f8a64",
+                fontSize: "11px",
+                lineHeight: 1.45,
+              }}
+            >
+              {currentPackage.description}
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 12 }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: 10,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#c7b08a",
+                marginBottom: 6,
+              }}
+            >
+              Intended Use
+            </label>
+
+            <select
+              value={purchasePurpose}
+              onChange={(e) => setPurchasePurpose(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: "1px solid #3a2b16",
+                background: "#050505",
+                color: "#f5eedc",
+                fontSize: 14,
                 outline: "none",
                 boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
               }}
-            />
+            >
+              <option value="monthly-care">
+                Monthly care contribution with ride access
+              </option>
+              <option value="horse-lease">Horse lease / ride credit</option>
+              <option value="horse-welfare">
+                Horse welfare support / donation
+              </option>
+              <option value="patron-support">General patron support</option>
+            </select>
           </div>
+
+          {purchasePurpose === "horse-welfare" ? (
+            <p
+              style={{
+                margin: "0 0 10px",
+                fontSize: 11,
+                lineHeight: 1.45,
+                color: "#c7b08a",
+                textAlign: "center",
+              }}
+            >
+              Welfare support is recorded as general horse support and does not
+              guarantee ride credits, bookings, or services.
+            </p>
+          ) : (
+            <p
+              style={{
+                margin: "0 0 10px",
+                fontSize: 11,
+                lineHeight: 1.45,
+                color: "#c7b08a",
+                textAlign: "center",
+              }}
+            >
+              Ride access is subject to scheduling, horse availability, safety
+              approval, and local chapter rules.
+            </p>
+          )}
 
           <p
             style={{
@@ -545,7 +703,13 @@ export default function PatronWalletPanel({
               seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
               buttonLabel={"BUY PATRON (USDC on Base)"}
               theme={patronCheckoutTheme}
-              purchaseData={{ walletAddress: account?.address }}
+              purchaseData={{
+                walletAddress: account?.address,
+                usdAmount: normalizedAmount,
+                selectedPackage,
+                selectedPackageLabel: currentPackage.label,
+                purchasePurpose,
+              }}
               onSuccess={handleCheckoutSuccess}
               onError={handleCheckoutError}
             />
