@@ -56,7 +56,9 @@ function verifyThirdwebWebhook(rawBody, headers, secret, toleranceSeconds = 300)
 
   const diff = Math.abs(now - timestamp);
   if (diff > toleranceSeconds) {
-    throw new Error(`Webhook timestamp too old (diff=${diff}s, tol=${toleranceSeconds}s)`);
+    throw new Error(
+      `Webhook timestamp too old (diff=${diff}s, tol=${toleranceSeconds}s)`
+    );
   }
 
   const computed = crypto
@@ -84,26 +86,32 @@ global.__PROCESSED_PAYMENTS__ = processed;
 // -----------------------------
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: "Method not allowed" }),
+    };
   }
 
   const RPC_URL = process.env.RPC_URL;
   const WEBHOOK_SECRET = process.env.THIRDWEB_WEBHOOK_SECRET;
 
-  // Destination (what thirdweb delivers)
+  // Destination — what thirdweb delivers
   const DEST_CHAIN_ID = Number(process.env.DEST_CHAIN_ID || "8453"); // Base
   const USDC_ADDRESS =
-    process.env.USDC_TOKEN_ADDRESS || "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"; // USDC on Base
+    process.env.USDC_TOKEN_ADDRESS ||
+    "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"; // USDC on Base
   const SELLER_ADDRESS = process.env.SELLER_ADDRESS; // must match CheckoutWidget `seller`
 
-  // Fulfillment (what we send)
+  // Fulfillment — what we send
   const PATRON_TOKEN_ADDRESS = process.env.PATRON_TOKEN_ADDRESS;
   const TREASURY_PRIVATE_KEY = process.env.TREASURY_PRIVATE_KEY;
   const PATRON_DECIMALS = Number(process.env.PATRON_DECIMALS || "18");
   const USDC_DECIMALS = Number(process.env.USDC_DECIMALS || "6");
 
   // how many PATRON per 1 USDC
-  const PATRON_PER_USD = process.env.PATRON_PER_USD ? String(process.env.PATRON_PER_USD) : "1";
+  const PATRON_PER_USD = process.env.PATRON_PER_USD
+    ? String(process.env.PATRON_PER_USD)
+    : "1";
 
   try {
     const rawBody = event.body || "";
@@ -121,13 +129,24 @@ exports.handler = async (event) => {
     const isOnramp = type === "pay.onramp-transaction";
 
     if (!isOnchain && !isOnramp) {
-      return { statusCode: 200, body: JSON.stringify({ ok: true, ignored: true, type }) };
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ ok: true, ignored: true, type }),
+      };
     }
 
     if (!data) throw new Error("Missing data in webhook payload");
 
     if (data.status !== "COMPLETED") {
-      return { statusCode: 200, body: JSON.stringify({ ok: true, ignored: true, status: data.status, type }) };
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          ok: true,
+          ignored: true,
+          status: data.status,
+          type,
+        }),
+      };
     }
 
     // 3) Normalize fields between onchain & onramp
@@ -139,52 +158,84 @@ exports.handler = async (event) => {
       throw new Error(`Invalid receiver in payload: receiver=${receiver}`);
     }
 
-    // Seller verification (recommended)
-    if (SELLER_ADDRESS && normalizeAddress(receiver) !== normalizeAddress(SELLER_ADDRESS)) {
+    // Seller verification
+    if (
+      SELLER_ADDRESS &&
+      normalizeAddress(receiver) !== normalizeAddress(SELLER_ADDRESS)
+    ) {
       throw new Error(`Receiver mismatch. Got ${receiver}, expected ${SELLER_ADDRESS}`);
     }
 
-    // Destination token verification (USDC on Base)
-    if (!destToken?.address || normalizeAddress(destToken.address) !== normalizeAddress(USDC_ADDRESS)) {
-      throw new Error(`Destination token mismatch. Got ${destToken?.address}, expected ${USDC_ADDRESS}`);
+    // Destination token verification — USDC on Base
+    if (
+      !destToken?.address ||
+      normalizeAddress(destToken.address) !== normalizeAddress(USDC_ADDRESS)
+    ) {
+      throw new Error(
+        `Destination token mismatch. Got ${destToken?.address}, expected ${USDC_ADDRESS}`
+      );
     }
 
     if (Number(destToken.chainId) !== DEST_CHAIN_ID) {
-      throw new Error(`Destination chain mismatch. Got ${destToken.chainId}, expected ${DEST_CHAIN_ID}`);
+      throw new Error(
+        `Destination chain mismatch. Got ${destToken.chainId}, expected ${DEST_CHAIN_ID}`
+      );
     }
 
     if (!destinationAmount || BigInt(destinationAmount) <= 0n) {
       throw new Error(`Invalid destinationAmount/amount: ${destinationAmount}`);
     }
 
-    // 4) Identify buyer wallet (THIS IS THE CRITICAL FIX)
+    // 4) Capture purchaseData from CheckoutWidget
+    // This is where we store the purpose/dropdown selections from PatronWalletPanel.jsx.
+    const purchaseData = data?.purchaseData || payload?.purchaseData || {};
+
+    const selectedPackage = purchaseData.selectedPackage || null;
+    const selectedPackageLabel = purchaseData.selectedPackageLabel || null;
+    const purchasePurpose = purchaseData.purchasePurpose || null;
+    const selectedUsdAmount = purchaseData.usdAmount || null;
+
+    // 5) Identify buyer wallet
     // - Onchain: buyer is data.sender
-    // - Onramp: buyer MUST be provided via purchaseData (custom data you pass from CheckoutWidget)
+    // - Onramp: buyer MUST be provided via purchaseData
     const buyer =
       (isOnchain && data.sender) ||
-      data?.purchaseData?.walletAddress ||
-      data?.purchaseData?.buyer ||
-      payload?.purchaseData?.walletAddress ||
+      purchaseData.walletAddress ||
+      purchaseData.buyer ||
       null;
 
     if (!buyer || !isAddress(buyer)) {
       throw new Error(
         "Missing/invalid buyer wallet. For pay.onramp-transaction you must pass purchaseData " +
-          "from the CheckoutWidget (e.g. purchaseData: { walletAddress: account.address })."
+          "from the CheckoutWidget, e.g. purchaseData: { walletAddress: account.address }."
       );
     }
 
-    // 5) Idempotency key
+    // 6) Idempotency key
     const paymentId = data.paymentId || data.transactionId || data.id || null;
+
     if (paymentId && processed.has(paymentId)) {
-      return { statusCode: 200, body: JSON.stringify({ ok: true, duplicate: true, paymentId }) };
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          ok: true,
+          duplicate: true,
+          paymentId,
+          selectedPackage,
+          selectedPackageLabel,
+          purchasePurpose,
+          selectedUsdAmount,
+        }),
+      };
     }
 
-    // 6) Compute PATRON from actual USDC delivered
+    // 7) Compute PATRON from actual USDC delivered
     const usdcBase = BigInt(destinationAmount);
 
     if (PATRON_DECIMALS < USDC_DECIMALS) {
-      throw new Error("PATRON_DECIMALS must be >= USDC_DECIMALS for this fulfillment math");
+      throw new Error(
+        "PATRON_DECIMALS must be >= USDC_DECIMALS for this fulfillment math"
+      );
     }
 
     // Bring USDC amount up to PATRON decimals
@@ -198,17 +249,21 @@ exports.handler = async (event) => {
       : ethers.utils.parseUnits(PATRON_PER_USD, RATE_DECIMALS); // v5
 
     const rateWeiBig = BigInt(rateWei.toString());
-    const patronWei = (usdcAsPatronDecimals * rateWeiBig) / (10n ** BigInt(RATE_DECIMALS));
+    const patronWei =
+      (usdcAsPatronDecimals * rateWeiBig) / 10n ** BigInt(RATE_DECIMALS);
 
     if (patronWei <= 0n) throw new Error("Computed patronWei is zero");
 
-    // 7) Transfer PATRON from treasury → buyer
+    // 8) Transfer PATRON from treasury → buyer
     if (!PATRON_TOKEN_ADDRESS || !TREASURY_PRIVATE_KEY) {
-      throw new Error("Server misconfigured: missing PATRON_TOKEN_ADDRESS or TREASURY_PRIVATE_KEY");
+      throw new Error(
+        "Server misconfigured: missing PATRON_TOKEN_ADDRESS or TREASURY_PRIVATE_KEY"
+      );
     }
 
     const provider = getProvider(RPC_URL);
     let signer = new ethers.Wallet(TREASURY_PRIVATE_KEY, provider);
+
     if (ethers.NonceManager) signer = new ethers.NonceManager(signer);
 
     const patronAbi = [
@@ -229,11 +284,21 @@ exports.handler = async (event) => {
     const tx = await patron.transfer(buyer, patronWei);
     const receipt = await tx.wait();
 
-    // Mark processed AFTER success
+    // Mark processed AFTER successful fulfillment
     if (paymentId) processed.add(paymentId);
 
     console.log(
-      `Fulfilled PATRON: type=${type} paymentId=${paymentId} buyer=${buyer} receiver=${receiver} usdc=${destinationAmount} patronWei=${patronWei.toString()} tx=${receipt.transactionHash}`
+      `Fulfilled PATRON: type=${type}` +
+        ` paymentId=${paymentId}` +
+        ` buyer=${buyer}` +
+        ` receiver=${receiver}` +
+        ` usdc=${destinationAmount}` +
+        ` patronWei=${patronWei.toString()}` +
+        ` purpose=${purchasePurpose}` +
+        ` package=${selectedPackage}` +
+        ` packageLabel=${selectedPackageLabel}` +
+        ` selectedUsd=${selectedUsdAmount}` +
+        ` tx=${receipt.transactionHash}`
     );
 
     return {
@@ -246,10 +311,15 @@ exports.handler = async (event) => {
         usdcDestinationAmount: destinationAmount,
         patronWei: patronWei.toString(),
         fulfillmentTxHash: receipt.transactionHash,
+        selectedPackage,
+        selectedPackageLabel,
+        purchasePurpose,
+        selectedUsdAmount,
       }),
     };
   } catch (err) {
     console.error("thirdweb-webhook fulfillment error:", err);
+
     return {
       statusCode: 500,
       body: JSON.stringify({
