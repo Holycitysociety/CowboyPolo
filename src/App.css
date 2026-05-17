@@ -203,7 +203,7 @@ body {
   margin: 20px auto 22px;
 }
 
-/* INTRODUCING + THREE SEVENS */
+/* INTRODUCING + FEATURED MARKS */
 .hero-badges {
   font-size: 0.8rem;
   letter-spacing: 0.18em;
@@ -223,6 +223,40 @@ body {
   text-transform: uppercase;
   margin-bottom: 6px;
   opacity: 0.85;
+}
+
+/* PPA PoloBred StringPool wordmark */
+.polobred-stringpool-mark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+.polobred-top {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.42em;
+  color: #c7b08a;
+  line-height: 1.2;
+}
+
+.polobred-main {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.35rem, 5vw, 1.9rem);
+  letter-spacing: 0.24em;
+  color: #f5eedc;
+  line-height: 1.05;
+}
+
+.polobred-bottom {
+  font-family: "IM Fell English SC", serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.28em;
+  color: #d5c6a5;
+  line-height: 1.2;
 }
 
 /* STREAMING ON · THE POLO WAY */
@@ -676,6 +710,18 @@ section {
   .parallax-band-first {
     margin-top: 16px;
   }
+
+  .polobred-top {
+    letter-spacing: 0.36em;
+  }
+
+  .polobred-main {
+    letter-spacing: 0.18em;
+  }
+
+  .polobred-bottom {
+    letter-spacing: 0.2em;
+  }
 }
 
 /* -----------------------------
@@ -765,8 +811,7 @@ section {
 }
 
 .signup-modal {
-  width: 100%
-  ;
+  width: 100%;
   max-width: 420px;
   background: #050505;
   border-radius: 14px;
