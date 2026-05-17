@@ -583,7 +583,7 @@ export default function App() {
           <div className="hero-badge-intro">INTRODUCING</div>
 
           <div className="polobred-stringpool-mark">
-            <div className="polobred-top">PPA</div>
+            <div className="polobred-top">THE</div>
             <div className="polobred-main">PoloBred</div>
             <div className="polobred-bottom">StringPool</div>
           </div>
