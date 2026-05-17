@@ -75,12 +75,15 @@ class CheckoutBoundary extends React.Component {
     super(props);
     this.state = { hasError: false };
   }
+
   static getDerivedStateFromError() {
     return { hasError: true };
   }
+
   componentDidCatch(error, info) {
     console.error("CheckoutWidget crashed:", error, info);
   }
+
   render() {
     if (this.state.hasError) {
       return (
@@ -89,6 +92,7 @@ class CheckoutBoundary extends React.Component {
         </p>
       );
     }
+
     return this.props.children;
   }
 }
@@ -136,6 +140,7 @@ function ParallaxBand({
     };
 
     update();
+
     window.addEventListener("scroll", onScrollOrResize, { passive: true });
     window.addEventListener("resize", onScrollOrResize);
 
@@ -157,6 +162,7 @@ function ParallaxBand({
         <img ref={imgRef} className="parallax-img" src={src} alt="" />
         <div className="parallax-vignette" />
       </div>
+
       <div className="parallax-content">{children}</div>
     </div>
   );
@@ -167,8 +173,11 @@ function ParallaxBand({
 // ---------------------------------------------
 function getRouteFromHash() {
   if (typeof window === "undefined") return "home";
+
   const hash = window.location.hash.replace(/^#/, "");
+
   if (hash === "/wallet" || hash === "wallet") return "wallet";
+
   return "home";
 }
 
@@ -185,11 +194,13 @@ export default function App() {
     const onHashChange = () => {
       setRoute(getRouteFromHash());
     };
+
     window.addEventListener("hashchange", onHashChange);
+
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  // Wallet / modal state (for main page)
+  // Wallet / modal state
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [usdAmount, setUsdAmount] = useState("2");
   const walletScrollRef = useRef(null);
@@ -199,7 +210,7 @@ export default function App() {
 
   // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
-  const roadmapGateRef = useRef(null); // now used as bottom-of-page sentinel
+  const roadmapGateRef = useRef(null);
 
   // Thirdweb hooks
   const account = useActiveAccount();
@@ -228,7 +239,6 @@ export default function App() {
     tokenAddress: "0xD766a771887fFB6c528434d5710B406313CAe03A", // PATRON
   });
 
-  const openWalletModal = () => setIsWalletOpen(true);
   const closeWalletModal = () => setIsWalletOpen(false);
 
   const shortAddress = account?.address
@@ -237,6 +247,7 @@ export default function App() {
 
   const handleCopyAddress = async () => {
     if (!account?.address) return;
+
     try {
       await navigator.clipboard.writeText(account.address);
       alert("Wallet address copied.");
@@ -247,6 +258,7 @@ export default function App() {
 
   const handleSignOut = () => {
     if (!activeWallet || !disconnect) return;
+
     try {
       disconnect(activeWallet);
     } catch (err) {
@@ -261,6 +273,7 @@ export default function App() {
 
   const handleCheckoutSuccess = async (result) => {
     console.log("Checkout success:", result);
+
     alert(
       "Payment received.\n\n" +
         "PATRON will be credited to your wallet automatically.\n" +
@@ -319,18 +332,21 @@ export default function App() {
   // ESC closes wallet modal
   useEffect(() => {
     if (!isWalletOpen) return;
+
     const onKeyDown = (e) => {
       if (e.key === "Escape") {
         setIsWalletOpen(false);
       }
     };
+
     window.addEventListener("keydown", onKeyDown);
+
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
-  // Scroll gating on main page — now uses a bottom-of-page sentinel
+  // Scroll gating on main page — bottom-of-page sentinel
   useEffect(() => {
-    if (route !== "home") return; // only on main page
+    if (route !== "home") return;
 
     if (isConnected) {
       setHasTriggeredGate(false);
@@ -339,6 +355,7 @@ export default function App() {
 
     const handleScroll = () => {
       if (hasTriggeredGate) return;
+
       const el = roadmapGateRef.current;
       if (!el) return;
 
@@ -359,40 +376,45 @@ export default function App() {
   }, [route, isConnected, hasTriggeredGate]);
 
   // ---------------------------------------------
-  // Shared footer (both routes)
+  // Shared footer
   // ---------------------------------------------
   const renderFooter = () => (
     <footer className="site-footer">
       <div className="footer-panels">
-        {/* USPPA block */}
         <div className="footer-panel">
           <div className="footer-kicker">NATIONAL PATRON BODY</div>
+
           <div className="footer-title">
             UNITED STATES POLO
             <br />
             PATRONS ASSOCIATION
           </div>
+
           <p className="footer-copy">
             The USPPA is a patrons&apos; association focused on building a
             broader base of support for players, horses, and local clubs across
             the country.
           </p>
+
           <a href="https://uspolopatrons.org" className="btn btn-footer">
             Visit USPPA
           </a>
         </div>
 
-        {/* Polo Patronium block */}
         <div className="footer-panel">
           <div className="footer-kicker">OFFICIAL TOKEN</div>
+
           <div className="footer-title">POLO PATRONIUM</div>
+
           <div className="footer-subtitle">
             SYMBOL &quot;PATRON&quot; · BUILT ON BASE
           </div>
+
           <p className="footer-copy">
             A patronage utility token and membership initiative uniting patrons,
             players, and clubs in a shared economy of sport.
           </p>
+
           <a href="https://polopatronium.com" className="btn btn-footer">
             PoloPatronium.com
           </a>
@@ -406,7 +428,7 @@ export default function App() {
   );
 
   // ---------------------------------------------
-  // Standalone wallet page for #/wallet
+  // Standalone wallet page
   // ---------------------------------------------
   if (route === "wallet") {
     return (
@@ -491,11 +513,10 @@ export default function App() {
   }
 
   // ---------------------------------------------
-  // Main Cowboy Polo page (route === "home")
+  // Main Cowboy Polo page
   // ---------------------------------------------
   return (
     <div className="page">
-      {/* Top header: now links to dedicated wallet page */}
       <header
         style={{
           display: "flex",
@@ -521,7 +542,9 @@ export default function App() {
           <br />
           PATRONS ASSOCIATION
         </div>
+
         <div className="hero-rule" />
+
         <div className="hero-presents">PRESENTS THE</div>
 
         <div className="hero-main">
@@ -538,6 +561,7 @@ export default function App() {
 
         <div className="hero-badges" style={{ marginTop: "0" }}>
           <div className="hero-badge-intro">STREAMING ON</div>
+
           <div
             style={{
               fontFamily: '"IM Fell English SC", serif',
@@ -557,6 +581,7 @@ export default function App() {
 
         <div className="hero-badges">
           <div className="hero-badge-intro">INTRODUCING</div>
+
           <div className="polobred-stringpool-mark">
             <div className="polobred-top">PPA</div>
             <div className="polobred-main">PoloBred</div>
@@ -587,6 +612,7 @@ export default function App() {
       >
         <div className="section-header">
           <div className="section-kicker">THE FORMAT</div>
+
           <h2 className="section-title">HOW THE COWBOY POLO CIRCUIT WORKS</h2>
         </div>
 
@@ -597,6 +623,7 @@ export default function App() {
             a long-term focus on training ponies and the player-trainers who
             bring them along.
           </p>
+
           <p>
             Games are played 3 on 3 in arenas or campitos, with teams of up to
             12 riders. The key here is that a player no longer needs a full
@@ -605,6 +632,7 @@ export default function App() {
             handicap. Riders simply play on one solid, safe horse from home or
             their program and grow into a string over time.
           </p>
+
           <p>
             Before entering official chukkers, every new rider and horse pair
             attends a Cowboy Polo Tryout Clinic. This short, focused session
@@ -613,6 +641,7 @@ export default function App() {
             &quot;rules of the road&quot; that keep mixed-level games safe and
             exciting.
           </p>
+
           <p>
             This Circuit is intentionally built around the training of ponies as
             integral to the sport, rather than just paying to ride finished
@@ -620,6 +649,7 @@ export default function App() {
             train their horses, and every sanctioned chukker doubles as
             structured schooling miles for both horse and rider.
           </p>
+
           <p>
             Cowboy Polo chukkers can be hosted by stables, arenas, or programs
             that sign on to the Circuit. Appointed chapter captains run the
@@ -627,15 +657,18 @@ export default function App() {
             individual handicap table for each rider, and the game results table
             for teams.
           </p>
+
           <p>
             Each sanctioned chukker updates both sides of the story: how riders
             are rated, and how their teams are performing.
           </p>
+
           <p>
             Over the course of a Circuit season, those two tables are the
             backbone of the standings: player handicaps and team records
             together define how the season is read.
           </p>
+
           <p>
             Local chapters also feed into{" "}
             <span style={{ fontStyle: "italic" }}>The Polo Way</span>: riders
@@ -661,6 +694,7 @@ export default function App() {
       >
         <div className="section-header">
           <div className="section-kicker">PLAYER STANDINGS</div>
+
           <h2 className="section-title">RIDER HANDICAP LEADERBOARD</h2>
         </div>
 
@@ -673,11 +707,13 @@ export default function App() {
                 calculated, ELO-style rating, updated after every sanctioned
                 chukker and displayed to two decimal places.
               </p>
+
               <p>
                 Ratings move with performance over time: goals scored, assists,
-                and overall impact on the chuckers all feed the same underlying
+                and overall impact on the chukkers all feed the same underlying
                 score.
               </p>
+
               <p>
                 As riders climb the Cowboy Polo ladder, they move from local
                 development chukkers into featured Circuit and pro-grade events.
@@ -690,6 +726,7 @@ export default function App() {
 
             <div className="board">
               <div className="board-title">Top Riders — Snapshot</div>
+
               <div className="board-sub">
                 Handicaps update as sanctioned results are submitted.
               </div>
@@ -699,6 +736,7 @@ export default function App() {
                 <span>Chapter</span>
                 <span>Handicap</span>
               </div>
+
               <div className="board-row">
                 <span>Ryder M</span>
                 <span>Charleston Polo</span>
@@ -707,6 +745,7 @@ export default function App() {
                   <span className="handicap-value-decimal">.15</span>
                 </span>
               </div>
+
               <div className="board-row">
                 <span>Casey N</span>
                 <span>Virtue Duce</span>
@@ -715,6 +754,7 @@ export default function App() {
                   <span className="handicap-value-decimal">.40</span>
                 </span>
               </div>
+
               <div className="board-row">
                 <span>Jess C</span>
                 <span>6666 Polo</span>
@@ -723,6 +763,7 @@ export default function App() {
                   <span className="handicap-value-decimal">.25</span>
                 </span>
               </div>
+
               <div className="board-row">
                 <span>Lane D</span>
                 <span>Creek Plantation</span>
@@ -743,7 +784,7 @@ export default function App() {
         finishFactor={2}
       />
 
-      {/* HORSE & REMUDA */}
+      {/* HORSE & STRINGPOOL */}
       <section
         id="horses"
         className="band-section"
@@ -751,72 +792,91 @@ export default function App() {
       >
         <div className="section-header">
           <div className="section-kicker">
-            <div className="three-sevens-mark">
-              <div className="three-sevens-numeral">7̶7̶7̶</div>
-              <div className="three-sevens-text">THREE SEVENS REMUDA</div>
+            <div className="polobred-stringpool-mark">
+              <div className="polobred-top">PPA</div>
+              <div className="polobred-main">PoloBred</div>
+              <div className="polobred-bottom">StringPool</div>
             </div>
           </div>
         </div>
+
         <h2 className="section-title" style={{ textAlign: "center" }}>
-          HORSE PERFORMANCE &amp; REMUDA
+          HORSE PERFORMANCE &amp; STRINGPOOL
         </h2>
 
         <div style={{ position: "relative", marginTop: "20px" }}>
           <div>
             <div className="section-body">
               <p>
-                The Three Sevens 7̶7̶7̶ Remuda is the managed herd of USPPA
-                horses — trained inside the Cowboy Polo Circuit and tracked from
-                their first start to their retirement. It is built first by
-                training and seasoning ponies in the Cowboy Polo way.
+                The PPA PoloBred StringPool is the managed horse-development
+                system of the Cowboy Polo Circuit — tracking suitable horses
+                from intake and schooling through sanctioned chukkers, patron
+                support, productive use, and eventual retirement.
               </p>
+
               <p>
-                Riders can bring their own horses into the same training
-                pipeline. Whether a horse starts in a local lesson program, a
-                ranch string, or a private barn, Cowboy Polo Tryout Clinics and
-                sanctioned chukkers provide a structured path to turn good
-                horses into true polo ponies — while student players learn, step
-                by step, how to train and develop those ponies themselves.
+                The goal is not merely to showcase finished polo ponies, but to
+                build a visible training pipeline where good horses can become
+                useful polo horses through steady arena miles, responsible
+                handling, and structured Cowboy Polo play.
               </p>
+
               <p>
-                For patrons, the Three Sevens 7̶7̶7̶ Remuda is where patron
-                tokens go to work. Patrons can stake their PATRON tokens behind
-                specific horses, players, and teams to help fund daily training,
-                clinics, and schooling chukkers. As those horses and student
-                trainers progress through the Circuit, Patron Tribute from
-                Cowboy Polo events and related revenue is directed back through
-                the same patron pools, so long-term supporters stay connected to
-                the careers they helped build.
+                Riders can bring their own horses into the same pathway. Whether
+                a horse begins in a local lesson program, a ranch string, a
+                private barn, or a developing chapter, Cowboy Polo Tryout
+                Clinics and sanctioned chukkers create a practical route for
+                evaluating, seasoning, and improving horses over time.
+              </p>
+
+              <p>
+                For patrons, the PoloBred StringPool is where support becomes
+                trackable. Patron backing can be directed toward specific
+                horses, riders, teams, and chapters to help fund training,
+                clinics, care, schooling chukkers, and the long-term development
+                of the Circuit.
+              </p>
+
+              <p>
+                Each horse’s record can grow with the sport: chukker history,
+                performance notes, rider feedback, care milestones, and
+                retirement support all become part of a visible PoloBred
+                profile.
               </p>
             </div>
 
             <div className="board">
-              <div className="board-title">Pony Performance Snapshot</div>
+              <div className="board-title">PoloBred Horse Snapshot</div>
+
               <div className="board-sub">
-                Score blends chukker count, impact, and rider feedback across
-                the season.
+                Score blends chukker count, usefulness, training progress, and
+                rider feedback across the season.
               </div>
 
               <div className="board-header">
                 <span>Horse</span>
-                <span>Circuit Brand</span>
+                <span>String / Chapter</span>
                 <span>Score</span>
               </div>
+
               <div className="board-row">
                 <span>Thunderbird</span>
-                <span>7̶7̶7̶</span>
+                <span>PoloBred</span>
                 <span>92</span>
               </div>
+
               <div className="board-row">
                 <span>Sundance</span>
-                <span>7̶7̶7̶</span>
+                <span>PoloBred</span>
                 <span>88</span>
               </div>
+
               <div className="board-row">
                 <span>Cholla</span>
                 <span>6666</span>
                 <span>91</span>
               </div>
+
               <div className="board-row">
                 <span>River Scout</span>
                 <span>
@@ -831,7 +891,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* WALLET MODAL (main page) */}
+      {/* WALLET MODAL */}
       {isWalletOpen && (
         <div
           className="wallet-modal-backdrop"
@@ -900,6 +960,7 @@ export default function App() {
       <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
+
           <h2 className="section-title">
             SANCTIONED CHUKKERS &amp; SEASON RECORD
           </h2>
@@ -928,6 +989,7 @@ export default function App() {
                 name="form-name"
                 value="chukker-results"
               />
+
               <p style={{ display: "none" }}>
                 <label>
                   Don’t fill this out if you're human:
@@ -956,6 +1018,7 @@ export default function App() {
                   <label htmlFor="name">Your Name</label>
                   <input id="name" name="name" type="text" required />
                 </div>
+
                 <div>
                   <label htmlFor="role">Role</label>
                   <select id="role" name="role" required>
@@ -974,6 +1037,7 @@ export default function App() {
                   <label htmlFor="email">Email</label>
                   <input id="email" name="email" type="email" required />
                 </div>
+
                 <div>
                   <label htmlFor="chapter">Chapter / Arena</label>
                   <input id="chapter" name="chapter" type="text" />
@@ -985,6 +1049,7 @@ export default function App() {
                   <label htmlFor="match-date">Match Date</label>
                   <input id="match-date" name="match-date" type="date" />
                 </div>
+
                 <div>
                   <label htmlFor="location">Location</label>
                   <input id="location" name="location" type="text" />
@@ -1036,6 +1101,7 @@ export default function App() {
                   Chukker results submitted. Thank you.
                 </p>
               )}
+
               {resultsSubmitStatus === "error" && (
                 <p
                   style={{
@@ -1053,7 +1119,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* NEW: bottom-of-page scroll trigger sentinel */}
       <div ref={roadmapGateRef} style={{ height: 1, width: "100%" }} />
 
       {renderFooter()}
