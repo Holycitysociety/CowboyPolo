@@ -107,55 +107,86 @@ export default function PatronWalletPanel({
     }
   };
 
+  const renderOrgLogo = () => (
+    <div
+      style={{
+        textAlign: "center",
+        margin: "2px auto 16px",
+        paddingBottom: "14px",
+        borderBottom: "1px solid rgba(227,191,114,0.25)",
+        color: "#e3bf72",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: '"Cinzel", "Cormorant Garamond", serif',
+          fontSize: "11px",
+          letterSpacing: "0.42em",
+          textTransform: "uppercase",
+          color: "#d8bd82",
+          marginBottom: "12px",
+          whiteSpace: "nowrap",
+        }}
+      >
+        US <span style={{ letterSpacing: 0, margin: "0 0.2em" }}>✠</span> AR{" "}
+        <span style={{ letterSpacing: 0, margin: "0 0.2em" }}>✠</span> CA{" "}
+        <span style={{ letterSpacing: 0, margin: "0 0.2em" }}>✠</span> UK
+      </div>
+
+      <div
+        style={{
+          fontFamily: '"Cinzel", "Cormorant Garamond", serif',
+          fontSize: "clamp(1.45rem, 6vw, 2rem)",
+          letterSpacing: "0.28em",
+          textTransform: "uppercase",
+          color: "#e8d09a",
+          lineHeight: 1.12,
+          marginLeft: "0.28em",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Polo Patrons
+      </div>
+
+      <div
+        style={{
+          fontFamily: '"Cinzel", "Cormorant Garamond", serif',
+          fontSize: "13px",
+          letterSpacing: "0.42em",
+          textTransform: "uppercase",
+          color: "#d8c79f",
+          marginTop: "10px",
+          marginLeft: "0.42em",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Association
+      </div>
+    </div>
+  );
+
   const renderWalletHeader = () => (
     <div
       style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         marginBottom: "8px",
         position: "relative",
         paddingTop: "4px",
       }}
     >
+      {renderOrgLogo()}
+
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 3,
+          textAlign: "center",
+          fontSize: "11px",
+          letterSpacing: "0.26em",
+          textTransform: "uppercase",
+          color: "#c7b08a",
+          marginTop: "-6px",
+          marginBottom: "10px",
         }}
       >
-        <div
-          style={{
-            fontSize: "11px",
-            letterSpacing: "0.28em",
-            textTransform: "uppercase",
-            color: "#9f8a64",
-          }}
-        >
-          U&nbsp;S&nbsp;P&nbsp;P&nbsp;A
-        </div>
-        <div
-          style={{
-            fontSize: "16px",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "#f5eedc",
-          }}
-        >
-          Cowboy Polo Circuit
-        </div>
-        <div
-          style={{
-            fontSize: "11px",
-            letterSpacing: "0.26em",
-            textTransform: "uppercase",
-            color: "#c7b08a",
-          }}
-        >
-          Patron Wallet
-        </div>
+        Patron Wallet
       </div>
 
       {showCloseButton && onClose && (
@@ -166,8 +197,7 @@ export default function PatronWalletPanel({
           style={{
             position: "absolute",
             right: 0,
-            top: "50%",
-            transform: "translateY(-50%)",
+            top: "2px",
             width: "56px",
             height: "56px",
             border: "none",
@@ -200,8 +230,8 @@ export default function PatronWalletPanel({
             color: "#dec89a",
           }}
         >
-          Sign up with your email to create your Cowboy Polo Patron Wallet. This
-          same wallet works on{" "}
+          Sign up with your email to create your Polo Patrons Wallet. This same
+          wallet works on{" "}
           <a
             href="https://uspolopatrons.org"
             target="_blank"
@@ -353,8 +383,8 @@ export default function PatronWalletPanel({
   const renderStatusCard = () => {
     const label = isConnected ? "Anonymous Holder" : "Guest";
     const copy = isConnected
-      ? "You can buy PATRON and support the founding remuda now. Complete registration to unlock lessons, bookings, and fuller member access."
-      : "Sign in to buy PATRON, support the founding remuda, and begin your patron profile.";
+      ? "You can buy PATRON and support founding initiatives now. Complete registration to unlock lessons, bookings, and fuller member access."
+      : "Sign in to buy PATRON, support founding initiatives, and begin your patron profile.";
 
     return (
       <div
@@ -694,7 +724,7 @@ export default function PatronWalletPanel({
               client={client}
               name={"BUY POLO PATRONIUM (PATRON)"}
               description={
-                "USPPA Patronage Token — supporting the Three Sevens Remuda, founding horse syndicate, Cowboy Polo Circuit, and related initiatives."
+                "USPPA Patronage Token — supporting the PPA PoloBred StringPool, horse welfare, founding patron initiatives, and related association programs."
               }
               currency={"USD"}
               chain={BASE}
@@ -726,7 +756,7 @@ export default function PatronWalletPanel({
           textAlign: "center",
         }}
       >
-        This Patron Wallet works across the Cowboy Polo Circuit,{" "}
+        This Patron Wallet works across{" "}
         <a
           href="https://uspolopatrons.org"
           target="_blank"
@@ -758,19 +788,19 @@ export default function PatronWalletPanel({
     >
       {[
         {
-          title: "Three Sevens Remuda",
+          title: "PPA PoloBred StringPool",
           copy:
-            "Support horse intake, seasoning, and long-term remuda growth across the association.",
-          kicker: "Association Herd",
+            "Support horse intake, seasoning, welfare, and long-term string development across the association.",
+          kicker: "Association Horse Pool",
         },
         {
           title: "Founding Horse Syndicate",
           copy:
-            "Direct additional patronage toward the first remuda prospect horse and its acquisition, care, and development.",
+            "Direct additional patronage toward the first prospect horses and their acquisition, care, and development.",
           kicker: "First Live Offer",
         },
         {
-          title: "Cowboy Polo Prospect Pathway",
+          title: "PoloBred Prospect Pathway",
           copy:
             "Help place horses, players, and training miles into a structured pathway from lessons and tryouts into live chukkers.",
           kicker: "Player + Horse Ladder",
@@ -955,36 +985,24 @@ export default function PatronWalletPanel({
           >
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: "10px",
                 position: "relative",
                 paddingTop: "2px",
               }}
             >
-              <div style={{ textAlign: "center" }}>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    letterSpacing: "0.2em",
-                    textTransform: "uppercase",
-                    color: "#9f8a64",
-                    marginBottom: "4px",
-                  }}
-                >
-                  Cowboy Polo Circuit
-                </div>
-                <div
-                  style={{
-                    fontSize: "15px",
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "#f5eedc",
-                  }}
-                >
-                  Complete Registration
-                </div>
+              {renderOrgLogo()}
+
+              <div
+                style={{
+                  textAlign: "center",
+                  fontSize: "15px",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "#f5eedc",
+                  marginTop: "-4px",
+                  marginBottom: "10px",
+                }}
+              >
+                Complete Registration
               </div>
 
               <button
@@ -994,8 +1012,7 @@ export default function PatronWalletPanel({
                 style={{
                   position: "absolute",
                   right: 0,
-                  top: "50%",
-                  transform: "translateY(-50%)",
+                  top: 0,
                   width: "48px",
                   height: "48px",
                   border: "none",
