@@ -78,7 +78,6 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  /* Edge-only vignette: center stays clean, corners darken */
   background:
     radial-gradient(
       circle at center,
@@ -92,7 +91,7 @@ body {
 .parallax-content {
   position: relative;
   z-index: 2;
-  padding: 0 18px clamp(64px, 9vh, 120px); /* bottom padding */
+  padding: 0 18px clamp(64px, 9vh, 120px);
   padding-top: calc(100vh + clamp(24px, 4vh, 56px));
   max-width: var(--max-width);
   margin: 0 auto;
@@ -116,7 +115,7 @@ body {
 }
 
 /* -----------------------------
-   HERO POSTER (Tall & Centered)
+   HERO POSTER
    ----------------------------- */
 
 .hero {
@@ -204,6 +203,7 @@ body {
 }
 
 /* INTRODUCING + FEATURED MARKS */
+
 .hero-badges {
   font-size: 0.8rem;
   letter-spacing: 0.18em;
@@ -226,6 +226,7 @@ body {
 }
 
 /* PPA PoloBred StringPool wordmark */
+
 .polobred-stringpool-mark {
   display: inline-flex;
   flex-direction: column;
@@ -239,7 +240,7 @@ body {
   font-family: "IM Fell English SC", serif;
   font-size: 0.72rem;
   letter-spacing: 0.42em;
-  color: #c7b08a;
+  color: #c7c7c7;
   line-height: 1.2;
 }
 
@@ -247,7 +248,7 @@ body {
   font-family: "Cormorant Garamond", serif;
   font-size: clamp(1.35rem, 5vw, 1.9rem);
   letter-spacing: 0.24em;
-  color: #f5eedc;
+  color: #ffffff;
   line-height: 1.05;
 }
 
@@ -255,11 +256,12 @@ body {
   font-family: "IM Fell English SC", serif;
   font-size: 0.82rem;
   letter-spacing: 0.28em;
-  color: #d5c6a5;
+  color: #c7c7c7;
   line-height: 1.2;
 }
 
 /* STREAMING ON · THE POLO WAY */
+
 .hero-streaming {
   margin-top: 14px;
   text-align: center;
@@ -275,6 +277,7 @@ body {
 }
 
 /* HERO CTA */
+
 .hero-cta-row {
   margin-top: 32px;
   display: flex;
@@ -291,6 +294,8 @@ body {
   opacity: 0.8;
 }
 
+/* Buttons */
+
 .btn {
   display: inline-flex;
   justify-content: center;
@@ -306,8 +311,12 @@ body {
   color: var(--fg);
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
-    opacity 0.2s ease, transform 0.08s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.08s ease;
 }
 
 .btn-primary {
@@ -326,6 +335,7 @@ body {
 }
 
 /* SECTION SHARED */
+
 section {
   margin-top: var(--section-gap);
 }
@@ -344,7 +354,8 @@ section {
   margin-bottom: 6px;
 }
 
-/* Three Sevens wordmark */
+/* Three Sevens wordmark — retained only if old markup remains somewhere */
+
 .three-sevens-mark {
   display: inline-flex;
   flex-direction: column;
@@ -364,7 +375,6 @@ section {
   text-transform: uppercase;
 }
 
-/* Size tuning by context */
 .hero-badges .three-sevens-numeral {
   font-size: 1.3rem;
 }
@@ -383,7 +393,8 @@ section {
   opacity: 0.9;
 }
 
-/* WORDMARK-STYLE TITLES (no lines) */
+/* WORDMARK-STYLE TITLES */
+
 .section-title {
   position: relative;
   display: inline-block;
@@ -419,6 +430,7 @@ section {
 }
 
 /* Leaderboard tables */
+
 .board {
   max-width: 720px;
   margin: 22px auto 0;
@@ -435,6 +447,7 @@ section {
   letter-spacing: 0.18em;
   font-size: 0.95rem;
   margin-bottom: 10px;
+  color: #ffffff;
 }
 
 .board-sub {
@@ -479,6 +492,7 @@ section {
 }
 
 /* Handicap formatting */
+
 .handicap-value {
   white-space: nowrap;
 }
@@ -493,6 +507,7 @@ section {
 }
 
 /* CP mark with full-size P in subscript */
+
 .cp-mark {
   display: inline-flex;
   align-items: flex-end;
@@ -502,11 +517,12 @@ section {
 }
 
 .cp-mark .cp-sub {
-  font-size: 1em; /* full size */
+  font-size: 1em;
   transform: translateY(0.18em);
 }
 
 /* Results form */
+
 .results-form {
   max-width: 720px;
   margin: 26px auto 0;
@@ -562,7 +578,7 @@ section {
 .site-footer {
   margin-top: var(--section-gap);
   padding: 32px 16px 24px;
-  border-top: 1px solid #27201a;
+  border-top: 1px solid #272727;
   background: #000;
   color: var(--muted);
 }
@@ -578,16 +594,16 @@ section {
 }
 
 .footer-panel + .footer-panel {
-  border-top: 1px solid #27201a; /* dividing line between blocks on mobile */
+  border-top: 1px solid #272727;
   margin-top: 18px;
   padding-top: 26px;
 }
 
 .footer-kicker {
   font-size: 11px;
-  letter-spacing: 0.20em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #c7b08a;
+  color: #c7c7c7;
   margin-bottom: 8px;
 }
 
@@ -596,7 +612,7 @@ section {
   letter-spacing: 0.18em;
   line-height: 1.6;
   text-transform: uppercase;
-  color: #f5eedc;
+  color: #ffffff;
 }
 
 .footer-subtitle {
@@ -604,7 +620,7 @@ section {
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #9f8a64;
+  color: #a8a8a8;
 }
 
 .footer-copy {
@@ -612,7 +628,7 @@ section {
   max-width: 32rem;
   font-size: 13px;
   line-height: 1.7;
-  color: #d5c6a5;
+  color: #c7c7c7;
 }
 
 .btn-footer {
@@ -620,16 +636,16 @@ section {
   margin-bottom: 4px;
   padding: 10px 26px;
   border-radius: 999px;
-  border: 1px solid #f5eedc;
+  border: 1px solid #ffffff;
   background: transparent;
-  color: #f5eedc;
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-size: 11px;
 }
 
 .btn-footer:hover {
-  background: #f5eedc;
+  background: #ffffff;
   color: #050505;
 }
 
@@ -637,12 +653,12 @@ section {
   max-width: 540px;
   margin: 10px auto 0;
   padding-top: 14px;
-  border-top: 1px solid #27201a;
+  border-top: 1px solid #272727;
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-align: center;
-  color: #8f7e61;
+  color: #8f8f8f;
 }
 
 /* Desktop layout: two columns with vertical divider */
@@ -671,7 +687,7 @@ section {
     border-top: none;
     margin-top: 0;
     padding-top: 0;
-    border-left: 1px solid #27201a;  /* vertical dividing line on desktop */
+    border-left: 1px solid #272727;
     padding-left: 32px;
   }
 
@@ -729,7 +745,7 @@ section {
    ----------------------------- */
 
 .wallet-actions-block {
-  border-top: 1px solid #2b2416;
+  border-top: 1px solid #272727;
   padding-top: 14px;
   margin-top: 10px;
   margin-bottom: 14px;
@@ -739,13 +755,13 @@ section {
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #c7b08a;
+  color: #c7c7c7;
   margin-bottom: 4px;
 }
 
 .wallet-actions-sub {
   font-size: 11px;
-  color: #b5a27f;
+  color: #b5b5b5;
   line-height: 1.5;
   margin-bottom: 10px;
 }
@@ -761,29 +777,32 @@ section {
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8e7a58;
+  color: #8f8f8f;
 }
 
-/* Gold CTA button: same color as Buy PATRON */
+/* White CTA button */
+
 .btn-cta {
-  background: #e3bf72;
-  color: #181210;
-  border-color: #e3bf72;
+  background: #ffffff;
+  color: #050505;
+  border-color: #ffffff;
 }
 
 .btn-cta:hover {
-  background: #f0cd81;
-  border-color: #f0cd81;
-  color: #181210;
+  background: #e5e5e5;
+  border-color: #e5e5e5;
+  color: #050505;
 }
 
 /* Smaller outline variant */
+
 .btn-small {
   padding: 8px 18px;
   font-size: 0.72rem;
 }
 
 /* Disabled state */
+
 .btn[disabled] {
   opacity: 0.4;
   cursor: not-allowed;
@@ -791,12 +810,13 @@ section {
 }
 
 /* Pill-shaped buy button inside checkout widget */
+
 .checkout-wrapper button {
   border-radius: 999px !important;
 }
 
 /* -----------------------------
-   Signup Modal (mobile-first)
+   Signup Modal
    ----------------------------- */
 
 .signup-modal-backdrop {
@@ -815,11 +835,11 @@ section {
   max-width: 420px;
   background: #050505;
   border-radius: 14px;
-  border: 1px solid #3a2b16;
+  border: 1px solid #333333;
   box-shadow: 0 22px 70px rgba(0, 0, 0, 0.9);
   padding: 18px 16px 16px;
   font-family: "EB Garamond", serif;
-  color: #f5eedc;
+  color: #ffffff;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -834,7 +854,7 @@ section {
   font-size: 0.8rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #c7b08a;
+  color: #c7c7c7;
   margin-bottom: 4px;
 }
 
@@ -848,13 +868,14 @@ section {
 
 .signup-intro {
   font-size: 0.9rem;
-  color: #d2c29c;
+  color: #c7c7c7;
   line-height: 1.5;
   margin: 8px 0 14px;
   text-align: left;
 }
 
 /* mobile-first: stacked fields */
+
 .signup-form {
   display: flex;
   flex-direction: column;
@@ -872,7 +893,7 @@ section {
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #c7b08a;
+  color: #c7c7c7;
 }
 
 .signup-form input,
@@ -880,9 +901,9 @@ section {
   width: 100%;
   padding: 8px 10px;
   border-radius: 6px;
-  border: 1px solid #3a2b16;
+  border: 1px solid #333333;
   background: #050505;
-  color: #f5eedc;
+  color: #ffffff;
   font-family: "EB Garamond", serif;
   font-size: 0.95rem;
 }
@@ -904,7 +925,7 @@ section {
   align-items: flex-start;
   gap: 8px;
   font-size: 0.9rem;
-  color: #d2c29c;
+  color: #c7c7c7;
 }
 
 .signup-checkbox input {
