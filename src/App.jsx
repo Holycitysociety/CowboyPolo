@@ -557,9 +557,10 @@ export default function App() {
 
         <div className="hero-badges">
           <div className="hero-badge-intro">INTRODUCING</div>
-          <div className="three-sevens-mark">
-            <div className="three-sevens-numeral">7̶7̶7̶</div>
-            <div className="three-sevens-text">THREE SEVENS REMUDA</div>
+          <div className="polobred-stringpool-mark">
+            <div className="polobred-top">PPA</div>
+            <div className="polobred-main">PoloBred</div>
+            <div className="polobred-bottom">StringPool</div>
           </div>
         </div>
 
@@ -1012,12 +1013,9 @@ export default function App() {
                   className="btn btn-outline"
                   disabled={resultsSubmitStatus === "submitting"}
                   style={{
-                    opacity:
-                      resultsSubmitStatus === "submitting" ? 0.7 : 1,
+                    opacity: resultsSubmitStatus === "submitting" ? 0.7 : 1,
                     cursor:
-                      resultsSubmitStatus === "submitting"
-                        ? "wait"
-                        : "pointer",
+                      resultsSubmitStatus === "submitting" ? "wait" : "pointer",
                   }}
                 >
                   {resultsSubmitStatus === "submitting"
