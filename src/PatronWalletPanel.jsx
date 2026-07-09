@@ -35,32 +35,32 @@ export default function PatronWalletPanel({
 
   const carePackages = {
     "4-rides": {
-      amount: "460",
-      label: "$460 — supports up to 4 rides",
+      amount: "500",
+      label: "$500 — supports up to 4 rides",
       description:
         "Monthly care contribution with up to 4 ride credits available.",
     },
     "5-rides": {
-      amount: "555",
-      label: "$555 — supports up to 5 rides",
+      amount: "615",
+      label: "$615 — supports up to 5 rides",
       description:
         "Monthly care contribution with up to 5 ride credits available.",
     },
     "6-rides": {
-      amount: "650",
-      label: "$650 — supports up to 6 rides",
+      amount: "720",
+      label: "$720 — supports up to 6 rides",
       description:
         "Monthly care contribution with up to 6 ride credits available.",
     },
     "7-rides": {
-      amount: "745",
-      label: "$745 — supports up to 7 rides",
+      amount: "825",
+      label: "$825 — supports up to 7 rides",
       description:
         "Monthly care contribution with up to 7 ride credits available.",
     },
     "8-rides": {
-      amount: "840",
-      label: "$840 — supports up to 8 rides",
+      amount: "920",
+      label: "$920 — supports up to 8 rides",
       description:
         "Monthly care contribution with up to 8 ride credits available.",
     },
@@ -72,7 +72,8 @@ export default function PatronWalletPanel({
     },
   };
 
-  const currentPackage = carePackages[selectedPackage] || carePackages["4-rides"];
+  const currentPackage =
+    carePackages[selectedPackage] || carePackages["4-rides"];
 
   const openRegistration = () => {
     if (!isConnected) return;
@@ -597,11 +598,11 @@ export default function PatronWalletPanel({
                 boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
               }}
             >
-              <option value="4-rides">$460 — supports up to 4 rides</option>
-              <option value="5-rides">$555 — supports up to 5 rides</option>
-              <option value="6-rides">$650 — supports up to 6 rides</option>
-              <option value="7-rides">$745 — supports up to 7 rides</option>
-              <option value="8-rides">$840 — supports up to 8 rides</option>
+              <option value="4-rides">$500 — supports up to 4 rides</option>
+              <option value="5-rides">$615 — supports up to 5 rides</option>
+              <option value="6-rides">$720 — supports up to 6 rides</option>
+              <option value="7-rides">$825 — supports up to 7 rides</option>
+              <option value="8-rides">$920 — supports up to 8 rides</option>
               <option value="custom">Custom amount</option>
             </select>
 
