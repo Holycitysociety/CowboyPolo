@@ -1,17 +1,17 @@
 :root {
-  --bg: #02050b;
-  --fg: #ffffff;
-  --muted: #c3cada;
+  --bg: #031129;
+  --fg: #f8fbff;
+  --muted: #c5d2e8;
   --ink: #111111;
-  --border: #243248;
+  --border: #1b365c;
   --accent: #ffffff;
   --max-width: 900px;
 
-  /* blue-black surface tones */
-  --surface-1: #040a14;
-  --surface-2: #07101d;
-  --surface-3: #0a1628;
-  --surface-4: #0d1b31;
+  /* Holy City-style navy palette */
+  --surface-1: #071936;
+  --surface-2: #0b2342;
+  --surface-3: #102b4e;
+  --surface-4: #15345a;
 
   /* vertical spacing between parallax bands + sections */
   --section-gap: 56px;
@@ -49,7 +49,7 @@ body {
 .parallax-band {
   position: relative;
   overflow: hidden;
-  background: #000;
+  background: #031129;
   margin-top: var(--section-gap);
 }
 
@@ -62,12 +62,11 @@ body {
 .parallax-media {
   position: absolute;
   inset: 0;
-  background: #000;
+  background: #031129;
   z-index: 0;
 }
 
-/* SAFEST BLUE TINT METHOD:
-   simple overlay wash over existing photos */
+/* Lighter, Holy City-style blue tint */
 .parallax-media::after {
   content: "";
   position: absolute;
@@ -77,9 +76,9 @@ body {
   background:
     linear-gradient(
       to bottom,
-      rgba(12, 31, 62, 0.38) 0%,
-      rgba(10, 26, 52, 0.48) 40%,
-      rgba(5, 15, 31, 0.62) 100%
+      rgba(31, 74, 132, 0.18) 0%,
+      rgba(18, 54, 103, 0.26) 42%,
+      rgba(9, 31, 67, 0.38) 100%
     );
 }
 
@@ -107,8 +106,8 @@ body {
     radial-gradient(
       circle at center,
       rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0) 55%,
-      rgba(2, 8, 18, 0.78) 100%
+      rgba(0, 0, 0, 0) 54%,
+      rgba(3, 17, 41, 0.52) 100%
     );
 }
 
@@ -135,8 +134,8 @@ body {
 .parallax-band .board-header,
 .parallax-band .board-row {
   text-shadow:
-    0 2px 16px rgba(0, 0, 0, 0.95),
-    0 0 4px rgba(0, 0, 0, 0.95);
+    0 2px 16px rgba(0, 0, 0, 0.92),
+    0 0 4px rgba(0, 0, 0, 0.88);
 }
 
 /* -----------------------------
@@ -148,8 +147,8 @@ body {
   padding: 56px 18px 64px;
   border: 1px solid var(--border);
   background:
-    radial-gradient(circle at 30% 10%, #1b2434 0, #07101d 44%, #02050b 100%),
-    linear-gradient(to bottom, #0a1424, #050a13 55%, #03060c 100%);
+    radial-gradient(circle at 30% 10%, #203a60 0, #0b2342 34%, #06182f 70%, #031129 100%),
+    linear-gradient(to bottom, #102847, #0a203d 52%, #06162d 100%);
 }
 
 .hero-topline {
@@ -157,13 +156,13 @@ body {
   font-size: 0.85rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
 .hero-rule {
   width: 260px;
   margin: 16px auto 14px;
-  border-top: 1px solid rgba(220, 230, 255, 0.4);
+  border-top: 1px solid rgba(226, 236, 255, 0.42);
 }
 
 .hero-presents {
@@ -171,7 +170,7 @@ body {
   font-size: 0.8rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
 .hero-main {
@@ -183,7 +182,7 @@ body {
   font-size: 0.9rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  opacity: 0.7;
+  opacity: 0.72;
   margin-bottom: 6px;
 }
 
@@ -218,12 +217,12 @@ body {
   font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  opacity: 0.82;
+  opacity: 0.84;
 }
 
 .hero-rule-2 {
   width: 190px;
-  border-top: 1px solid rgba(220, 230, 255, 0.24);
+  border-top: 1px solid rgba(226, 236, 255, 0.26);
   margin: 20px auto 22px;
 }
 
@@ -233,7 +232,7 @@ body {
   font-size: 0.8rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.84;
+  opacity: 0.86;
 }
 
 .hero-badges span {
@@ -247,7 +246,7 @@ body {
   letter-spacing: 0.26em;
   text-transform: uppercase;
   margin-bottom: 6px;
-  opacity: 0.88;
+  opacity: 0.9;
 }
 
 /* PPA PoloBred StringPool wordmark */
@@ -265,7 +264,7 @@ body {
   font-family: "IM Fell English SC", serif;
   font-size: 0.72rem;
   letter-spacing: 0.42em;
-  color: #c7d0e4;
+  color: #cfdbef;
   line-height: 1.2;
 }
 
@@ -281,7 +280,7 @@ body {
   font-family: "IM Fell English SC", serif;
   font-size: 0.82rem;
   letter-spacing: 0.28em;
-  color: #c7d0e4;
+  color: #cfdbef;
   line-height: 1.2;
 }
 
@@ -316,7 +315,7 @@ body {
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.8;
+  opacity: 0.82;
 }
 
 /* Buttons */
@@ -327,7 +326,7 @@ body {
   align-items: center;
   padding: 12px 28px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.76);
   font-family: "Cormorant Garamond", serif;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -346,19 +345,19 @@ body {
 }
 
 .btn-primary {
-  background: var(--fg);
-  color: #000;
-  border-color: var(--fg);
+  background: #f7fbff;
+  color: #061325;
+  border-color: #f7fbff;
 }
 
 .btn-primary:hover {
-  background: #fefefe;
+  background: #ffffff;
 }
 
 .btn-outline:hover {
-  background: rgba(180, 205, 255, 0.08);
+  background: rgba(196, 218, 249, 0.09);
   border-color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(180, 205, 255, 0.12) inset;
+  box-shadow: 0 0 0 1px rgba(196, 218, 249, 0.16) inset;
 }
 
 /* SECTION SHARED */
@@ -463,9 +462,10 @@ section {
   margin: 22px auto 0;
   border: 1px solid var(--border);
   border-radius: 4px;
-  background: rgba(7, 16, 29, 0.92);
+  background: rgba(11, 35, 66, 0.88);
   padding: 18px 16px 14px;
-  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(1.5px);
 }
 
 .board-title {
@@ -496,14 +496,14 @@ section {
   letter-spacing: 0.16em;
   font-size: 0.75rem;
   color: var(--muted);
-  border-bottom: 1px solid rgba(140, 165, 210, 0.18);
+  border-bottom: 1px solid rgba(170, 196, 234, 0.18);
   padding-bottom: 6px;
   margin-bottom: 4px;
 }
 
 .board-row {
   padding: 6px 0;
-  border-bottom: 1px dashed rgba(140, 165, 210, 0.12);
+  border-bottom: 1px dashed rgba(170, 196, 234, 0.12);
 }
 
 .board-row:last-child {
@@ -584,7 +584,7 @@ section {
   padding: 8px 10px;
   border-radius: 4px;
   border: 1px solid var(--border);
-  background: #050b14;
+  background: #081b34;
   color: var(--fg);
   font-family: "EB Garamond", serif;
   font-size: 0.95rem;
@@ -605,8 +605,8 @@ section {
 .site-footer {
   margin-top: var(--section-gap);
   padding: 32px 16px 24px;
-  border-top: 1px solid rgba(140, 165, 210, 0.16);
-  background: #02050b;
+  border-top: 1px solid rgba(170, 196, 234, 0.14);
+  background: #031129;
   color: var(--muted);
 }
 
@@ -621,7 +621,7 @@ section {
 }
 
 .footer-panel + .footer-panel {
-  border-top: 1px solid rgba(140, 165, 210, 0.16);
+  border-top: 1px solid rgba(170, 196, 234, 0.14);
   margin-top: 18px;
   padding-top: 26px;
 }
@@ -630,7 +630,7 @@ section {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #c7d0e4;
+  color: #d0dbef;
   margin-bottom: 8px;
 }
 
@@ -647,7 +647,7 @@ section {
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #aeb8cc;
+  color: #b9c7de;
 }
 
 .footer-copy {
@@ -655,7 +655,7 @@ section {
   max-width: 32rem;
   font-size: 13px;
   line-height: 1.7;
-  color: #c3cada;
+  color: #c5d2e8;
 }
 
 .btn-footer {
@@ -673,19 +673,19 @@ section {
 
 .btn-footer:hover {
   background: #ffffff;
-  color: #050505;
+  color: #061325;
 }
 
 .footer-meta {
   max-width: 540px;
   margin: 10px auto 0;
   padding-top: 14px;
-  border-top: 1px solid rgba(140, 165, 210, 0.16);
+  border-top: 1px solid rgba(170, 196, 234, 0.14);
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-align: center;
-  color: #8f99ad;
+  color: #99acc8;
 }
 
 /* Desktop layout: two columns with vertical divider */
@@ -714,7 +714,7 @@ section {
     border-top: none;
     margin-top: 0;
     padding-top: 0;
-    border-left: 1px solid rgba(140, 165, 210, 0.16);
+    border-left: 1px solid rgba(170, 196, 234, 0.14);
     padding-left: 32px;
   }
 
@@ -772,7 +772,7 @@ section {
    ----------------------------- */
 
 .wallet-actions-block {
-  border-top: 1px solid rgba(140, 165, 210, 0.16);
+  border-top: 1px solid rgba(170, 196, 234, 0.14);
   padding-top: 14px;
   margin-top: 10px;
   margin-bottom: 14px;
@@ -782,13 +782,13 @@ section {
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #c7d0e4;
+  color: #d0dbef;
   margin-bottom: 4px;
 }
 
 .wallet-actions-sub {
   font-size: 11px;
-  color: #b5bfd4;
+  color: #bcc8dc;
   line-height: 1.5;
   margin-bottom: 10px;
 }
@@ -804,21 +804,21 @@ section {
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8f99ad;
+  color: #99acc8;
 }
 
 /* White CTA button */
 
 .btn-cta {
   background: #ffffff;
-  color: #050505;
+  color: #061325;
   border-color: #ffffff;
 }
 
 .btn-cta:hover {
-  background: #e5e5e5;
-  border-color: #e5e5e5;
-  color: #050505;
+  background: #edf5ff;
+  border-color: #edf5ff;
+  color: #061325;
 }
 
 /* Smaller outline variant */
@@ -849,7 +849,7 @@ section {
 .signup-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.88);
+  background: rgba(3, 10, 24, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -860,10 +860,10 @@ section {
 .signup-modal {
   width: 100%;
   max-width: 420px;
-  background: #050505;
+  background: #081a33;
   border-radius: 14px;
-  border: 1px solid #333333;
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.9);
+  border: 1px solid var(--border);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.75);
   padding: 18px 16px 16px;
   font-family: "EB Garamond", serif;
   color: #ffffff;
@@ -881,7 +881,7 @@ section {
   font-size: 0.8rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #c7c7c7;
+  color: #d0dbef;
   margin-bottom: 4px;
 }
 
@@ -895,7 +895,7 @@ section {
 
 .signup-intro {
   font-size: 0.9rem;
-  color: #c7c7c7;
+  color: #c5d2e8;
   line-height: 1.5;
   margin: 8px 0 14px;
   text-align: left;
@@ -920,7 +920,7 @@ section {
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #c7c7c7;
+  color: #d0dbef;
 }
 
 .signup-form input,
@@ -928,8 +928,8 @@ section {
   width: 100%;
   padding: 8px 10px;
   border-radius: 6px;
-  border: 1px solid #333333;
-  background: #050505;
+  border: 1px solid var(--border);
+  background: #081b34;
   color: #ffffff;
   font-family: "EB Garamond", serif;
   font-size: 0.95rem;
@@ -952,7 +952,7 @@ section {
   align-items: flex-start;
   gap: 8px;
   font-size: 0.9rem;
-  color: #c7c7c7;
+  color: #c5d2e8;
 }
 
 .signup-checkbox input {
