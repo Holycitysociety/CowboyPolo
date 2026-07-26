@@ -7,18 +7,22 @@
   --accent: #ffffff;
   --max-width: 900px;
 
-  /* Holy City-style navy palette */
+  /* Holy City Society-style navy palette */
   --surface-1: #071936;
   --surface-2: #0b2342;
   --surface-3: #102b4e;
   --surface-4: #15345a;
 
-  /* vertical spacing between parallax bands + sections */
+  /* Vertical spacing between parallax bands and sections */
   --section-gap: 56px;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
 }
 
 body {
@@ -36,6 +40,7 @@ body {
 }
 
 /* Full-bleed helper for 100vw bands inside centered page */
+
 .full-bleed {
   width: 100vw;
   margin-left: 50%;
@@ -49,40 +54,30 @@ body {
 .parallax-band {
   position: relative;
   overflow: hidden;
-  background: #031129;
+  background: var(--bg);
   margin-top: var(--section-gap);
 }
 
 /* First band sits a bit closer to the hero */
+
 .parallax-band-first {
   margin-top: 32px;
 }
 
 /* Image layer */
+
 .parallax-media {
   position: absolute;
   inset: 0;
-  background: #031129;
   z-index: 0;
+  background: var(--bg);
 }
 
-/* Lighter, Holy City-style blue tint */
-.parallax-media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(31, 74, 132, 0.18) 0%,
-      rgba(18, 54, 103, 0.26) 42%,
-      rgba(9, 31, 67, 0.38) 100%
-    );
-}
+/*
+  Images now carry their own blue monochrome treatment.
+  No tint, blend mode, filter, or color overlay is applied here.
+*/
 
-/* Centered image; zoom transform applied in JS */
 .parallax-img {
   position: absolute;
   left: 50%;
@@ -94,39 +89,44 @@ body {
   will-change: transform;
   pointer-events: none;
   user-select: none;
-  z-index: 0;
 }
+
+/* Retains only a subtle edge vignette */
 
 .parallax-vignette {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 1;
   pointer-events: none;
   background:
     radial-gradient(
       circle at center,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0) 54%,
-      rgba(3, 17, 41, 0.52) 100%
+      rgba(3, 17, 41, 0) 0%,
+      rgba(3, 17, 41, 0) 58%,
+      rgba(3, 17, 41, 0.2) 78%,
+      rgba(3, 17, 41, 0.46) 100%
     );
 }
 
 /* Content in the band */
+
 .parallax-content {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   padding: 0 18px clamp(64px, 9vh, 120px);
   padding-top: calc(100vh + clamp(24px, 4vh, 56px));
   max-width: var(--max-width);
   margin: 0 auto;
 }
 
-/* Inside parallax bands we don't want extra top section margin */
+/* Inside parallax bands we do not want extra top section margin */
+
 .band-section {
   margin-top: 0;
 }
 
 /* Strong text shadow on light text over photos */
+
 .parallax-band .section-title,
 .parallax-band .section-kicker,
 .parallax-band .board-title,
@@ -139,7 +139,7 @@ body {
 }
 
 /* -----------------------------
-   HERO POSTER
+   Hero poster
    ----------------------------- */
 
 .hero {
@@ -147,8 +147,19 @@ body {
   padding: 56px 18px 64px;
   border: 1px solid var(--border);
   background:
-    radial-gradient(circle at 30% 10%, #203a60 0, #0b2342 34%, #06182f 70%, #031129 100%),
-    linear-gradient(to bottom, #102847, #0a203d 52%, #06162d 100%);
+    radial-gradient(
+      circle at 30% 10%,
+      #203a60 0,
+      #0b2342 34%,
+      #06182f 70%,
+      #031129 100%
+    ),
+    linear-gradient(
+      to bottom,
+      #102847,
+      #0a203d 52%,
+      #06162d 100%
+    );
 }
 
 .hero-topline {
@@ -226,7 +237,7 @@ body {
   margin: 20px auto 22px;
 }
 
-/* INTRODUCING + FEATURED MARKS */
+/* Introducing and featured marks */
 
 .hero-badges {
   font-size: 0.8rem;
@@ -284,7 +295,7 @@ body {
   line-height: 1.2;
 }
 
-/* STREAMING ON · THE POLO WAY */
+/* Streaming on · The Polo Way */
 
 .hero-streaming {
   margin-top: 14px;
@@ -300,7 +311,7 @@ body {
   opacity: 0.95;
 }
 
-/* HERO CTA */
+/* Hero CTA */
 
 .hero-cta-row {
   margin-top: 32px;
@@ -318,7 +329,9 @@ body {
   opacity: 0.82;
 }
 
-/* Buttons */
+/* -----------------------------
+   Buttons
+   ----------------------------- */
 
 .btn {
   display: inline-flex;
@@ -357,10 +370,13 @@ body {
 .btn-outline:hover {
   background: rgba(196, 218, 249, 0.09);
   border-color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(196, 218, 249, 0.16) inset;
+  box-shadow:
+    0 0 0 1px rgba(196, 218, 249, 0.16) inset;
 }
 
-/* SECTION SHARED */
+/* -----------------------------
+   Shared section styles
+   ----------------------------- */
 
 section {
   margin-top: var(--section-gap);
@@ -380,7 +396,7 @@ section {
   margin-bottom: 6px;
 }
 
-/* Three Sevens wordmark — retained only if old markup remains somewhere */
+/* Three Sevens wordmark retained for legacy markup */
 
 .three-sevens-mark {
   display: inline-flex;
@@ -419,7 +435,7 @@ section {
   opacity: 0.9;
 }
 
-/* WORDMARK-STYLE TITLES */
+/* Wordmark-style titles */
 
 .section-title {
   position: relative;
@@ -432,13 +448,15 @@ section {
   text-align: center;
 }
 
-/* Kill the fine lines around titles */
+/* Remove fine lines around titles */
+
 .section-title::before,
 .section-title::after {
   content: none;
 }
 
-/* Also remove the underline rule under section titles */
+/* Remove underline rule under section titles */
+
 .section-rule {
   display: none;
 }
@@ -455,7 +473,9 @@ section {
   text-align: justify;
 }
 
-/* Leaderboard tables */
+/* -----------------------------
+   Leaderboard tables
+   ----------------------------- */
 
 .board {
   max-width: 720px;
@@ -466,6 +486,7 @@ section {
   padding: 18px 16px 14px;
   box-shadow: 0 14px 22px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
 }
 
 .board-title {
@@ -548,7 +569,9 @@ section {
   transform: translateY(0.18em);
 }
 
-/* Results form */
+/* -----------------------------
+   Results form
+   ----------------------------- */
 
 .results-form {
   max-width: 720px;
@@ -590,6 +613,15 @@ section {
   font-size: 0.95rem;
 }
 
+.results-form input::placeholder,
+.results-form textarea::placeholder {
+  color: #8fa2c0;
+}
+
+.results-form select {
+  appearance: auto;
+}
+
 .results-form textarea {
   resize: vertical;
   min-height: 110px;
@@ -600,7 +632,9 @@ section {
   color: var(--muted);
 }
 
-/* ---------- Footer ---------- */
+/* -----------------------------
+   Footer
+   ----------------------------- */
 
 .site-footer {
   margin-top: var(--section-gap);
@@ -688,7 +722,7 @@ section {
   color: #99acc8;
 }
 
-/* Desktop layout: two columns with vertical divider */
+/* Desktop footer layout */
 
 @media (min-width: 768px) {
   .site-footer {
@@ -743,13 +777,15 @@ section {
     grid-template-columns: 1.8fr 1fr 1.1fr;
   }
 
-  /* Start the text much closer to the photo on mobile */
+  /* Start text closer to the photo on mobile */
+
   .parallax-content {
     padding-top: calc(35vh + 24px);
     padding-bottom: 64px;
   }
 
   /* First band closer to hero on mobile */
+
   .parallax-band-first {
     margin-top: 16px;
   }
@@ -768,7 +804,7 @@ section {
 }
 
 /* -----------------------------
-   Wallet actions + CTA buttons
+   Wallet actions and CTA buttons
    ----------------------------- */
 
 .wallet-actions-block {
@@ -843,7 +879,7 @@ section {
 }
 
 /* -----------------------------
-   Signup Modal
+   Signup modal
    ----------------------------- */
 
 .signup-modal-backdrop {
@@ -901,7 +937,7 @@ section {
   text-align: left;
 }
 
-/* mobile-first: stacked fields */
+/* Mobile-first stacked fields */
 
 .signup-form {
   display: flex;
@@ -933,6 +969,11 @@ section {
   color: #ffffff;
   font-family: "EB Garamond", serif;
   font-size: 0.95rem;
+}
+
+.signup-form input::placeholder,
+.signup-form textarea::placeholder {
+  color: #8fa2c0;
 }
 
 .signup-form textarea {
