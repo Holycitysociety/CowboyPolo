@@ -187,7 +187,6 @@ function getRouteFromHash() {
 export default function App() {
   const year = new Date().getFullYear();
 
-  // Route from hash (#/wallet vs default)
   const [route, setRoute] = useState(getRouteFromHash);
 
   useEffect(() => {
@@ -200,25 +199,20 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  // Wallet / modal state
   const [isWalletOpen, setIsWalletOpen] = useState(false);
   const [usdAmount, setUsdAmount] = useState("2");
   const walletScrollRef = useRef(null);
 
-  // Netlify form statuses
   const [resultsSubmitStatus, setResultsSubmitStatus] = useState("idle");
 
-  // Scroll-gating state
   const [hasTriggeredGate, setHasTriggeredGate] = useState(false);
   const roadmapGateRef = useRef(null);
 
-  // Thirdweb hooks
   const account = useActiveAccount();
   const activeWallet = useActiveWallet();
   const { disconnect } = useDisconnect();
   const isConnected = !!account;
 
-  // Balances
   const { data: baseBalance } = useWalletBalance({
     address: account?.address,
     chain: BASE,
@@ -229,14 +223,14 @@ export default function App() {
     address: account?.address,
     chain: BASE,
     client,
-    tokenAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC on Base
+    tokenAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
   });
 
   const { data: patronBalance } = useWalletBalance({
     address: account?.address,
     chain: BASE,
     client,
-    tokenAddress: "0xD766a771887fFB6c528434d5710B406313CAe03A", // PATRON
+    tokenAddress: "0xD766a771887fFB6c528434d5710B406313CAe03A",
   });
 
   const closeWalletModal = () => setIsWalletOpen(false);
@@ -266,7 +260,6 @@ export default function App() {
     }
   };
 
-  // Amount normalization
   const normalizedAmountNumber =
     usdAmount && Number(usdAmount) >= 2 ? Number(usdAmount) : 2;
   const normalizedAmount = String(normalizedAmountNumber);
@@ -286,7 +279,6 @@ export default function App() {
     alert(err?.message || String(err));
   };
 
-  // Netlify forms
   const handleResultsSubmit = async (e) => {
     e.preventDefault();
     setResultsSubmitStatus("submitting");
@@ -309,7 +301,6 @@ export default function App() {
     }
   };
 
-  // Lock body scroll when wallet modal open
   useEffect(() => {
     if (isWalletOpen) {
       document.documentElement.style.overflow = "hidden";
@@ -329,7 +320,6 @@ export default function App() {
     document.body.style.overflow = "";
   }, [isWalletOpen]);
 
-  // ESC closes wallet modal
   useEffect(() => {
     if (!isWalletOpen) return;
 
@@ -344,7 +334,6 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isWalletOpen]);
 
-  // Scroll gating on main page — bottom-of-page sentinel
   useEffect(() => {
     if (route !== "home") return;
 
@@ -375,9 +364,6 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [route, isConnected, hasTriggeredGate]);
 
-  // ---------------------------------------------
-  // Shared footer
-  // ---------------------------------------------
   const renderFooter = () => (
     <footer className="site-footer">
       <div className="footer-panels">
@@ -427,9 +413,6 @@ export default function App() {
     </footer>
   );
 
-  // ---------------------------------------------
-  // Standalone wallet page
-  // ---------------------------------------------
   if (route === "wallet") {
     return (
       <div className="page">
@@ -512,9 +495,6 @@ export default function App() {
     );
   }
 
-  // ---------------------------------------------
-  // Main Cowboy Polo page
-  // ---------------------------------------------
   return (
     <div className="page">
       <header
@@ -535,7 +515,6 @@ export default function App() {
         </a>
       </header>
 
-      {/* HERO */}
       <section className="hero">
         <div className="hero-topline">
           UNITED STATES POLO
@@ -597,14 +576,13 @@ export default function App() {
       </section>
 
       <ParallaxBand
-        src="/images/cowboy-1.jpeg"
+        src="/images/cowboy-1.jpg"
         first
         zoom={30}
         speed={0.1}
         finishFactor={2}
       />
 
-      {/* ABOUT */}
       <section
         id="about"
         className="band-section"
@@ -680,13 +658,12 @@ export default function App() {
       </section>
 
       <ParallaxBand
-        src="/images/cowboy-2.jpeg"
+        src="/images/cowboy-2.jpg"
         zoom={30}
         speed={0.1}
         finishFactor={2}
       />
 
-      {/* PLAYER LEADERBOARD */}
       <section
         id="players"
         className="band-section"
@@ -778,13 +755,12 @@ export default function App() {
       </section>
 
       <ParallaxBand
-        src="/images/cowboy-3.jpeg"
+        src="/images/cowboy-3.jpg"
         zoom={30}
         speed={0.1}
         finishFactor={2}
       />
 
-      {/* HORSE & STRINGPOOL */}
       <section
         id="horses"
         className="band-section"
@@ -891,7 +867,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* WALLET MODAL */}
       {isWalletOpen && (
         <div
           className="wallet-modal-backdrop"
@@ -956,7 +931,6 @@ export default function App() {
         </div>
       )}
 
-      {/* RESULTS */}
       <section id="results">
         <div className="section-header">
           <div className="section-kicker">RESULTS &amp; RECORD</div>
