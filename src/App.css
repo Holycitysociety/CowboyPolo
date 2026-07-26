@@ -1,11 +1,17 @@
 :root {
-  --bg: #000000;
+  --bg: #02050b;
   --fg: #ffffff;
-  --muted: #c7c7c7;
+  --muted: #c3cada;
   --ink: #111111;
-  --border: #333333;
+  --border: #243248;
   --accent: #ffffff;
   --max-width: 900px;
+
+  /* blue-black surface tones */
+  --surface-1: #040a14;
+  --surface-2: #07101d;
+  --surface-3: #0a1628;
+  --surface-4: #0d1b31;
 
   /* vertical spacing between parallax bands + sections */
   --section-gap: 56px;
@@ -60,6 +66,23 @@ body {
   z-index: 0;
 }
 
+/* SAFEST BLUE TINT METHOD:
+   simple overlay wash over existing photos */
+.parallax-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(12, 31, 62, 0.38) 0%,
+      rgba(10, 26, 52, 0.48) 40%,
+      rgba(5, 15, 31, 0.62) 100%
+    );
+}
+
 /* Centered image; zoom transform applied in JS */
 .parallax-img {
   position: absolute;
@@ -72,25 +95,27 @@ body {
   will-change: transform;
   pointer-events: none;
   user-select: none;
+  z-index: 0;
 }
 
 .parallax-vignette {
   position: absolute;
   inset: 0;
+  z-index: 2;
   pointer-events: none;
   background:
     radial-gradient(
       circle at center,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0) 55%,
-      rgba(0, 0, 0, 0.75) 100%
+      rgba(2, 8, 18, 0.78) 100%
     );
 }
 
 /* Content in the band */
 .parallax-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   padding: 0 18px clamp(64px, 9vh, 120px);
   padding-top: calc(100vh + clamp(24px, 4vh, 56px));
   max-width: var(--max-width);
@@ -123,8 +148,8 @@ body {
   padding: 56px 18px 64px;
   border: 1px solid var(--border);
   background:
-    radial-gradient(circle at 30% 10%, #333333 0, #000000 50%),
-    linear-gradient(to bottom, #111111, #000000 55%, #121212 100%);
+    radial-gradient(circle at 30% 10%, #1b2434 0, #07101d 44%, #02050b 100%),
+    linear-gradient(to bottom, #0a1424, #050a13 55%, #03060c 100%);
 }
 
 .hero-topline {
@@ -132,13 +157,13 @@ body {
   font-size: 0.85rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .hero-rule {
   width: 260px;
   margin: 16px auto 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.45);
+  border-top: 1px solid rgba(220, 230, 255, 0.4);
 }
 
 .hero-presents {
@@ -193,12 +218,12 @@ body {
   font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  opacity: 0.78;
+  opacity: 0.82;
 }
 
 .hero-rule-2 {
   width: 190px;
-  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  border-top: 1px solid rgba(220, 230, 255, 0.24);
   margin: 20px auto 22px;
 }
 
@@ -208,7 +233,7 @@ body {
   font-size: 0.8rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.8;
+  opacity: 0.84;
 }
 
 .hero-badges span {
@@ -222,7 +247,7 @@ body {
   letter-spacing: 0.26em;
   text-transform: uppercase;
   margin-bottom: 6px;
-  opacity: 0.85;
+  opacity: 0.88;
 }
 
 /* PPA PoloBred StringPool wordmark */
@@ -240,7 +265,7 @@ body {
   font-family: "IM Fell English SC", serif;
   font-size: 0.72rem;
   letter-spacing: 0.42em;
-  color: #c7c7c7;
+  color: #c7d0e4;
   line-height: 1.2;
 }
 
@@ -256,7 +281,7 @@ body {
   font-family: "IM Fell English SC", serif;
   font-size: 0.82rem;
   letter-spacing: 0.28em;
-  color: #c7c7c7;
+  color: #c7d0e4;
   line-height: 1.2;
 }
 
@@ -302,7 +327,7 @@ body {
   align-items: center;
   padding: 12px 28px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.72);
   font-family: "Cormorant Garamond", serif;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -316,7 +341,8 @@ body {
     color 0.2s ease,
     border-color 0.2s ease,
     opacity 0.2s ease,
-    transform 0.08s ease;
+    transform 0.08s ease,
+    box-shadow 0.2s ease;
 }
 
 .btn-primary {
@@ -330,8 +356,9 @@ body {
 }
 
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(180, 205, 255, 0.08);
   border-color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(180, 205, 255, 0.12) inset;
 }
 
 /* SECTION SHARED */
@@ -436,7 +463,7 @@ section {
   margin: 22px auto 0;
   border: 1px solid var(--border);
   border-radius: 4px;
-  background: #080808;
+  background: rgba(7, 16, 29, 0.92);
   padding: 18px 16px 14px;
   box-shadow: 0 14px 22px rgba(0, 0, 0, 0.7);
 }
@@ -469,14 +496,14 @@ section {
   letter-spacing: 0.16em;
   font-size: 0.75rem;
   color: var(--muted);
-  border-bottom: 1px solid #262626;
+  border-bottom: 1px solid rgba(140, 165, 210, 0.18);
   padding-bottom: 6px;
   margin-bottom: 4px;
 }
 
 .board-row {
   padding: 6px 0;
-  border-bottom: 1px dashed #202020;
+  border-bottom: 1px dashed rgba(140, 165, 210, 0.12);
 }
 
 .board-row:last-child {
@@ -557,7 +584,7 @@ section {
   padding: 8px 10px;
   border-radius: 4px;
   border: 1px solid var(--border);
-  background: #050505;
+  background: #050b14;
   color: var(--fg);
   font-family: "EB Garamond", serif;
   font-size: 0.95rem;
@@ -578,8 +605,8 @@ section {
 .site-footer {
   margin-top: var(--section-gap);
   padding: 32px 16px 24px;
-  border-top: 1px solid #272727;
-  background: #000;
+  border-top: 1px solid rgba(140, 165, 210, 0.16);
+  background: #02050b;
   color: var(--muted);
 }
 
@@ -594,7 +621,7 @@ section {
 }
 
 .footer-panel + .footer-panel {
-  border-top: 1px solid #272727;
+  border-top: 1px solid rgba(140, 165, 210, 0.16);
   margin-top: 18px;
   padding-top: 26px;
 }
@@ -603,7 +630,7 @@ section {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #c7c7c7;
+  color: #c7d0e4;
   margin-bottom: 8px;
 }
 
@@ -620,7 +647,7 @@ section {
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #a8a8a8;
+  color: #aeb8cc;
 }
 
 .footer-copy {
@@ -628,7 +655,7 @@ section {
   max-width: 32rem;
   font-size: 13px;
   line-height: 1.7;
-  color: #c7c7c7;
+  color: #c3cada;
 }
 
 .btn-footer {
@@ -653,12 +680,12 @@ section {
   max-width: 540px;
   margin: 10px auto 0;
   padding-top: 14px;
-  border-top: 1px solid #272727;
+  border-top: 1px solid rgba(140, 165, 210, 0.16);
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-align: center;
-  color: #8f8f8f;
+  color: #8f99ad;
 }
 
 /* Desktop layout: two columns with vertical divider */
@@ -687,7 +714,7 @@ section {
     border-top: none;
     margin-top: 0;
     padding-top: 0;
-    border-left: 1px solid #272727;
+    border-left: 1px solid rgba(140, 165, 210, 0.16);
     padding-left: 32px;
   }
 
@@ -745,7 +772,7 @@ section {
    ----------------------------- */
 
 .wallet-actions-block {
-  border-top: 1px solid #272727;
+  border-top: 1px solid rgba(140, 165, 210, 0.16);
   padding-top: 14px;
   margin-top: 10px;
   margin-bottom: 14px;
@@ -755,13 +782,13 @@ section {
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #c7c7c7;
+  color: #c7d0e4;
   margin-bottom: 4px;
 }
 
 .wallet-actions-sub {
   font-size: 11px;
-  color: #b5b5b5;
+  color: #b5bfd4;
   line-height: 1.5;
   margin-bottom: 10px;
 }
@@ -777,7 +804,7 @@ section {
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8f8f8f;
+  color: #8f99ad;
 }
 
 /* White CTA button */
