@@ -1,17 +1,17 @@
 :root {
-  --bg: #050d1f;
+  --bg: #01040c;
   --fg: #f4f7fc;
-  --muted: #b9c5da;
-  --ink: #0a0d12;
-  --border: #27456e;
+  --muted: #b3bfd2;
+  --ink: #080b11;
+  --border: #172c4a;
   --accent: #ffffff;
   --max-width: 900px;
 
-  /* Extracted midnight-blue palette */
-  --surface-1: #020617;
-  --surface-2: #07132a;
-  --surface-3: #1d3051;
-  --surface-4: #30486f;
+  /* Blue-black palette extracted from the darkest image tones */
+  --surface-1: #01040c;
+  --surface-2: #020817;
+  --surface-3: #07142a;
+  --surface-4: #10213c;
 
   /* Vertical spacing between parallax bands + sections */
   --section-gap: 56px;
@@ -26,20 +26,19 @@ body {
   background:
     radial-gradient(
       circle at 50% 0%,
-      rgba(80, 108, 150, 0.16) 0%,
-      rgba(29, 48, 81, 0.12) 21%,
-      rgba(7, 19, 42, 0.05) 39%,
-      transparent 60%
+      rgba(32, 53, 84, 0.13) 0%,
+      rgba(12, 28, 52, 0.08) 24%,
+      transparent 50%
     ),
     linear-gradient(
       180deg,
-      #020617 0%,
-      #050d1f 18%,
-      #07132a 42%,
-      #08162d 58%,
-      #07132a 74%,
-      #050d1f 88%,
-      #020617 100%
+      #01030a 0%,
+      #01040c 18%,
+      #020817 42%,
+      #030a18 58%,
+      #020817 76%,
+      #01040c 90%,
+      #01030a 100%
     );
   color: var(--fg);
   font-family: "EB Garamond", serif;
@@ -67,7 +66,7 @@ body {
 .parallax-band {
   position: relative;
   overflow: hidden;
-  background: #050d1f;
+  background: #01040c;
   margin-top: var(--section-gap);
 }
 
@@ -82,13 +81,13 @@ body {
 .parallax-media {
   position: absolute;
   inset: 0;
-  background: #050d1f;
+  background: #01040c;
   z-index: 0;
 }
 
 /*
   Photographs remain completely untinted:
-  no filter, overlay color, blend mode, or opacity adjustment.
+  no filter, blue overlay, blend mode, or opacity adjustment.
 */
 
 .parallax-img {
@@ -123,7 +122,7 @@ body {
       circle at center,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0) 54%,
-      rgba(0, 0, 0, 0.46) 100%
+      rgba(0, 0, 0, 0.5) 100%
     );
 }
 
@@ -164,25 +163,25 @@ body {
 .hero {
   text-align: center;
   padding: 56px 18px 64px;
-  border: 1px solid rgba(143, 169, 204, 0.22);
+  border: 1px solid rgba(87, 111, 148, 0.2);
   background:
     radial-gradient(
-      circle at 50% 18%,
-      rgba(48, 72, 111, 0.48) 0%,
-      rgba(29, 48, 81, 0.36) 22%,
-      rgba(7, 19, 42, 0.72) 52%,
-      rgba(2, 6, 23, 0.96) 100%
+      circle at 50% 14%,
+      rgba(34, 56, 90, 0.38) 0%,
+      rgba(16, 34, 62, 0.3) 24%,
+      rgba(4, 12, 27, 0.76) 54%,
+      rgba(1, 4, 12, 0.98) 100%
     ),
     linear-gradient(
       180deg,
-      #0a1c39 0%,
-      #07132a 40%,
-      #050d1f 72%,
-      #020617 100%
+      #07142a 0%,
+      #030b1b 38%,
+      #020817 70%,
+      #01040c 100%
     );
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 24px 60px rgba(0, 0, 0, 0.42);
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 24px 60px rgba(0, 0, 0, 0.5);
 }
 
 .hero-topline {
@@ -196,7 +195,7 @@ body {
 .hero-rule {
   width: 260px;
   margin: 16px auto 14px;
-  border-top: 1px solid rgba(214, 221, 236, 0.42);
+  border-top: 1px solid rgba(214, 221, 236, 0.36);
 }
 
 .hero-presents {
@@ -256,7 +255,7 @@ body {
 
 .hero-rule-2 {
   width: 190px;
-  border-top: 1px solid rgba(214, 221, 236, 0.26);
+  border-top: 1px solid rgba(214, 221, 236, 0.22);
   margin: 20px auto 22px;
 }
 
@@ -298,7 +297,7 @@ body {
   font-family: "IM Fell English SC", serif;
   font-size: 0.72rem;
   letter-spacing: 0.42em;
-  color: #b9c5da;
+  color: #b3bfd2;
   line-height: 1.2;
 }
 
@@ -314,7 +313,7 @@ body {
   font-family: "IM Fell English SC", serif;
   font-size: 0.82rem;
   letter-spacing: 0.28em;
-  color: #b9c5da;
+  color: #b3bfd2;
   line-height: 1.2;
 }
 
@@ -380,7 +379,7 @@ body {
 
 .btn-primary {
   background: #f4f7fc;
-  color: #050d1f;
+  color: #01040c;
   border-color: #f4f7fc;
 }
 
@@ -389,9 +388,9 @@ body {
 }
 
 .btn-outline:hover {
-  background: rgba(185, 197, 218, 0.08);
+  background: rgba(179, 191, 210, 0.07);
   border-color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(185, 197, 218, 0.14) inset;
+  box-shadow: 0 0 0 1px rgba(179, 191, 210, 0.12) inset;
 }
 
 /* SECTION SHARED */
@@ -496,19 +495,19 @@ section {
 .board {
   max-width: 720px;
   margin: 22px auto 0;
-  border: 1px solid rgba(143, 169, 204, 0.22);
+  border: 1px solid rgba(87, 111, 148, 0.2);
   border-radius: 6px;
   background:
     linear-gradient(
       180deg,
-      rgba(13, 34, 63, 0.96) 0%,
-      rgba(10, 27, 50, 0.97) 42%,
-      rgba(7, 19, 42, 0.98) 100%
+      rgba(7, 20, 42, 0.97) 0%,
+      rgba(4, 13, 29, 0.98) 44%,
+      rgba(2, 8, 23, 0.99) 100%
     );
   padding: 18px 16px 14px;
   box-shadow:
-    0 18px 32px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 18px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
   backdrop-filter: blur(1.5px);
 }
 
@@ -540,14 +539,14 @@ section {
   letter-spacing: 0.16em;
   font-size: 0.75rem;
   color: var(--muted);
-  border-bottom: 1px solid rgba(143, 169, 204, 0.18);
+  border-bottom: 1px solid rgba(119, 145, 181, 0.16);
   padding-bottom: 6px;
   margin-bottom: 4px;
 }
 
 .board-row {
   padding: 6px 0;
-  border-bottom: 1px dashed rgba(143, 169, 204, 0.12);
+  border-bottom: 1px dashed rgba(119, 145, 181, 0.1);
 }
 
 .board-row:last-child {
@@ -628,7 +627,7 @@ section {
   padding: 8px 10px;
   border-radius: 4px;
   border: 1px solid var(--border);
-  background: #07132a;
+  background: #020817;
   color: var(--fg);
   font-family: "EB Garamond", serif;
   font-size: 0.95rem;
@@ -649,12 +648,13 @@ section {
 .site-footer {
   margin-top: var(--section-gap);
   padding: 32px 16px 24px;
-  border-top: 1px solid rgba(143, 169, 204, 0.14);
+  border-top: 1px solid rgba(87, 111, 148, 0.13);
   background:
     linear-gradient(
       180deg,
-      #04101f 0%,
-      #020617 100%
+      #020817 0%,
+      #01040c 52%,
+      #01030a 100%
     );
   color: var(--muted);
 }
@@ -670,7 +670,7 @@ section {
 }
 
 .footer-panel + .footer-panel {
-  border-top: 1px solid rgba(143, 169, 204, 0.14);
+  border-top: 1px solid rgba(87, 111, 148, 0.13);
   margin-top: 18px;
   padding-top: 26px;
 }
@@ -679,7 +679,7 @@ section {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #d6ddec;
+  color: #d0d8e5;
   margin-bottom: 8px;
 }
 
@@ -696,7 +696,7 @@ section {
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #b9c5da;
+  color: #b3bfd2;
 }
 
 .footer-copy {
@@ -704,7 +704,7 @@ section {
   max-width: 32rem;
   font-size: 13px;
   line-height: 1.7;
-  color: #b9c5da;
+  color: #b3bfd2;
 }
 
 .btn-footer {
@@ -722,19 +722,19 @@ section {
 
 .btn-footer:hover {
   background: #ffffff;
-  color: #050d1f;
+  color: #01040c;
 }
 
 .footer-meta {
   max-width: 540px;
   margin: 10px auto 0;
   padding-top: 14px;
-  border-top: 1px solid rgba(143, 169, 204, 0.14);
+  border-top: 1px solid rgba(87, 111, 148, 0.13);
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-align: center;
-  color: #8fa9cc;
+  color: #8192ae;
 }
 
 /* Desktop layout: two columns with vertical divider */
@@ -763,7 +763,7 @@ section {
     border-top: none;
     margin-top: 0;
     padding-top: 0;
-    border-left: 1px solid rgba(143, 169, 204, 0.14);
+    border-left: 1px solid rgba(87, 111, 148, 0.13);
     padding-left: 32px;
   }
 
@@ -823,7 +823,7 @@ section {
    ----------------------------- */
 
 .wallet-actions-block {
-  border-top: 1px solid rgba(143, 169, 204, 0.14);
+  border-top: 1px solid rgba(87, 111, 148, 0.13);
   padding-top: 14px;
   margin-top: 10px;
   margin-bottom: 14px;
@@ -833,13 +833,13 @@ section {
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #d6ddec;
+  color: #d0d8e5;
   margin-bottom: 4px;
 }
 
 .wallet-actions-sub {
   font-size: 11px;
-  color: #b9c5da;
+  color: #b3bfd2;
   line-height: 1.5;
   margin-bottom: 10px;
 }
@@ -855,21 +855,21 @@ section {
   font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8fa9cc;
+  color: #8192ae;
 }
 
 /* White CTA button */
 
 .btn-cta {
   background: #ffffff;
-  color: #050d1f;
+  color: #01040c;
   border-color: #ffffff;
 }
 
 .btn-cta:hover {
   background: #f4f7fc;
   border-color: #f4f7fc;
-  color: #050d1f;
+  color: #01040c;
 }
 
 /* Smaller outline variant */
@@ -900,7 +900,7 @@ section {
 .signup-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(2, 6, 23, 0.92);
+  background: rgba(1, 3, 10, 0.94);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -914,12 +914,13 @@ section {
   background:
     linear-gradient(
       180deg,
-      #0b1b36 0%,
-      #07132a 100%
+      #07142a 0%,
+      #030b1b 48%,
+      #020817 100%
     );
   border-radius: 14px;
   border: 1px solid var(--border);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.8);
   padding: 18px 16px 16px;
   font-family: "EB Garamond", serif;
   color: #ffffff;
@@ -937,7 +938,7 @@ section {
   font-size: 0.8rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #d6ddec;
+  color: #d0d8e5;
   margin-bottom: 4px;
 }
 
@@ -951,7 +952,7 @@ section {
 
 .signup-intro {
   font-size: 0.9rem;
-  color: #b9c5da;
+  color: #b3bfd2;
   line-height: 1.5;
   margin: 8px 0 14px;
   text-align: left;
@@ -976,7 +977,7 @@ section {
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #d6ddec;
+  color: #d0d8e5;
 }
 
 .signup-form input,
@@ -985,7 +986,7 @@ section {
   padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid var(--border);
-  background: #07132a;
+  background: #020817;
   color: #ffffff;
   font-family: "EB Garamond", serif;
   font-size: 0.95rem;
@@ -1008,7 +1009,7 @@ section {
   align-items: flex-start;
   gap: 8px;
   font-size: 0.9rem;
-  color: #b9c5da;
+  color: #b3bfd2;
 }
 
 .signup-checkbox input {
