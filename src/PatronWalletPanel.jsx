@@ -1,6 +1,64 @@
 import React, { useState } from "react";
 import { ConnectEmbed, CheckoutWidget } from "thirdweb/react";
 
+const COLORS = {
+  page: "#031129",
+  panel: "#071936",
+  panelDeep: "#06152c",
+  panelRaised: "#0b2342",
+  panelSoft: "#102b4e",
+  panelHighlight: "#15345a",
+
+  border: "#4a3a1e",
+  borderSoft: "rgba(227, 191, 114, 0.18)",
+  borderMedium: "rgba(227, 191, 114, 0.28)",
+  borderBright: "rgba(227, 191, 114, 0.42)",
+
+  gold: "#e3bf72",
+  goldLight: "#e8d09a",
+  goldSoft: "#c7b08a",
+  goldMuted: "#9f8a64",
+  goldPale: "#dec89a",
+
+  cream: "#f5eedc",
+
+  danger: "#f97373",
+  success: "#4ade80",
+};
+
+const CARD_STYLE = {
+  marginBottom: "14px",
+  padding: "12px",
+  borderRadius: "12px",
+  border: `1px solid ${COLORS.border}`,
+  background:
+    "linear-gradient(180deg, rgba(16,43,78,0.92), rgba(7,25,54,0.98))",
+  boxShadow: "0 12px 30px rgba(1, 7, 20, 0.24)",
+};
+
+const FIELD_STYLE = {
+  width: "100%",
+  padding: "10px 12px",
+  borderRadius: 10,
+  border: `1px solid ${COLORS.border}`,
+  background: COLORS.panelDeep,
+  color: COLORS.cream,
+  fontSize: 14,
+  outline: "none",
+  boxShadow: "0 10px 30px rgba(1, 7, 20, 0.28)",
+};
+
+const FORM_FIELD_STYLE = {
+  width: "100%",
+  padding: "8px 10px",
+  borderRadius: 8,
+  border: "1px solid #334b70",
+  background: COLORS.panelDeep,
+  color: COLORS.cream,
+  fontFamily: '"EB Garamond", serif',
+  fontSize: "0.95rem",
+};
+
 export default function PatronWalletPanel({
   account,
   isConnected,
@@ -77,6 +135,7 @@ export default function PatronWalletPanel({
 
   const openRegistration = () => {
     if (!isConnected) return;
+
     setRegistrationSubmitStatus("idle");
     setIsRegistrationOpen(true);
   };
@@ -116,8 +175,8 @@ export default function PatronWalletPanel({
         textAlign: "center",
         margin: "2px auto 16px",
         paddingBottom: "14px",
-        borderBottom: "1px solid rgba(227,191,114,0.25)",
-        color: "#e3bf72",
+        borderBottom: `1px solid ${COLORS.borderMedium}`,
+        color: COLORS.gold,
       }}
     >
       <div
@@ -142,7 +201,7 @@ export default function PatronWalletPanel({
           fontSize: "clamp(1.45rem, 6vw, 2rem)",
           letterSpacing: "0.28em",
           textTransform: "uppercase",
-          color: "#e8d09a",
+          color: COLORS.goldLight,
           lineHeight: 1.12,
           marginLeft: "0.28em",
           whiteSpace: "nowrap",
@@ -184,7 +243,7 @@ export default function PatronWalletPanel({
           fontSize: "11px",
           letterSpacing: "0.26em",
           textTransform: "uppercase",
-          color: "#c7b08a",
+          color: COLORS.goldSoft,
           marginTop: "-6px",
           marginBottom: "10px",
         }}
@@ -194,6 +253,7 @@ export default function PatronWalletPanel({
 
       {showCloseButton && onClose && (
         <button
+          type="button"
           onClick={onClose}
           aria-label="Close wallet"
           title="Close"
@@ -205,7 +265,7 @@ export default function PatronWalletPanel({
             height: "56px",
             border: "none",
             background: "transparent",
-            color: "#e3bf72",
+            color: COLORS.gold,
             fontSize: "38px",
             lineHeight: 1,
             cursor: "pointer",
@@ -230,7 +290,7 @@ export default function PatronWalletPanel({
             textAlign: "center",
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: "#dec89a",
+            color: COLORS.goldPale,
           }}
         >
           Sign up with your email to create your Polo Patrons Wallet. This same
@@ -240,7 +300,7 @@ export default function PatronWalletPanel({
             target="_blank"
             rel="noreferrer"
             style={{
-              color: "#e3bf72",
+              color: COLORS.gold,
               textDecoration: "none",
             }}
           >
@@ -252,7 +312,7 @@ export default function PatronWalletPanel({
             target="_blank"
             rel="noreferrer"
             style={{
-              color: "#e3bf72",
+              color: COLORS.gold,
               textDecoration: "none",
             }}
           >
@@ -263,7 +323,14 @@ export default function PatronWalletPanel({
       )}
 
       {!account ? (
-        <div style={{ marginBottom: "14px" }}>
+        <div
+          style={{
+            marginBottom: "14px",
+            borderRadius: "16px",
+            overflow: "hidden",
+            background: COLORS.panelRaised,
+          }}
+        >
           <ConnectEmbed
             client={client}
             wallets={wallets}
@@ -292,6 +359,7 @@ export default function PatronWalletPanel({
               style={{
                 fontFamily: "monospace",
                 fontSize: "13px",
+                color: COLORS.cream,
               }}
             >
               {shortAddress}
@@ -303,7 +371,7 @@ export default function PatronWalletPanel({
               style={{
                 border: "none",
                 background: "transparent",
-                color: "#e3bf72",
+                color: COLORS.gold,
                 cursor: "pointer",
                 fontSize: "14px",
               }}
@@ -328,7 +396,7 @@ export default function PatronWalletPanel({
                   fontSize: "10px",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#9f8a64",
+                  color: COLORS.goldMuted,
                   marginBottom: "2px",
                 }}
               >
@@ -337,7 +405,7 @@ export default function PatronWalletPanel({
 
               <div
                 style={{
-                  color: "#f5eedc",
+                  color: COLORS.cream,
                   fontSize: "13px",
                 }}
               >
@@ -352,7 +420,7 @@ export default function PatronWalletPanel({
                   fontSize: "10px",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#9f8a64",
+                  color: COLORS.goldMuted,
                   marginBottom: "2px",
                 }}
               >
@@ -361,7 +429,7 @@ export default function PatronWalletPanel({
 
               <div
                 style={{
-                  color: "#f5eedc",
+                  color: COLORS.cream,
                   fontSize: "13px",
                 }}
               >
@@ -377,7 +445,7 @@ export default function PatronWalletPanel({
                 fontSize: "10px",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "#c7b08a",
+                color: COLORS.goldSoft,
                 marginBottom: "4px",
               }}
             >
@@ -388,7 +456,7 @@ export default function PatronWalletPanel({
               style={{
                 fontSize: "18px",
                 letterSpacing: "0.02em",
-                color: "#f5eedc",
+                color: COLORS.cream,
               }}
             >
               {patronBalance?.displayValue || "0"}{" "}
@@ -397,6 +465,7 @@ export default function PatronWalletPanel({
           </div>
 
           <button
+            type="button"
             className="btn btn-outline"
             style={{
               minWidth: "auto",
@@ -424,12 +493,9 @@ export default function PatronWalletPanel({
     return (
       <div
         style={{
-          marginBottom: "14px",
-          padding: "12px",
-          borderRadius: "12px",
-          border: "1px solid rgba(227,191,114,0.28)",
+          ...CARD_STYLE,
           background:
-            "radial-gradient(circle at top, rgba(227,191,114,0.07), rgba(1,4,12,0.98))",
+            "radial-gradient(circle at top, rgba(227,191,114,0.09), rgba(11,35,66,0.96) 48%, rgba(7,25,54,0.99) 100%)",
         }}
       >
         <div
@@ -437,7 +503,7 @@ export default function PatronWalletPanel({
             fontSize: "10px",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color: "#c7b08a",
+            color: COLORS.goldSoft,
             marginBottom: "8px",
           }}
         >
@@ -451,9 +517,9 @@ export default function PatronWalletPanel({
             justifyContent: "center",
             padding: "6px 12px 5px",
             borderRadius: "999px",
-            border: "1px solid #e3bf72",
+            border: `1px solid ${COLORS.gold}`,
             background: "rgba(227,191,114,0.12)",
-            color: "#f5eedc",
+            color: COLORS.cream,
             fontSize: "11px",
             letterSpacing: "0.14em",
             textTransform: "uppercase",
@@ -465,7 +531,7 @@ export default function PatronWalletPanel({
 
         <div
           style={{
-            color: "#dec89a",
+            color: COLORS.goldPale,
             fontSize: "12px",
             lineHeight: 1.6,
           }}
@@ -479,12 +545,7 @@ export default function PatronWalletPanel({
   const renderRegistrationCard = () => (
     <div
       style={{
-        marginBottom: "14px",
-        padding: "12px",
-        borderRadius: "12px",
-        border: "1px solid rgba(227,191,114,0.18)",
-        background:
-          "linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.08)), #01040c",
+        ...CARD_STYLE,
         opacity: isConnected ? 1 : 0.72,
       }}
     >
@@ -493,7 +554,7 @@ export default function PatronWalletPanel({
           fontSize: "10px",
           letterSpacing: "0.16em",
           textTransform: "uppercase",
-          color: "#9f8a64",
+          color: COLORS.goldMuted,
           marginBottom: "7px",
         }}
       >
@@ -502,7 +563,7 @@ export default function PatronWalletPanel({
 
       <div
         style={{
-          color: "#f5eedc",
+          color: COLORS.cream,
           fontSize: "13px",
           letterSpacing: "0.05em",
           textTransform: "uppercase",
@@ -514,7 +575,7 @@ export default function PatronWalletPanel({
 
       <div
         style={{
-          color: "#c7b08a",
+          color: COLORS.goldSoft,
           fontSize: "12px",
           lineHeight: 1.6,
           marginBottom: "10px",
@@ -549,7 +610,7 @@ export default function PatronWalletPanel({
             marginTop: "8px",
             fontSize: "10px",
             lineHeight: 1.4,
-            color: "#9f8a64",
+            color: COLORS.goldMuted,
             textAlign: "center",
           }}
         >
@@ -571,7 +632,7 @@ export default function PatronWalletPanel({
               style={{
                 position: "absolute",
                 inset: 0,
-                background: "rgba(0,0,0,0.68)",
+                background: "rgba(3, 17, 41, 0.74)",
                 zIndex: 10,
                 borderRadius: 12,
                 border: "none",
@@ -585,7 +646,7 @@ export default function PatronWalletPanel({
               style={{
                 position: "absolute",
                 inset: 0,
-                background: "rgba(0,0,0,0.68)",
+                background: "rgba(3, 17, 41, 0.74)",
                 zIndex: 10,
                 borderRadius: 12,
               }}
@@ -606,7 +667,7 @@ export default function PatronWalletPanel({
                 fontSize: 10,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "#c7b08a",
+                color: COLORS.goldSoft,
                 marginBottom: 6,
               }}
             >
@@ -624,16 +685,8 @@ export default function PatronWalletPanel({
                 }
               }}
               style={{
-                width: "100%",
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: "1px solid #3a2b16",
-                background: "#01040c",
-                color: "#f5eedc",
-                fontSize: 14,
-                outline: "none",
+                ...FIELD_STYLE,
                 marginBottom: selectedPackage === "custom" ? 8 : 0,
-                boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
               }}
             >
               <option value="4-rides">$500 — supports up to 4 rides</option>
@@ -652,15 +705,8 @@ export default function PatronWalletPanel({
                 value={usdAmount}
                 onChange={(e) => setUsdAmount(e.target.value)}
                 style={{
-                  width: "100%",
-                  padding: "10px 12px",
-                  borderRadius: 10,
-                  border: "1px solid #3a2b16",
-                  background: "#01040c",
-                  color: "#f5eedc",
+                  ...FIELD_STYLE,
                   fontSize: 16,
-                  outline: "none",
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
                 }}
               />
             )}
@@ -668,7 +714,7 @@ export default function PatronWalletPanel({
             <div
               style={{
                 marginTop: "7px",
-                color: "#9f8a64",
+                color: COLORS.goldMuted,
                 fontSize: "11px",
                 lineHeight: 1.45,
               }}
@@ -684,7 +730,7 @@ export default function PatronWalletPanel({
                 fontSize: 10,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "#c7b08a",
+                color: COLORS.goldSoft,
                 marginBottom: 6,
               }}
             >
@@ -694,63 +740,42 @@ export default function PatronWalletPanel({
             <select
               value={purchasePurpose}
               onChange={(e) => setPurchasePurpose(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: "1px solid #3a2b16",
-                background: "#01040c",
-                color: "#f5eedc",
-                fontSize: 14,
-                outline: "none",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.55)",
-              }}
+              style={FIELD_STYLE}
             >
               <option value="monthly-care">
                 Monthly care contribution with ride access
               </option>
+
               <option value="horse-lease">Horse lease / ride credit</option>
+
               <option value="horse-welfare">
                 Horse welfare support / donation
               </option>
+
               <option value="patron-support">General patron support</option>
             </select>
           </div>
-
-          {purchasePurpose === "horse-welfare" ? (
-            <p
-              style={{
-                margin: "0 0 10px",
-                fontSize: 11,
-                lineHeight: 1.45,
-                color: "#c7b08a",
-                textAlign: "center",
-              }}
-            >
-              Welfare support is recorded as general horse support and does not
-              guarantee ride credits, bookings, or services.
-            </p>
-          ) : (
-            <p
-              style={{
-                margin: "0 0 10px",
-                fontSize: 11,
-                lineHeight: 1.45,
-                color: "#c7b08a",
-                textAlign: "center",
-              }}
-            >
-              Ride access is subject to scheduling, horse availability, safety
-              approval, and local chapter rules.
-            </p>
-          )}
 
           <p
             style={{
               margin: "0 0 10px",
               fontSize: 11,
               lineHeight: 1.45,
-              color: "#c7b08a",
+              color: COLORS.goldSoft,
+              textAlign: "center",
+            }}
+          >
+            {purchasePurpose === "horse-welfare"
+              ? "Welfare support is recorded as general horse support and does not guarantee ride credits, bookings, or services."
+              : "Ride access is subject to scheduling, horse availability, safety approval, and local chapter rules."}
+          </p>
+
+          <p
+            style={{
+              margin: "0 0 10px",
+              fontSize: 11,
+              lineHeight: 1.45,
+              color: COLORS.goldSoft,
               textAlign: "center",
             }}
           >
@@ -758,33 +783,38 @@ export default function PatronWalletPanel({
             payment.
           </p>
 
-          <CheckoutBoundary>
-            <CheckoutWidget
-              client={client}
-              name={"BUY POLO PATRONIUM (PATRON)"}
-              description={
-                "USPPA Patronage Token — supporting the PPA PoloBred StringPool, horse welfare, founding patron initiatives, and related association programs."
-              }
-              currency={"USD"}
-              chain={BASE}
-              amount={normalizedAmount}
-              tokenAddress={
-                "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
-              }
-              seller={"0xfee3c75691e8c10ed4246b10635b19bfff06ce16"}
-              buttonLabel={"BUY PATRON (USDC on Base)"}
-              theme={patronCheckoutTheme}
-              purchaseData={{
-                walletAddress: account?.address,
-                usdAmount: normalizedAmount,
-                selectedPackage,
-                selectedPackageLabel: currentPackage.label,
-                purchasePurpose,
-              }}
-              onSuccess={handleCheckoutSuccess}
-              onError={handleCheckoutError}
-            />
-          </CheckoutBoundary>
+          <div
+            className="checkout-wrapper"
+            style={{
+              borderRadius: "14px",
+              overflow: "hidden",
+              background: COLORS.panelRaised,
+            }}
+          >
+            <CheckoutBoundary>
+              <CheckoutWidget
+                client={client}
+                name="BUY POLO PATRONIUM (PATRON)"
+                description="USPPA Patronage Token — supporting the PPA PoloBred StringPool, horse welfare, founding patron initiatives, and related association programs."
+                currency="USD"
+                chain={BASE}
+                amount={normalizedAmount}
+                tokenAddress="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+                seller="0xfee3c75691e8c10ed4246b10635b19bfff06ce16"
+                buttonLabel="BUY PATRON (USDC on Base)"
+                theme={patronCheckoutTheme}
+                purchaseData={{
+                  walletAddress: account?.address,
+                  usdAmount: normalizedAmount,
+                  selectedPackage,
+                  selectedPackageLabel: currentPackage.label,
+                  purchasePurpose,
+                }}
+                onSuccess={handleCheckoutSuccess}
+                onError={handleCheckoutError}
+              />
+            </CheckoutBoundary>
+          </div>
         </div>
       </div>
 
@@ -793,7 +823,7 @@ export default function PatronWalletPanel({
           marginTop: "10px",
           fontSize: "11px",
           lineHeight: 1.5,
-          color: "#c7b08a",
+          color: COLORS.goldSoft,
           textAlign: "center",
         }}
       >
@@ -803,7 +833,7 @@ export default function PatronWalletPanel({
           target="_blank"
           rel="noreferrer"
           style={{
-            color: "#e3bf72",
+            color: COLORS.gold,
             textDecoration: "none",
           }}
         >
@@ -815,7 +845,7 @@ export default function PatronWalletPanel({
           target="_blank"
           rel="noreferrer"
           style={{
-            color: "#e3bf72",
+            color: COLORS.gold,
             textDecoration: "none",
           }}
         >
@@ -858,8 +888,10 @@ export default function PatronWalletPanel({
           style={{
             padding: "12px",
             borderRadius: "12px",
-            border: "1px solid rgba(227,191,114,0.18)",
-            background: "rgba(8,20,42,0.48)",
+            border: `1px solid ${COLORS.borderSoft}`,
+            background:
+              "linear-gradient(180deg, rgba(16,43,78,0.84), rgba(8,28,59,0.94))",
+            boxShadow: "0 10px 24px rgba(1, 7, 20, 0.2)",
           }}
         >
           <div
@@ -867,7 +899,7 @@ export default function PatronWalletPanel({
               fontSize: "10px",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
-              color: "#9f8a64",
+              color: COLORS.goldMuted,
               marginBottom: "7px",
             }}
           >
@@ -879,7 +911,7 @@ export default function PatronWalletPanel({
               fontSize: "11px",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
-              color: "#f5eedc",
+              color: COLORS.cream,
               marginBottom: "8px",
             }}
           >
@@ -888,7 +920,7 @@ export default function PatronWalletPanel({
 
           <div
             style={{
-              color: "#c7b08a",
+              color: COLORS.goldSoft,
               fontSize: "12px",
               lineHeight: 1.6,
             }}
@@ -905,21 +937,13 @@ export default function PatronWalletPanel({
       {renderConnectOrAccount()}
       {renderStatusCard()}
 
-      <div
-        style={{
-          marginBottom: "14px",
-          padding: "12px",
-          borderRadius: "12px",
-          border: "1px solid #3a2b16",
-          background: "#01040c",
-        }}
-      >
+      <div style={CARD_STYLE}>
         <div
           style={{
             fontSize: "10px",
             letterSpacing: "0.16em",
             textTransform: "uppercase",
-            color: "#c7b08a",
+            color: COLORS.goldSoft,
             marginBottom: "8px",
           }}
         >
@@ -928,7 +952,7 @@ export default function PatronWalletPanel({
 
         <div
           style={{
-            color: "#f5eedc",
+            color: COLORS.cream,
             fontSize: "13px",
             lineHeight: 1.75,
           }}
@@ -955,21 +979,13 @@ export default function PatronWalletPanel({
         </div>
       </div>
 
-      <div
-        style={{
-          marginBottom: "14px",
-          padding: "12px",
-          borderRadius: "12px",
-          border: "1px solid #3a2b16",
-          background: "#01040c",
-        }}
-      >
+      <div style={CARD_STYLE}>
         <div
           style={{
             fontSize: "10px",
             letterSpacing: "0.16em",
             textTransform: "uppercase",
-            color: "#c7b08a",
+            color: COLORS.goldSoft,
             marginBottom: "10px",
           }}
         >
@@ -979,25 +995,17 @@ export default function PatronWalletPanel({
         {renderSyndicateCards()}
       </div>
 
-      <div
-        style={{
-          marginBottom: "14px",
-          padding: "12px",
-          borderRadius: "12px",
-          border: "1px solid #3a2b16",
-          background: "#01040c",
-        }}
-      >
+      <div style={CARD_STYLE}>
         <div
           style={{
             fontSize: "10px",
             letterSpacing: "0.16em",
             textTransform: "uppercase",
-            color: "#c7b08a",
+            color: COLORS.goldSoft,
             marginBottom: "10px",
           }}
         >
-          Wallet & Token Sale
+          Wallet &amp; Token Sale
         </div>
 
         {renderCheckout()}
@@ -1017,7 +1025,7 @@ export default function PatronWalletPanel({
         style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(0,0,0,0.88)",
+          background: "rgba(3, 17, 41, 0.92)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -1037,15 +1045,15 @@ export default function PatronWalletPanel({
               width: "100%",
               maxHeight: "90vh",
               overflowY: "auto",
-              border: "1px solid #3a2b16",
+              border: `1px solid ${COLORS.border}`,
               borderRadius: "14px",
               padding: "18px 16px 16px",
               background:
-                "linear-gradient(180deg, #020817 0%, #01040c 68%, #01030a 100%)",
-              boxShadow: "0 18px 60px rgba(0,0,0,0.9)",
+                "linear-gradient(180deg, #0b2342 0%, #071936 58%, #06152c 100%)",
+              boxShadow: "0 18px 60px rgba(1, 7, 20, 0.82)",
               fontFamily:
                 '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-              color: "#f5eedc",
+              color: COLORS.cream,
               fontSize: "13px",
               position: "relative",
             }}
@@ -1064,7 +1072,7 @@ export default function PatronWalletPanel({
                   fontSize: "15px",
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
-                  color: "#f5eedc",
+                  color: COLORS.cream,
                   marginTop: "-4px",
                   marginBottom: "10px",
                 }}
@@ -1073,6 +1081,7 @@ export default function PatronWalletPanel({
               </div>
 
               <button
+                type="button"
                 onClick={closeRegistration}
                 aria-label="Close registration"
                 title="Close"
@@ -1084,7 +1093,7 @@ export default function PatronWalletPanel({
                   height: "48px",
                   border: "none",
                   background: "transparent",
-                  color: "#e3bf72",
+                  color: COLORS.gold,
                   fontSize: "32px",
                   lineHeight: 1,
                   cursor: "pointer",
@@ -1101,7 +1110,7 @@ export default function PatronWalletPanel({
                 margin: "0 0 12px",
                 fontSize: "12px",
                 lineHeight: 1.6,
-                color: "#dec89a",
+                color: COLORS.goldPale,
                 textAlign: "center",
               }}
             >
@@ -1114,9 +1123,9 @@ export default function PatronWalletPanel({
                 style={{
                   padding: "14px 10px 10px",
                   borderRadius: "12px",
-                  border: "1px solid rgba(234,191,114,0.4)",
+                  border: `1px solid ${COLORS.borderBright}`,
                   background:
-                    "radial-gradient(circle at top, rgba(227,191,114,0.14), rgba(1,4,12,0.98))",
+                    "radial-gradient(circle at top, rgba(227,191,114,0.15), rgba(11,35,66,0.97) 50%, rgba(7,25,54,0.99) 100%)",
                   textAlign: "center",
                 }}
               >
@@ -1135,7 +1144,7 @@ export default function PatronWalletPanel({
                     fontSize: "13px",
                     letterSpacing: "0.2em",
                     textTransform: "uppercase",
-                    color: "#e3bf72",
+                    color: COLORS.gold,
                     marginBottom: "8px",
                   }}
                 >
@@ -1147,7 +1156,7 @@ export default function PatronWalletPanel({
                     margin: "0 0 10px",
                     fontSize: "12px",
                     lineHeight: 1.7,
-                    color: "#f5eedc",
+                    color: COLORS.cream,
                   }}
                 >
                   Thank you — your registration was received.
@@ -1199,7 +1208,7 @@ export default function PatronWalletPanel({
                         fontSize: "10px",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "#c7b08a",
+                        color: COLORS.goldSoft,
                         display: "block",
                         marginBottom: "4px",
                       }}
@@ -1212,16 +1221,7 @@ export default function PatronWalletPanel({
                       name="name"
                       type="text"
                       required
-                      style={{
-                        width: "100%",
-                        padding: "8px 10px",
-                        borderRadius: 8,
-                        border: "1px solid #283550",
-                        background: "#01040c",
-                        color: "#f5eedc",
-                        fontFamily: '"EB Garamond", serif',
-                        fontSize: "0.95rem",
-                      }}
+                      style={FORM_FIELD_STYLE}
                     />
                   </div>
 
@@ -1232,7 +1232,7 @@ export default function PatronWalletPanel({
                         fontSize: "10px",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "#c7b08a",
+                        color: COLORS.goldSoft,
                         display: "block",
                         marginBottom: "4px",
                       }}
@@ -1245,16 +1245,7 @@ export default function PatronWalletPanel({
                       name="email"
                       type="email"
                       required
-                      style={{
-                        width: "100%",
-                        padding: "8px 10px",
-                        borderRadius: 8,
-                        border: "1px solid #283550",
-                        background: "#01040c",
-                        color: "#f5eedc",
-                        fontFamily: '"EB Garamond", serif',
-                        fontSize: "0.95rem",
-                      }}
+                      style={FORM_FIELD_STYLE}
                     />
                   </div>
 
@@ -1264,7 +1255,7 @@ export default function PatronWalletPanel({
                         fontSize: "10px",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "#c7b08a",
+                        color: COLORS.goldSoft,
                         display: "block",
                         marginBottom: "4px",
                       }}
@@ -1312,7 +1303,7 @@ export default function PatronWalletPanel({
                             style={{
                               width: 16,
                               height: 16,
-                              accentColor: "#e3bf72",
+                              accentColor: COLORS.gold,
                             }}
                           />
 
@@ -1329,7 +1320,7 @@ export default function PatronWalletPanel({
                         fontSize: "10px",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "#c7b08a",
+                        color: COLORS.goldSoft,
                         display: "block",
                         marginBottom: "4px",
                       }}
@@ -1342,16 +1333,7 @@ export default function PatronWalletPanel({
                       name="chapter"
                       type="text"
                       placeholder="Charleston, SC · Creek Plantation, etc."
-                      style={{
-                        width: "100%",
-                        padding: "8px 10px",
-                        borderRadius: 8,
-                        border: "1px solid #283550",
-                        background: "#01040c",
-                        color: "#f5eedc",
-                        fontFamily: '"EB Garamond", serif',
-                        fontSize: "0.95rem",
-                      }}
+                      style={FORM_FIELD_STYLE}
                     />
                   </div>
 
@@ -1362,7 +1344,7 @@ export default function PatronWalletPanel({
                         fontSize: "10px",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "#c7b08a",
+                        color: COLORS.goldSoft,
                         display: "block",
                         marginBottom: "4px",
                       }}
@@ -1376,14 +1358,7 @@ export default function PatronWalletPanel({
                       rows={3}
                       placeholder="Tell us about your goals, horses, or interests."
                       style={{
-                        width: "100%",
-                        padding: "8px 10px",
-                        borderRadius: 8,
-                        border: "1px solid #283550",
-                        background: "#01040c",
-                        color: "#f5eedc",
-                        fontFamily: '"EB Garamond", serif',
-                        fontSize: "0.95rem",
+                        ...FORM_FIELD_STYLE,
                         resize: "vertical",
                         minHeight: "80px",
                       }}
@@ -1397,7 +1372,7 @@ export default function PatronWalletPanel({
                         fontSize: "10px",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "#c7b08a",
+                        color: COLORS.goldSoft,
                         display: "block",
                         marginBottom: "4px",
                       }}
@@ -1411,12 +1386,7 @@ export default function PatronWalletPanel({
                       value={account?.address || ""}
                       readOnly
                       style={{
-                        width: "100%",
-                        padding: "8px 10px",
-                        borderRadius: 8,
-                        border: "1px solid #283550",
-                        background: "#01040c",
-                        color: "#f5eedc",
+                        ...FORM_FIELD_STYLE,
                         fontFamily: "monospace",
                         fontSize: "0.9rem",
                       }}
@@ -1433,7 +1403,7 @@ export default function PatronWalletPanel({
                         display: "block",
                         marginTop: "4px",
                         fontSize: "10px",
-                        color: "#9f8a64",
+                        color: COLORS.goldMuted,
                       }}
                     >
                       This links your access profile to your Patron Wallet.
@@ -1475,7 +1445,7 @@ export default function PatronWalletPanel({
                     style={{
                       marginTop: "8px",
                       fontSize: "11px",
-                      color: "#f97373",
+                      color: COLORS.danger,
                       textAlign: "center",
                     }}
                   >
