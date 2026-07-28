@@ -29,41 +29,69 @@ const wallets = [
 ];
 
 // ---------------------------------------------
-// Theme
+// Wallet palette
+// ---------------------------------------------
+const WALLET_COLORS = {
+  page: "#031129",
+  panel: "#071936",
+  panelDeep: "#06152c",
+  panelRaised: "#0b2342",
+  panelHover: "#102b4e",
+  border: "#4a3a1e",
+  borderBright: "#70572b",
+  gold: "#e3bf72",
+  goldSoft: "#c7b08a",
+  cream: "#f5eedc",
+};
+
+// ---------------------------------------------
+// Thirdweb theme
 // ---------------------------------------------
 const patronCheckoutTheme = darkTheme({
   fontFamily:
     '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
   borderRadius: 999,
   colors: {
-    modalBg: "#050505",
-    modalOverlayBg: "rgba(0,0,0,0.85)",
-    borderColor: "#3a2b16",
-    separatorLine: "#3a2b16",
-    mutedBg: "#050505",
-    skeletonBg: "#111111",
-    primaryText: "#f5eedc",
-    secondaryText: "#c7b08a",
-    selectedTextColor: "#111111",
-    selectedTextBg: "#f5eedc",
-    primaryButtonBg: "#e3bf72",
+    modalBg: WALLET_COLORS.panel,
+    modalOverlayBg: "rgba(3, 17, 41, 0.9)",
+
+    borderColor: WALLET_COLORS.border,
+    separatorLine: WALLET_COLORS.border,
+
+    mutedBg: WALLET_COLORS.panelDeep,
+    skeletonBg: WALLET_COLORS.panelRaised,
+
+    primaryText: WALLET_COLORS.cream,
+    secondaryText: WALLET_COLORS.goldSoft,
+
+    selectedTextColor: "#071326",
+    selectedTextBg: WALLET_COLORS.cream,
+
+    primaryButtonBg: WALLET_COLORS.gold,
     primaryButtonText: "#181210",
-    secondaryButtonBg: "#050505",
-    secondaryButtonText: "#f5eedc",
-    secondaryButtonHoverBg: "#111111",
-    accentButtonBg: "#e3bf72",
+
+    secondaryButtonBg: WALLET_COLORS.panelRaised,
+    secondaryButtonText: WALLET_COLORS.cream,
+    secondaryButtonHoverBg: WALLET_COLORS.panelHover,
+
+    accentButtonBg: WALLET_COLORS.gold,
     accentButtonText: "#181210",
-    connectedButtonBg: "#050505",
-    connectedButtonHoverBg: "#111111",
-    secondaryIconColor: "#c7b08a",
-    secondaryIconHoverColor: "#f5eedc",
-    secondaryIconHoverBg: "#111111",
+
+    connectedButtonBg: WALLET_COLORS.panelRaised,
+    connectedButtonHoverBg: WALLET_COLORS.panelHover,
+
+    secondaryIconColor: WALLET_COLORS.goldSoft,
+    secondaryIconHoverColor: WALLET_COLORS.cream,
+    secondaryIconHoverBg: WALLET_COLORS.panelHover,
+
     danger: "#f97373",
     success: "#4ade80",
-    tooltipBg: "#050505",
-    tooltipText: "#f5eedc",
-    inputAutofillBg: "#050505",
-    scrollbarBg: "#050505",
+
+    tooltipBg: WALLET_COLORS.panelRaised,
+    tooltipText: WALLET_COLORS.cream,
+
+    inputAutofillBg: WALLET_COLORS.panelDeep,
+    scrollbarBg: WALLET_COLORS.panelDeep,
   },
 });
 
@@ -87,7 +115,7 @@ class CheckoutBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <p style={{ color: "#e3bf72", marginTop: "12px" }}>
+        <p style={{ color: WALLET_COLORS.gold, marginTop: "12px" }}>
           Checkout temporarily unavailable. Please try again later.
         </p>
       );
@@ -200,7 +228,10 @@ export default function App() {
   }, []);
 
   const [isWalletOpen, setIsWalletOpen] = useState(false);
-  const [usdAmount, setUsdAmount] = useState("2");
+  const [usdAmount, setUsdAmount] = useState("500");
+  const [purchasePurpose, setPurchasePurpose] = useState("monthly-care");
+  const [selectedPackage, setSelectedPackage] = useState("4-rides");
+
   const walletScrollRef = useRef(null);
 
   const [resultsSubmitStatus, setResultsSubmitStatus] = useState("idle");
@@ -262,6 +293,7 @@ export default function App() {
 
   const normalizedAmountNumber =
     usdAmount && Number(usdAmount) >= 2 ? Number(usdAmount) : 2;
+
   const normalizedAmount = String(normalizedAmountNumber);
 
   const handleCheckoutSuccess = async (result) => {
@@ -289,7 +321,9 @@ export default function App() {
     try {
       await fetch("/", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
         body: new URLSearchParams(formData).toString(),
       });
 
@@ -307,7 +341,9 @@ export default function App() {
       document.body.style.overflow = "hidden";
 
       requestAnimationFrame(() => {
-        if (walletScrollRef.current) walletScrollRef.current.scrollTop = 0;
+        if (walletScrollRef.current) {
+          walletScrollRef.current.scrollTop = 0;
+        }
       });
 
       return () => {
@@ -413,6 +449,31 @@ export default function App() {
     </footer>
   );
 
+  const walletPanelProps = {
+    account,
+    isConnected,
+    shortAddress,
+    handleCopyAddress,
+    baseBalance,
+    usdcBalance,
+    patronBalance,
+    handleSignOut,
+    usdAmount,
+    setUsdAmount,
+    normalizedAmount,
+    purchasePurpose,
+    setPurchasePurpose,
+    selectedPackage,
+    setSelectedPackage,
+    client,
+    wallets,
+    BASE,
+    patronCheckoutTheme,
+    handleCheckoutSuccess,
+    handleCheckoutError,
+    CheckoutBoundary,
+  };
+
   if (route === "wallet") {
     return (
       <div className="page">
@@ -452,38 +513,22 @@ export default function App() {
                 width: "100%",
                 maxHeight: "none",
                 overflowY: "visible",
-                border: "1px solid #3a2b16",
+                border: `1px solid ${WALLET_COLORS.border}`,
                 borderRadius: "14px",
                 padding: "16px",
                 paddingTop: "26px",
-                background: "#050505",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.85)",
+                background:
+                  "linear-gradient(180deg, #0b2342 0%, #071936 50%, #06152c 100%)",
+                boxShadow: "0 18px 60px rgba(1, 7, 20, 0.72)",
                 fontFamily:
                   '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-                color: "#f5eedc",
+                color: WALLET_COLORS.cream,
                 fontSize: "13px",
                 position: "relative",
               }}
             >
               <PatronWalletPanel
-                account={account}
-                isConnected={isConnected}
-                shortAddress={shortAddress}
-                handleCopyAddress={handleCopyAddress}
-                baseBalance={baseBalance}
-                usdcBalance={usdcBalance}
-                patronBalance={patronBalance}
-                handleSignOut={handleSignOut}
-                usdAmount={usdAmount}
-                setUsdAmount={setUsdAmount}
-                normalizedAmount={normalizedAmount}
-                client={client}
-                wallets={wallets}
-                BASE={BASE}
-                patronCheckoutTheme={patronCheckoutTheme}
-                handleCheckoutSuccess={handleCheckoutSuccess}
-                handleCheckoutError={handleCheckoutError}
-                CheckoutBoundary={CheckoutBoundary}
+                {...walletPanelProps}
                 showDashboardTabs={true}
               />
             </div>
@@ -874,7 +919,7 @@ export default function App() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0,0,0,0.86)",
+            background: "rgba(3, 17, 41, 0.9)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -890,38 +935,22 @@ export default function App() {
                 width: "100%",
                 maxHeight: "90vh",
                 overflowY: "auto",
-                border: "1px solid #3a2b16",
+                border: `1px solid ${WALLET_COLORS.border}`,
                 borderRadius: "14px",
                 padding: "16px",
                 paddingTop: "26px",
-                background: "#050505",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.85)",
+                background:
+                  "linear-gradient(180deg, #0b2342 0%, #071936 50%, #06152c 100%)",
+                boxShadow: "0 18px 60px rgba(1, 7, 20, 0.78)",
                 fontFamily:
                   '"Cinzel", "EB Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif',
-                color: "#f5eedc",
+                color: WALLET_COLORS.cream,
                 fontSize: "13px",
                 position: "relative",
               }}
             >
               <PatronWalletPanel
-                account={account}
-                isConnected={isConnected}
-                shortAddress={shortAddress}
-                handleCopyAddress={handleCopyAddress}
-                baseBalance={baseBalance}
-                usdcBalance={usdcBalance}
-                patronBalance={patronBalance}
-                handleSignOut={handleSignOut}
-                usdAmount={usdAmount}
-                setUsdAmount={setUsdAmount}
-                normalizedAmount={normalizedAmount}
-                client={client}
-                wallets={wallets}
-                BASE={BASE}
-                patronCheckoutTheme={patronCheckoutTheme}
-                handleCheckoutSuccess={handleCheckoutSuccess}
-                handleCheckoutError={handleCheckoutError}
-                CheckoutBoundary={CheckoutBoundary}
+                {...walletPanelProps}
                 showCloseButton={true}
                 onClose={closeWalletModal}
                 closeOnDisabledOverlay={true}
@@ -973,6 +1002,7 @@ export default function App() {
 
               <div>
                 <label htmlFor="cr-wallet">Linked Wallet</label>
+
                 <input
                   id="cr-wallet"
                   type="text"
@@ -980,6 +1010,7 @@ export default function App() {
                   readOnly
                   style={{ fontFamily: "monospace" }}
                 />
+
                 <input
                   type="hidden"
                   name="walletAddress"
@@ -995,6 +1026,7 @@ export default function App() {
 
                 <div>
                   <label htmlFor="role">Role</label>
+
                   <select id="role" name="role" required>
                     <option value="">Select role</option>
                     <option>Coach / Instructor</option>
@@ -1032,6 +1064,7 @@ export default function App() {
 
               <div>
                 <label htmlFor="details">Chukker Details</label>
+
                 <textarea
                   id="details"
                   name="details"
@@ -1043,6 +1076,7 @@ export default function App() {
               <div>
                 <label htmlFor="file">Upload Chukker Sheet (optional)</label>
                 <input id="file" name="file" type="file" />
+
                 <small>PDF, image, or spreadsheet files are welcome.</small>
               </div>
 
